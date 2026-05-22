@@ -595,6 +595,7 @@ function addAuthPopup(login, msg, e) {
 		console.log(type)
 		e.preventDefault()
 }
+
 function onLogin() {
 	// Get button and change it when pressed
 	const submitBtn = document.getElementById('login-submit')
@@ -653,7 +654,8 @@ function onSignup() {
 	submitBtn.innerHTML = 'loading... <img width="20px" src="assets/img/loading.gif"/>'
 	submitBtn.disabled = true
 	let n = {
-		email: document.getElementById('signup-email').value,
+		username: document.getElementById('signup-email').value,
+    email: document.getElementById('signup-email').value,
 		password: document.getElementById('signup-password').value,
 		confirmPassword: document.getElementById('confirm-signup-password').value,
 		acceptTerms: !0,

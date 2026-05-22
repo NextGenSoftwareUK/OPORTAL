@@ -32,6 +32,7 @@ function FetchRemote(path, httpMethod) {
 function Login(username, password)
 {
     var remoteHost = document.getElementById('remoteHost').value;
+    console.log("remoteHost", remoteHost);
     sendData(remoteHost, '/api/avatar/authenticate', { username: username, password: password });
 }
 
