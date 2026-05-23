@@ -581,7 +581,7 @@ function addAuthPopup(login, msg, e) {
 
 	if (msg.status === 400 || (msg.result != null && msg.result.isError)) {
 		type = 'error'
-		alert = msg.result.message;
+		alert = msg.result ? msg.result.message : 'Unknown error';
 	}
 	else {
 		type = 'success'
