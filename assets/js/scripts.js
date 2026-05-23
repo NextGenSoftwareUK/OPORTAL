@@ -601,7 +601,7 @@ function addAuthPopup(login, msg, e) {
 		div.innerHTML = alert;
 		target.parentNode.insertBefore(div, target)	
 		console.log(type)
-		e.preventDefault()
+		//e.preventDefault()
 }
 
 function onLogin() {
