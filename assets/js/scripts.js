@@ -630,7 +630,7 @@ function onLogin() {
 		200 === e.status
 			? ((t = await e.json()), addAuthPopup(true, t, e))
 			: ((submitBtn.classList.add('error')), (t = await e.json()), addAuthPopup(true, t, e)),
-			//window.location.reload();
+			window.location.reload();
 	})();
 }
 
