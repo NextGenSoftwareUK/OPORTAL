@@ -590,7 +590,7 @@ function addAuthPopup(login, msg, e) {
 		localStorage.setItem('avatar', JSON.stringify(msg.result.result));
 		localStorage.setItem('loggedIn', true)
 		//Reloads page after 5sec
-		setTimeout(()=>window.location.reload(), 5000)
+		//setTimeout(()=>window.location.reload(), 5000)
 	}
 	login ? formId = 'login-form' : formId = 'signup-form'
 		// Create popup element
