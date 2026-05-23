@@ -538,9 +538,11 @@ jQuery(document).ready(function ($) {
 	});
 });
 function setup() {
-  var user;
-  if (localStorage.getItem('avatar'))
-    user = JSON.parse(localStorage.getItem('avatar'))
+const avatarRaw = localStorage.getItem('avatar');
+if (avatarRaw && avatarRaw !== 'undefined') {
+    user = JSON.parse(avatarRaw);
+}
+  
   var loginDiv = document.querySelector('[data-display="loggedIn"]')
   var avatarDiv = document.querySelector('.nav__item--account')
   var icon = document.getElementsByClassName('avatar')[0]
@@ -579,6 +581,7 @@ function addAuthPopup(login, msg, e) {
 	}
 	else {
 		type = 'success'
+    console.log("msg=", msg);
 		localStorage.setItem('avatar', JSON.stringify(msg.avatar));
 		localStorage.setItem('loggedIn', true)
 		//Reloads page after 5sec
