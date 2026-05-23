@@ -691,17 +691,26 @@ function onSignup() {
   if (acceptTerms && !acceptTerms.checked) 
   {
     //alert("You must accept the terms and conditions.");
-    var formId = 'signup-form';
-		// Create popup element
-		let target = document.getElementById(formId)
-		var div = document.createElement('div');
-		div.classList.add('alert')
-		div.classList.add('error')
-    div.style.marginTop = '10px'
-		div.innerHTML = "You must accept the terms and conditions.";
-		//target.parentNode.insertBefore(div, target);
-    //target.insertAdjacentElement('afterend', div); 
-    target.appendChild(div);
+    var signUpError = document.getElementById("signup-error");
+    
+    if (signUpError == null)
+    {
+      var formId = 'signup-form';
+      // Create popup element
+      let target = document.getElementById(formId)
+      var div = document.createElement('div');
+      div.id = "signup-error";
+      div.classList.add('alert')
+      div.classList.add('error')
+      div.style.marginTop = '10px'
+      div.innerHTML = "You must accept the terms and conditions.";
+      //target.parentNode.insertBefore(div, target);
+      //target.insertAdjacentElement('afterend', div); 
+      target.appendChild(div);
+    }
+else
+  signUpError.innerHTML = "You must accept the terms and conditions.";
+
     return;
   }
 
