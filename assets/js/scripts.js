@@ -687,12 +687,10 @@ function onSignup() {
 	// Get button and change it when pressed
 
   var acceptTerms = document.getElementById("acceptTerms");
+  var signUpError = document.getElementById("signup-error");
 
   if (acceptTerms && !acceptTerms.checked) 
-  {
-    //alert("You must accept the terms and conditions.");
-    var signUpError = document.getElementById("signup-error");
-    
+  { 
     if (signUpError == null)
     {
       var formId = 'signup-form';
@@ -713,6 +711,9 @@ else
 
     return;
   }
+
+  if (signUpError != null)
+    signUpError.style.display = 'none';
 
   const submitBtn = document.getElementById('signup-submit')
 	submitBtn.innerHTML = 'loading... <img width="20px" src="assets/img/loading.gif"/>'
