@@ -573,6 +573,8 @@ if (avatarRaw && avatarRaw !== 'undefined') {
 function addAuthPopup(login, msg, e) {
 	// Get and remove previous pop ups
 	var prev = document.getElementsByClassName('alert')[0]
+  console.log("prev=", prev);
+
 	if (prev)prev.remove()
 	console.log(msg)
 	var formId;
@@ -588,10 +590,18 @@ function addAuthPopup(login, msg, e) {
     console.log("msg=", msg);
     console.log("msg.result=", msg.result);
     console.log("msg.result.result=", msg.result.result);
-		localStorage.setItem('avatar', JSON.stringify(msg.result.result));
-		localStorage.setItem('loggedIn', true)
-		//Reloads page after 5sec
-		//setTimeout(()=>window.location.reload(), 5000)
+
+    if (login)
+    {
+      localStorage.setItem('avatar', JSON.stringify(msg.result.result));
+      localStorage.setItem('loggedIn', true)
+      window.location.reload();
+
+      //Reloads page after 5sec
+      //setTimeout(()=>window.location.reload(), 5000)
+    }
+    else
+        alert = msg.result.message;
 	}
 
 
@@ -602,18 +612,30 @@ function addAuthPopup(login, msg, e) {
   // document.getElementById('login-error').innerHTML = alert;
   // document.getElementById('login-error').style.display = 'block';
 
-	login ? formId = 'login-form' : formId = 'signup-form'
+  var errorId = login ? "login-error" : "signup-error";
+  var divError = document.getElementById(errorId);
+
+  if (divError) 
+  {
+	  login ? formId = 'login-form' : formId = 'signup-form'
 		// Create popup element
 		let target = document.getElementById(formId)
 		var div = document.createElement('div');
-		div.classList.add('alert')
+		div.id = errorId;
+    div.classList.add('alert')
 		div.classList.add(type)
     div.style.marginTop = '10px'
 		div.innerHTML = alert;
 		//target.parentNode.insertBefore(div, target);
     //target.insertAdjacentElement('afterend', div); 
     target.appendChild(div);
-
+  }
+  else
+  {
+      divError.innerHTML = alert;
+      //divError.classList.remove('success');
+      //divError.classList.add('error');
+    }
 		//console.log(type)
 		//e.preventDefault()
 }
