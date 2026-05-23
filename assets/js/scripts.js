@@ -593,6 +593,11 @@ function addAuthPopup(login, msg, e) {
 		//setTimeout(()=>window.location.reload(), 5000)
 	}
 
+
+  console.log("login-error=", document.getElementById('login-error'));
+  console.log("login-error.style=", document.getElementById('login-error').style);
+  console.log("login-error.style.display=", document.getElementById('login-error').style.display);
+
   document.getElementById('login-error').innerHTML = alert;
   document.getElementById('login-error').style.display = 'block';
 
