@@ -682,9 +682,30 @@ async function onLogout() {
 	localStorage.setItem('loggedIn', false)
 	window.location.reload()
 }
+
 function onSignup() {
 	// Get button and change it when pressed
-	const submitBtn = document.getElementById('signup-submit')
+
+  var acceptTerms = document.getElementById("acceptTerms");
+
+  if (acceptTerms && !acceptTerms.checked) 
+  {
+    //alert("You must accept the terms and conditions.");
+    var formId = 'signup-form';
+		// Create popup element
+		let target = document.getElementById(formId)
+		var div = document.createElement('div');
+		div.classList.add('alert')
+		div.classList.add('error')
+    div.style.marginTop = '10px'
+		div.innerHTML = "You must accept the terms and conditions.";
+		//target.parentNode.insertBefore(div, target);
+    //target.insertAdjacentElement('afterend', div); 
+    target.appendChild(div);
+    return;
+  }
+
+  const submitBtn = document.getElementById('signup-submit')
 	submitBtn.innerHTML = 'loading... <img width="20px" src="assets/img/loading.gif"/>'
 	submitBtn.disabled = true
 	let n = {
