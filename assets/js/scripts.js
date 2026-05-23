@@ -599,7 +599,8 @@ function addAuthPopup(login, msg, e) {
 		div.classList.add('alert')
 		div.classList.add(type)
 		div.innerHTML = alert;
-		target.parentNode.insertBefore(div, target)	
+		//target.parentNode.insertBefore(div, target);
+    target.parentNode.insertAfter(div, target);
 		//console.log(type)
 		//e.preventDefault()
 }
