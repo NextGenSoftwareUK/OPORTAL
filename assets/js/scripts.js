@@ -554,9 +554,9 @@ if (avatarRaw && avatarRaw !== 'undefined') {
     guest_links.style.display = "none"
     avatarDiv.classList.add('loggedin')
     
-    if (user && user.username) {   
+    if (user && user.username) 
       username.innerHTML = user.username
-      
+
     icon.src='assets/img/loggedin.png'
   }
 
