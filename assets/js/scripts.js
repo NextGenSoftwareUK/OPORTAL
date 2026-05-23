@@ -615,6 +615,8 @@ function addAuthPopup(login, msg, e) {
   var errorId = login ? "login-error" : "signup-error";
   var divError = document.getElementById(errorId);
 
+  console.log("divError=", divError);
+
   if (divError) 
   {
 	  login ? formId = 'login-form' : formId = 'signup-form'
@@ -745,7 +747,7 @@ else
   }
 
   const submitBtn = document.getElementById('signup-submit')
-	submitBtn.innerHTML = 'loading... <img width="20px" src="assets/img/loading.gif"/>'
+	submitBtn.innerHTML = 'Processing... <img width="20px" src="assets/img/loading.gif"/>'
 	submitBtn.disabled = true
 	let n = {
 		firstName: document.getElementById('signup-first-name').value,
