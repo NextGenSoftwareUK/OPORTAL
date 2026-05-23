@@ -607,6 +607,7 @@ function addAuthPopup(login, msg, e) {
 		var div = document.createElement('div');
 		div.classList.add('alert')
 		div.classList.add(type)
+    div.style.marginTop = '10px'
 		div.innerHTML = alert;
 		//target.parentNode.insertBefore(div, target);
     //target.insertAdjacentElement('afterend', div); 
