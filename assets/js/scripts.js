@@ -555,7 +555,7 @@ if (avatarRaw && avatarRaw !== 'undefined') {
     avatarDiv.classList.add('loggedin')
     
     if (username) 
-      username.innerHTML = user.username
+      username.innerHTML = username
 
     icon.src='assets/img/loggedin.png'
   }
