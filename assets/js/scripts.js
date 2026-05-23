@@ -747,7 +747,7 @@ else
   }
 
   const submitBtn = document.getElementById('signup-submit')
-	submitBtn.innerHTML = 'Processing... <img width="20px" src="assets/img/loading.gif"/>'
+	submitBtn.innerHTML = 'Loading... <img width="20px" src="assets/img/loading.gif"/>'
 	submitBtn.disabled = true
 	let n = {
 		firstName: document.getElementById('signup-first-name').value,
