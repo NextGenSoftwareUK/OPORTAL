@@ -553,7 +553,10 @@ if (avatarRaw && avatarRaw !== 'undefined') {
     var username = document.getElementById("username")
     guest_links.style.display = "none"
     avatarDiv.classList.add('loggedin')
-    username.innerHTML = user.username
+    
+    if (user && user.username) {   
+      username.innerHTML = user.username
+      
     icon.src='assets/img/loggedin.png'
   }
 
