@@ -418,27 +418,26 @@
       </div>
       <div>
         <label class="form-label required" for="confirm-signup-password" style="white-space:nowrap;">Confirm Password</label>
-      <div class="modal__block js-modal-block" data-type="forgot">
-        <form id="forgot-form" class="margin-bottom-sm" role="alertdialog">
-          <div class="text-component text-center margin-bottom-lg">
-            <h1 class="font-normal">Recover Password</h1>
-            <p class="color-contrast-medium">Enter your email address and we'll send you a link to reset your password
-            </p>
-          </div>
-          <div class="margin-bottom-xl">
-            <label class="form-label padding-top-sm" for="email">Email</label>
-            <input aria-label="Email" id="forgotEmail" class="form-control width-100%" type="email" name="email"
-              placeholder=" ">
-          </div>
-          <div class="flex flex-center margin-y-md">
-            <input aria-label="Submit" id="reset-submit" class="btn btn--md btn--primary width-50%" type="submit"
-              value="Submit" onclick="something()">
-          </div>
-          <div class="text-center">
-            <a class="js-modal-trigger" data-signin="login" href="#0">← Back to login</a>
-          </div>
-        </form>
+        <input aria-label="Confirm password" class="form-control width-100%" type="password" name="confirm-signup-password" id="confirm-signup-password" placeholder=" " minlength="6" required>
       </div>
+    </div>
+
+    <!-- Terms -->
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+      <input aria-label="Accept terms" class="checkbox" type="checkbox" value="true" name="acceptTerms" id="acceptTerms">
+      <label class="color-contrast-medium" for="acceptTerms">
+        I have read and accept the <a href="#0">Terms of Service</a>
+      </label>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex flex-center">
+      <input type="hidden" value="User" name="AvatarType" id="AvatarType">
+      <button aria-label="Submit" id="signup-submit" class="btn btn--md btn--primary width-50%" type="submit" form="signup-form" onclick="onSignup()">Submit</button>
+    </div>
+
+  </form>
+</div>
       <div class="modal__block js-modal-block" data-type="reset">
         <form id="reset-form" class="margin-bottom-sm" role="alertdialog">
           <div class="text-component text-center margin-bottom-lg">
