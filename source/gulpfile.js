@@ -83,14 +83,14 @@ gulp.task('browserSync', gulp.series(function (done) {
 }));
 
 gulp.task('watch', gulp.series(['browserSync', 'sass','scripts'], function () {
-  gulp.watch('main/*.html', gulp.series(reload));
+  gulp.watch('main/**/*.html', gulp.series(reload));
   gulp.watch('main/assets/css/**/*.scss', gulp.series(['sass']));
   gulp.watch(componentsJsPath, gulp.series(['scripts']));
 }));
 
 /* Gulp watch-ie task */
 gulp.task('watch-ie', gulp.series(['browserSync', 'sass-ie'], function () {
-  gulp.watch('main/*.html', gulp.series(reload));
+  gulp.watch('main/**/*.html', gulp.series(reload));
   gulp.watch('main/assets/css/**/*.scss', gulp.series(['sass-ie']));
   gulp.watch(componentsJsPath, gulp.series(['scripts']));
 }));
@@ -112,6 +112,8 @@ gulp.task('dist', async function () {
   await moveJS();
   // copy all the assets inside main/assets/img folder to the dist folder
   await moveAssets();
+  // copy the site favicon to the dist folder
+  await moveFavicon();
   // copy all html files inside main folder to the dist folder
   await moveContent();
 
@@ -122,7 +124,7 @@ function purgeCSS() {
   return new Promise(function (resolve, reject) {
     var stream = gulp.src(cssFolder + '/style.css')
       .pipe(purgecss({
-        content: ['main/*.html'],
+        content: ['main/**/*.html'],
         safelist: ['.is-hidden', '.is-visible'],
         defaultExtractor: content => content.match(/[\w-/:%@]+(?<!:)/g) || []
       }))
@@ -174,9 +176,22 @@ function moveAssets() {
   });
 };
 
+function moveFavicon() {
+  return new Promise(function (resolve, reject) {
+    var stream = gulp.src('main/favicon.svg', {
+        allowEmpty: true
+      })
+      .pipe(gulp.dest(distFolder));
+
+    stream.on('finish', function () {
+      resolve();
+    });
+  });
+};
+
 function moveContent() {
   return new Promise(function (resolve, reject) {
-    var stream = gulp.src('main/*.html')
+    var stream = gulp.src('main/**/*.html')
       .pipe(gulp.dest(distFolder));
 
     stream.on('finish', function () {
