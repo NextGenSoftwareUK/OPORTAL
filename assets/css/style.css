@@ -957,6 +957,12 @@ body {
   transition: all 0.2s ease
 }
 
+.top-nav .nav__list .nav__item a,
+.top-nav .nav__item--account > a,
+.top-nav .nav-trigger {
+  position: relative;
+}
+
 /* Auth Icon Dropdown section */
 
 /*Dropdown Animation keyframes */
@@ -979,6 +985,14 @@ body {
   filter: drop-shadow(0 0 10px var(--interactive-glow))
 }
 
+.top-nav .nav__list .nav__item a:hover,
+.top-nav .nav__list .nav__item a:focus-visible {
+  color: var(--color-2);
+  text-shadow: 0 0 14px var(--interactive-glow-strong);
+  filter: drop-shadow(0 0 12px var(--interactive-glow));
+  transform: translateY(-1px)
+}
+
 .nav__item--account {
   position: relative;
 }
@@ -991,6 +1005,11 @@ body {
   text-align: center;
   filter: brightness(0) invert(1);
   width: 2em
+}
+
+.top-nav .nav__item--account > a:hover img,
+.top-nav .nav__item--account > a:focus-visible img {
+  filter: brightness(0) invert(1) drop-shadow(0 0 10px var(--interactive-glow-strong));
 }
 
 .nav__item--account.loggedin:hover .nav__sub-list {
@@ -1048,7 +1067,9 @@ body {
   width: 32px;
   height: var(--header-height);
   margin-right: var(--space-sm);
-  margin-left: var(--space-sm)
+  margin-left: var(--space-sm);
+  border-radius: 999px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease
 }
 
 @media (min-width: 48rem) {
@@ -1092,6 +1113,13 @@ body {
   background: var(--color-2);
   box-shadow: 0 0 12px var(--interactive-glow-strong);
   filter: drop-shadow(0 0 10px var(--interactive-glow))
+}
+
+.nav-trigger:hover,
+.nav-trigger:focus-visible {
+  box-shadow: 0 0 0 1px var(--interactive-glow-strong), 0 0 18px var(--interactive-glow);
+  background-color: rgba(155, 226, 255, 0.06);
+  transform: translateY(-1px)
 }
 
 .nav-trigger span::before {
