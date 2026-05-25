@@ -990,7 +990,7 @@ body {
   color: var(--color-2);
   text-shadow: 0 0 14px var(--interactive-glow-strong);
   filter: drop-shadow(0 0 12px var(--interactive-glow));
-  transform: translateY(-1px)
+  transform: none
 }
 
 .nav__item--account {
@@ -1119,7 +1119,7 @@ body {
 .nav-trigger:focus-visible {
   box-shadow: none;
   background-color: transparent;
-  transform: translateY(-1px)
+  transform: none
 }
 
 .nav-trigger span::before {
