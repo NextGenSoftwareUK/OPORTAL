@@ -713,8 +713,8 @@ a:focus-visible,
 .side-nav a:focus-visible,
 .js-modal-trigger:hover,
 .js-modal-trigger:focus-visible {
-  text-shadow: 0 0 10px var(--interactive-glow-strong);
-  filter: drop-shadow(0 0 10px var(--interactive-glow))
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 12px rgba(155, 226, 255, 0.95), 0 0 22px rgba(107, 208, 255, 0.7);
+  filter: drop-shadow(0 0 10px rgba(155, 226, 255, 0.85)) drop-shadow(0 0 16px rgba(107, 208, 255, 0.55))
 }
 
 button:hover,
@@ -988,8 +988,8 @@ body {
 .top-nav .nav__list .nav__item a:hover,
 .top-nav .nav__list .nav__item a:focus-visible {
   color: var(--color-2);
-  text-shadow: 0 0 14px var(--interactive-glow-strong);
-  filter: drop-shadow(0 0 12px var(--interactive-glow));
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 14px rgba(155, 226, 255, 0.95), 0 0 26px rgba(107, 208, 255, 0.75);
+  filter: drop-shadow(0 0 12px rgba(155, 226, 255, 0.85)) drop-shadow(0 0 18px rgba(107, 208, 255, 0.55));
   transform: none
 }
 
@@ -1635,6 +1635,13 @@ form {
   color: #fff;
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.9), 0 0 24px rgba(255, 255, 255, 0.5);
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.85));
+}
+
+.modal__block .js-modal-trigger:hover,
+.modal__block .js-modal-trigger:focus-visible {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 14px rgba(155, 226, 255, 1), 0 0 28px rgba(107, 208, 255, 0.85);
+  filter: drop-shadow(0 0 12px rgba(155, 226, 255, 0.95)) drop-shadow(0 0 20px rgba(107, 208, 255, 0.65));
 }
 
 @media (min-width: 48rem) {
