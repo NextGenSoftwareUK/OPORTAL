@@ -17,7 +17,24 @@
   <text x="50" y="62" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#ffffff" text-anchor="middle">O</text>
 </svg> -->
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <rect width="100" height="100" rx="12" fill="#0d0d0d"/>
   <circle cx="50" cy="50" r="32" fill="none" stroke="#ffffff" stroke-width="14"/>
+</svg> -->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="100" height="100" rx="12" fill="#0d0d0d"/>
+  <circle cx="50" cy="50" r="32" fill="none" stroke="#003080" stroke-width="16" filter="url(#glow)"/>
+  <circle cx="50" cy="50" r="32" fill="none" stroke="#0066ff" stroke-width="8" filter="url(#glow)"/>
+  <circle cx="50" cy="50" r="32" fill="none" stroke="#66aaff" stroke-width="3" filter="url(#glow)"/>
 </svg>
