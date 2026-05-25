@@ -987,9 +987,9 @@ body {
 
 .top-nav .nav__list .nav__item a:hover,
 .top-nav .nav__list .nav__item a:focus-visible {
-  color: var(--color-2);
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 14px rgba(155, 226, 255, 0.95), 0 0 26px rgba(107, 208, 255, 0.75);
-  filter: drop-shadow(0 0 12px rgba(155, 226, 255, 0.85)) drop-shadow(0 0 18px rgba(107, 208, 255, 0.55));
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 14px rgba(155, 226, 255, 1), 0 0 28px rgba(107, 208, 255, 0.85);
+  filter: drop-shadow(0 0 12px rgba(155, 226, 255, 0.95)) drop-shadow(0 0 20px rgba(107, 208, 255, 0.65));
   transform: none
 }
 
@@ -1639,6 +1639,15 @@ form {
 
 .modal__block .js-modal-trigger:hover,
 .modal__block .js-modal-trigger:focus-visible {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 14px rgba(155, 226, 255, 1), 0 0 28px rgba(107, 208, 255, 0.85);
+  filter: drop-shadow(0 0 12px rgba(155, 226, 255, 0.95)) drop-shadow(0 0 20px rgba(107, 208, 255, 0.65));
+}
+
+#signup-form a[href="#0"]:hover,
+#signup-form a[href="#0"]:focus-visible,
+#login-form a[href="#0"]:hover,
+#login-form a[href="#0"]:focus-visible {
   color: #ffffff;
   text-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 14px rgba(155, 226, 255, 1), 0 0 28px rgba(107, 208, 255, 0.85);
   filter: drop-shadow(0 0 12px rgba(155, 226, 255, 0.95)) drop-shadow(0 0 20px rgba(107, 208, 255, 0.65));
