@@ -145,6 +145,19 @@
         background: linear-gradient(135deg, #9be2ff 0%, #63cdf8 100%);
         box-shadow: 0 18px 34px rgba(54, 164, 218, 0.24);
         cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 0 1px rgba(155, 226, 255, 0.35), 0 22px 42px rgba(99, 205, 248, 0.34),
+          0 0 26px rgba(107, 208, 255, 0.22);
+        filter: brightness(1.05);
+      }
+
+      .button:focus-visible {
+        outline: 2px solid rgba(155, 226, 255, 0.65);
+        outline-offset: 3px;
       }
 
       .button--ghost {
@@ -228,10 +241,10 @@
               <input id="confirmNewPassword" name="confirmNewPassword" type="password" minlength="6" autocomplete="new-password" required />
             </div>
           </div>
-          <div class="actions">
-            <button id="reset-submit" class="button" type="submit">Reset Password</button>
-            <a class="button button--ghost" href="/">Return to portal</a>
-          </div>
+        <div class="actions">
+          <button id="reset-submit" class="button" type="submit">Reset Password</button>
+          <a class="button button--ghost" href="/">Return to portal</a>
+        </div>
         </form>
         <div id="reset-status" class="status-card" aria-live="polite">
           <h2>Ready to reset</h2>
