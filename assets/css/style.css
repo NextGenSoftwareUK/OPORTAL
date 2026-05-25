@@ -776,11 +776,18 @@ button:focus-visible {
 
 .btn--primary:hover {
   background-color: var(--color-primary-dark);
-  box-shadow: 0 0 0 1px var(--interactive-glow-strong), 0 0 12px hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.55), 0 0 24px var(--interactive-glow)
+  box-shadow: 0 0 0 1px rgba(155, 226, 255, 0.95), 0 0 16px rgba(107, 208, 255, 0.9), 0 0 30px rgba(69, 175, 255, 0.55)
 }
 
 .btn--primary:focus {
-  box-shadow: 0px 0px 0px 2px hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.2), 0 0 18px var(--interactive-glow)
+  box-shadow: 0px 0px 0px 2px rgba(155, 226, 255, 0.85), 0 0 18px rgba(107, 208, 255, 0.7)
+}
+
+#login-form .btn--primary:hover,
+#login-form .btn--primary:focus-visible,
+#signup-form .btn--primary:hover,
+#signup-form .btn--primary:focus-visible {
+  box-shadow: 0 0 0 1px rgba(155, 226, 255, 0.95), 0 0 18px rgba(107, 208, 255, 0.95), 0 0 34px rgba(69, 175, 255, 0.6)
 }
 
 .btn--md {
@@ -1110,9 +1117,9 @@ body {
 .nav-trigger:focus-visible span,
 .nav-trigger:focus-visible span::before,
 .nav-trigger:focus-visible span::after {
-  background: var(--color-2);
-  box-shadow: 0 0 12px var(--interactive-glow-strong);
-  filter: drop-shadow(0 0 10px var(--interactive-glow))
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 14px rgba(155, 226, 255, 0.95), 0 0 26px rgba(107, 208, 255, 0.75);
+  filter: drop-shadow(0 0 12px rgba(155, 226, 255, 0.95)) drop-shadow(0 0 20px rgba(107, 208, 255, 0.6))
 }
 
 .nav-trigger:hover,
@@ -1624,8 +1631,8 @@ form {
 
 .side-nav a:hover {
   color: #fff;
-  text-shadow: 0 0 10px var(--interactive-glow-strong);
-  filter: drop-shadow(0 0 10px var(--interactive-glow))
+  text-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 14px rgba(255, 255, 255, 0.95), 0 0 26px rgba(255, 255, 255, 0.55);
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.55))
 }
 
 .side__list .side__item a:hover,
@@ -1633,8 +1640,8 @@ form {
 .side__list .js-nav__login > a:hover,
 .side__list .js-nav__login > a:focus-visible {
   color: #fff;
-  text-shadow: 0 0 14px rgba(255, 255, 255, 0.9), 0 0 24px rgba(255, 255, 255, 0.5);
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.85));
+  text-shadow: 0 0 6px rgba(255, 255, 255, 1), 0 0 14px rgba(255, 255, 255, 0.95), 0 0 28px rgba(255, 255, 255, 0.65);
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
 }
 
 .modal__block .js-modal-trigger:hover,
