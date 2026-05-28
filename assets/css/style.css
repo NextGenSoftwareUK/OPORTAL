@@ -1077,6 +1077,7 @@ body {
   margin-right: var(--space-sm);
   margin-left: var(--space-sm);
   border-radius: 0;
+  cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease
 }
 
