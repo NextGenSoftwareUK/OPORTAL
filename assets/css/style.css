@@ -1666,6 +1666,55 @@ form {
   transition:filter .3s ease;
 }
 
+.status-card {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.status-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.status-card p {
+  margin: 0;
+  color: var(--color-contrast-medium);
+  line-height: 1.65;
+}
+
+.status-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(155, 226, 255, 0.28);
+  border-top-color: #6bd0ff;
+  vertical-align: -2px;
+  animation: spinner-spin 0.8s linear infinite;
+}
+
+@keyframes spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.status-card--loading {
+  border-color: rgba(107, 208, 255, 0.28);
+}
+
+.status-card--success {
+  border-color: rgba(103, 211, 154, 0.35);
+}
+
+.status-card--error {
+  border-color: rgba(255, 141, 141, 0.35);
+}
+
 @media (min-width: 48rem) {
   .side-nav {
     width: var(--sidebar-width);
