@@ -1632,14 +1632,20 @@ form {
 }
 
 .side-nav a:hover {
-  color: #00e5ff;
-  filter:drop-shadow(0 0 8px rgba(0,229,255,1)) drop-shadow(0 0 20px rgba(0,229,255,.8)) drop-shadow(0 0 40px rgba(0,229,255,.4))
+  color: #fff;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 20px rgba(255,255,255,.8)) drop-shadow(0 0 40px rgba(255,255,255,.4))
 }
 
-.side__list .side__item a:hover,
-.side__list .side__item a:focus-visible,
+.side__list .side__item > a:hover,
+.side__list .side__item > a:focus-visible,
 .side__list .js-nav__login > a:hover,
 .side__list .js-nav__login > a:focus-visible {
+  color: #fff;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 20px rgba(255,255,255,.8)) drop-shadow(0 0 40px rgba(255,255,255,.4))
+}
+
+.side__list .sub-menu a:hover,
+.side__list .sub-menu a:focus-visible {
   color: #00e5ff;
   filter:drop-shadow(0 0 8px rgba(0,229,255,1)) drop-shadow(0 0 20px rgba(0,229,255,.8)) drop-shadow(0 0 40px rgba(0,229,255,.4))
 }
