@@ -1685,6 +1685,13 @@ form {
   line-height: 1.65;
 }
 
+.status-loading-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
 .status-spinner {
   display: inline-block;
   width: 14px;

@@ -25,8 +25,11 @@
     var badgeClass = state ? 'status-card status-card--' + state : 'status-card';
     var messageHtml = escapeHtml(message || '');
     if (state === 'loading') {
-      messageHtml +=
-        ' <span class="status-spinner" aria-hidden="true"></span>';
+      messageHtml =
+        '<span class="status-loading-line">' +
+        '<span class="status-loading-text">' + escapeHtml(message || '') + '</span>' +
+        '<span class="status-spinner" aria-hidden="true"></span>' +
+        '</span>';
     }
     panel.className = badgeClass;
     panel.innerHTML =
@@ -91,7 +94,7 @@
         return;
       }
 
-      setPanel(statusPanel, 'loading', 'Sending link', 'Requesting a password reset email...');
+      setPanel(statusPanel, 'loading', 'Sending link', 'Sending reset link...');
       setButtonState(button, 'Sending...', true);
 
       var response = await postJson('/api/avatar/forgot-password', { email: email });
@@ -143,7 +146,7 @@
         return;
       }
 
-      setPanel(statusPanel, 'loading', 'Resetting password', 'Updating your account now...');
+      setPanel(statusPanel, 'loading', 'Resetting password', 'Updating password...');
       setButtonState(button, 'Resetting...', true);
 
       var response = await postJson('/api/avatar/reset-password', {
@@ -180,7 +183,7 @@
       return;
     }
 
-    setPanel(panel, 'loading', 'Verifying email', 'Checking your email verification token...');
+    setPanel(panel, 'loading', 'Verifying email', 'Verifying token...');
 
     var response = await postJson('/api/avatar/verify-email', { token: token });
     var data = await readResponse(response);
