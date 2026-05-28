@@ -1688,7 +1688,7 @@ form {
 .status-loading-line {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   white-space: nowrap;
 }
 
@@ -1696,7 +1696,6 @@ form {
   display: inline-block;
   width: 14px;
   height: 14px;
-  margin-left: 10px;
   border-radius: 50%;
   border: 2px solid rgba(155, 226, 255, 0.28);
   border-top-color: #6bd0ff;

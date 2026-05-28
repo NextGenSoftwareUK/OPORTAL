@@ -101,6 +101,7 @@
       var data = await readResponse(response);
 
       if (response.ok) {
+        form.style.display = 'none';
         setPanel(
           statusPanel,
           'success',
