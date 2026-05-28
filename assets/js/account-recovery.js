@@ -94,7 +94,7 @@
         return;
       }
 
-      setPanel(statusPanel, 'loading', 'Sending link', 'Sending reset link...');
+      setPanel(statusPanel, 'loading', 'Sending link', 'Sending link...');
       setButtonState(button, 'Sending...', true);
 
       var response = await postJson('/api/avatar/forgot-password', { email: email });
