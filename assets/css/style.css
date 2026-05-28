@@ -1648,16 +1648,18 @@ form {
 
 .modal__block .js-modal-trigger:hover,
 .modal__block .js-modal-trigger:focus-visible {
-  color: var(--color-2);
-  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.65)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.35)) drop-shadow(0 0 26px rgba(0, 229, 255, 0.18));
+  color: #00e5ff;
+  filter:drop-shadow(0 0 8px rgba(0,229,255,1)) drop-shadow(0 0 20px rgba(0,229,255,.8)) drop-shadow(0 0 40px rgba(0,229,255,.4));
+  transition:filter .3s ease;
 }
 
 #signup-form a[href="#0"]:hover,
 #signup-form a[href="#0"]:focus-visible,
 #login-form a[href="#0"]:hover,
 #login-form a[href="#0"]:focus-visible {
-  color: var(--color-2);
-  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.65)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.35)) drop-shadow(0 0 26px rgba(0, 229, 255, 0.18));
+  color: #00e5ff;
+  filter:drop-shadow(0 0 8px rgba(0,229,255,1)) drop-shadow(0 0 20px rgba(0,229,255,.8)) drop-shadow(0 0 40px rgba(0,229,255,.4));
+  transition:filter .3s ease;
 }
 
 @media (min-width: 48rem) {
