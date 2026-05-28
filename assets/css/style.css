@@ -1659,6 +1659,8 @@ form {
 
 #signup-form a[href="#0"]:hover,
 #signup-form a[href="#0"]:focus-visible,
+#signup-form a[href="TermsOfService.html"]:hover,
+#signup-form a[href="TermsOfService.html"]:focus-visible,
 #login-form a[href="#0"]:hover,
 #login-form a[href="#0"]:focus-visible {
   color: #00e5ff;
