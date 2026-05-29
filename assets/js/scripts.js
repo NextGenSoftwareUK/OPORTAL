@@ -1,5 +1,5 @@
 // File: util.js
-var API_BASE = window.apiUrl || window.API_BASE || 'https://oasisapionode-hseudrexdvbhenhv.canadacentral-01.azurewebsites.net';
+var c = window.API_BASE;
 
 function Util() {};
 
@@ -542,6 +542,7 @@ function setup() {
 const avatarRaw = localStorage.getItem('avatar');
 if (avatarRaw && avatarRaw !== 'undefined') {
     user = JSON.parse(avatarRaw);
+    console.log("username=", user);
 }
   
   var loginDiv = document.querySelector('[data-display="loggedIn"]')
@@ -556,7 +557,7 @@ if (avatarRaw && avatarRaw !== 'undefined') {
     avatarDiv.classList.add('loggedin')
     
     if (username) 
-      username.innerHTML = username
+      username.innerHTML = user;//username
 
     icon.src='assets/img/loggedin.png'
   }
