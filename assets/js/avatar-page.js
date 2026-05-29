@@ -30,12 +30,58 @@
   }
 
   function getDisplayName(profile) {
-    var parts = [profile && profile.title, profile && profile.firstName, profile && profile.lastName]
+    var title = pickValue(profile, ['title', 'Title']);
+    var firstName = pickValue(profile, ['firstName', 'FirstName']);
+    var lastName = pickValue(profile, ['lastName', 'LastName']);
+    var parts = [title, firstName, lastName]
       .filter(Boolean)
       .join(' ')
       .trim();
     if (parts) return parts;
-    return (profile && profile.username) || 'Avatar';
+    return pickValue(profile, ['username', 'userName', 'UserName']) || 'Avatar';
+  }
+
+  function pickValue(source, keys) {
+    if (!source) return '';
+
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      var value = source[key];
+      if (value == null || value === '') continue;
+
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        return String(value);
+      }
+
+      if (typeof value === 'object') {
+        var nestedKeys = ['value', 'name', 'title', 'label', 'text', 'displayName', 'code'];
+        for (var j = 0; j < nestedKeys.length; j++) {
+          var nestedValue = value[nestedKeys[j]];
+          if (nestedValue != null && nestedValue !== '') {
+            return String(nestedValue);
+          }
+        }
+
+        if (Array.isArray(value) && value.length) {
+          return String(value[0]);
+        }
+
+        try {
+          var serialized = JSON.stringify(value);
+          if (serialized && serialized !== '{}' && serialized !== '[]') {
+            return serialized;
+          }
+        } catch (error) {}
+      }
+    }
+
+    return '';
+  }
+
+  function setFieldText(selector, value) {
+    var el = document.querySelector(selector);
+    if (!el) return;
+    el.textContent = value || 'Not set';
   }
 
   function setStatus(state, title, message) {
@@ -75,14 +121,15 @@
   }
 
   function populate(profile) {
-    var displayName = getDisplayName(profile);
-    var username = profile && profile.username ? profile.username : '';
-    var email = profile && profile.email ? profile.email : '';
-    var avatarType = profile && (profile.avatarType || profile.AvatarType) ? (profile.avatarType || profile.AvatarType) : 'User';
-    var title = profile && profile.title ? profile.title : '';
-    var firstName = profile && profile.firstName ? profile.firstName : '';
-    var lastName = profile && profile.lastName ? profile.lastName : '';
-    var address = profile && profile.address ? profile.address : '';
+    var normalized = profile || {};
+    var displayName = getDisplayName(normalized);
+    var username = pickValue(normalized, ['username', 'userName', 'UserName']);
+    var email = pickValue(normalized, ['email', 'Email']);
+    var avatarType = pickValue(normalized, ['avatarType', 'AvatarType']) || 'User';
+    var title = pickValue(normalized, ['title', 'Title']);
+    var firstName = pickValue(normalized, ['firstName', 'FirstName']);
+    var lastName = pickValue(normalized, ['lastName', 'LastName']);
+    var address = pickValue(normalized, ['address', 'Address']);
 
     var avatarImage = getById('avatar-image');
     if (avatarImage) {
@@ -93,23 +140,18 @@
     var nameEls = document.querySelectorAll('[data-avatar-field="displayName"]');
     nameEls.forEach(function (el) { el.textContent = displayName || 'Avatar'; });
 
-    var setText = function (selector, value) {
-      var el = document.querySelector(selector);
-      if (el) el.textContent = value || 'Not set';
-    };
-
-    setText('[data-avatar-field="username"]', username);
-    setText('[data-avatar-field="email"]', email);
-    setText('[data-avatar-field="avatarType"]', avatarType);
-    setText('[data-avatar-field="title"]', title);
-    setText('[data-avatar-field="firstName"]', firstName);
-    setText('[data-avatar-field="lastName"]', lastName);
-    setText('[data-avatar-field="address"]', address);
+    setFieldText('[data-avatar-field="username"]', username);
+    setFieldText('[data-avatar-field="email"]', email);
+    setFieldText('[data-avatar-field="avatarType"]', avatarType);
+    setFieldText('[data-avatar-field="title"]', title);
+    setFieldText('[data-avatar-field="firstName"]', firstName);
+    setFieldText('[data-avatar-field="lastName"]', lastName);
+    setFieldText('[data-avatar-field="address"]', address);
 
     var fields = ['title', 'firstName', 'lastName', 'username', 'email', 'address'];
     fields.forEach(function (field) {
       var input = getById('avatar-' + field);
-      if (input) input.value = profile && profile[field] ? profile[field] : '';
+      if (input) input.value = pickValue(normalized, [field, field.charAt(0).toUpperCase() + field.slice(1)]);
     });
   }
 
