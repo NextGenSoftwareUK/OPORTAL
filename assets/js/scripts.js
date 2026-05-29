@@ -1,5 +1,5 @@
 // File: util.js
-var API_BASE = window.API_BASE;
+var API_BASE = window.apiUrl || window.API_BASE || 'https://oasisapionode-hseudrexdvbhenhv.canadacentral-01.azurewebsites.net';
 
 function Util() {};
 
