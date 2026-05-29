@@ -538,6 +538,7 @@ jQuery(document).ready(function ($) {
 		$(this).toggleClass('submenu-open').next('.sub-menu').slideToggle(300).end().parent('.item--has-children').siblings('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').slideUp(300);
 	});
 });
+
 function setup() {
 const avatarRaw = localStorage.getItem('avatar');
 if (avatarRaw && avatarRaw !== 'undefined') {
