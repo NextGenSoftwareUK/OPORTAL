@@ -500,55 +500,54 @@ function toggleClass(el, className, bool) {
 }());
 // File#: _2_menu
 
-jQuery(document).ready(function ($) {
-	var $menu_trigger = $('.js-nav-trigger'),
-		$body = $('body'),
-		$navigation = $('.side-nav');
+(function () {
+  if (window.__portalMenuBound) return;
+  window.__portalMenuBound = true;
 
-	//open-close lateral menu clicking on the menu icon
-	$menu_trigger.on('click', function (event) {
-		event.preventDefault();
+  function closeAllMenus() {
+    $('.js-nav-trigger').removeClass('is-clicked');
+    $('.side-nav').removeClass('is-visible');
+    $('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').delay(300).slideUp();
+  }
 
-		// TODO : menu no longer closes when clicking outside it
+  $(document).on('click.portalMenu', '.js-nav-trigger', function (event) {
+    event.preventDefault();
+    $('.js-nav-trigger').toggleClass('is-clicked');
+    $('.side-nav').toggleClass('is-visible');
+    $('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').delay(300).slideUp();
+  });
 
-		$menu_trigger.toggleClass('is-clicked');
-		$navigation.toggleClass('is-visible');
-		$('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').delay(300).slideUp();
-		// $body.toggleClass('is-visible').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
-		// firefox transitions break when parent overflow is changed, so we need to wait for the end of the trasition to give the body an overflow hidden
-		// $('.side-nav').toggleClass('is-visible');
+  $(document).on('click.portalMenu', '.side-nav .item--has-children > a', function (event) {
+    event.preventDefault();
+    $(this)
+      .toggleClass('submenu-open')
+      .next('.sub-menu')
+      .slideToggle(300)
+      .end()
+      .parent('.item--has-children')
+      .siblings('.item--has-children')
+      .children('a')
+      .removeClass('submenu-open')
+      .next('.sub-menu')
+      .slideUp(300);
+  });
 
-		//check if transitions are not supported - i.e. in IE9
-		// if ($('html').hasClass('no-csstransitions')) {
-		// }
-	});
+  $('body').on('click.portalMenu', function (event) {
+    if ($(event.target).closest('.side-nav, .js-nav-trigger').length === 0) {
+      closeAllMenus();
+    }
+  });
 
-	//close lateral menu clicking outside the menu itself
-	$body.on('click', function (event) {
-		// event.preventDefault();
-		if ($(event.target).is($body) || ($(event.which).is('27'))) {
-			$menu_trigger.removeClass('is-clicked'),
-				$navigation.removeClass('is-visible'),
-				$('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').delay(300).slideUp();
-		};
-	});
+  $('body').on('keydown.portalMenu', function (event) {
+    if (event.key === 'Escape') {
+      closeAllMenus();
+    }
+  });
 
-	$body.on('keydown', function (event) {
-		// event.preventDefault();
-		if (event.key === "Escape") {
-			$menu_trigger.removeClass('is-clicked');
-			$navigation.removeClass('is-visible');
-			$('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').delay(300).slideUp();
-		}
-
-	});
-
-	//open (or close) submenu items in the lateral menu. Close all the other open submenu items.
-	$('.item--has-children').children('a').on('click', function (event) {
-		event.preventDefault();
-		$(this).toggleClass('submenu-open').next('.sub-menu').slideToggle(300).end().parent('.item--has-children').siblings('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').slideUp(300);
-	});
-});
+  window.addEventListener('portal-components-ready', function () {
+    $('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').hide();
+  });
+})();
 
 function setup() {
 const avatarRaw = localStorage.getItem('avatar');

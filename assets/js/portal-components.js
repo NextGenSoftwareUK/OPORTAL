@@ -1,7 +1,10 @@
 (function () {
   var rootId = 'portal-components-root';
-  var wrapperClass = 'modal js-modal modal--animate-scale';
-  var componentPaths = [
+  var shellPaths = [
+    'assets/components/menu-message.html',
+    'assets/components/side-nav.html',
+  ];
+  var modalPaths = [
     'assets/components/modals/login.html',
     'assets/components/modals/signup.html',
     'assets/components/modals/forgot.html',
@@ -23,21 +26,32 @@
 
   async function loadComponents() {
     var root = getRoot();
-    var htmlParts = [];
+    var shellParts = [];
+    var modalParts = [];
 
-    for (var i = 0; i < componentPaths.length; i++) {
+    for (var i = 0; i < shellPaths.length; i++) {
       try {
-        htmlParts.push(await fetchFragment(componentPaths[i]));
+        shellParts.push(await fetchFragment(shellPaths[i]));
       } catch (error) {
         console.error(error);
       }
     }
 
-    if (!htmlParts.length) {
+    for (var j = 0; j < modalPaths.length; j++) {
+      try {
+        modalParts.push(await fetchFragment(modalPaths[j]));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    if (!shellParts.length && !modalParts.length) {
       return;
     }
 
-    root.innerHTML = '<div class="' + wrapperClass + '">' + htmlParts.join('\n') + '</div>';
+    root.innerHTML =
+      shellParts.join('\n') +
+      (modalParts.length ? '<div class="modal js-modal modal--animate-scale">' + modalParts.join('\n') + '</div>' : '');
     window.dispatchEvent(new CustomEvent('portal-components-ready'));
   }
 
