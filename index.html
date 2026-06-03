@@ -39,7 +39,7 @@
       <div></div>
       <div class="top-nav js-top-nav">
         <ul class="nav__list js-nav__list" id="guest-links">
-          <li class="nav__item js-nav__login"><a class="js-modal-trigger" href="#0" data-signin="login">Log in</a> </li>
+          <li class="nav__item js-nav__login"><a class="js-modal-trigger" href="#0" data-signin="login">Beam in</a> </li>
           <li class="nav__item js-nav__login"><a class="js-modal-trigger" href="#0" data-signin="signup">Sign up</a>
           </li>
         </ul>
@@ -51,7 +51,7 @@
             <li class="nav__sub-item"><p id="username">dummy username</p></li>
             <li class="nav__sub-item"><a class="nav__sub-link nav__sub-link--glow" href="/avatar/">View Avatar Details</a></li>
             <li class="nav__sub-item"><a class="nav__sub-link nav__sub-link--glow" href="/avatar/#edit">Edit Avatar Details</a></li>
-            <li class="nav__sub-item"><a class="nav__sub-link nav__sub-link--glow" href="#0" onclick="onLogout()">Logout</a></li>
+            <li class="nav__sub-item"><a class="nav__sub-link nav__sub-link--glow" href="#0" onclick="onLogout()">Beam Out</a></li>
           </ul>
         </div>
         <div style="cursor: pointer;" class="nav__item"><button class="reset nav-trigger js-nav-trigger"
@@ -123,7 +123,7 @@
           if (localStorage.getItem('loggedIn') === "true") {
             showMenuMessage('Check API', 'This area is available after sign in. Select a linked action from the menu to continue.');
           } else {
-            showMenuMessage('Sign in required', 'Please log in first to use this area.');
+            showMenuMessage('Sign in required', 'Please beam in first to use this area.');
           }
         }
 
@@ -311,7 +311,7 @@
               <li><a target="_blank" href="https://www.thejusticeleagueaccademy.icu/">The Justice League Academy</a></li>
             </ul>
           </li>
-          <li class="side__item js-nav__login "><a class="js-modal-trigger" href="#0" data-signin="login">Log in</a>
+          <li class="side__item js-nav__login "><a class="js-modal-trigger" href="#0" data-signin="login">Beam in</a>
           </li>
           <li class="side__item js-nav__login "><a class="js-modal-trigger" href="#0" data-signin="signup">Sign up</a>
           </li>
@@ -324,7 +324,7 @@
       <div class="modal__block js-modal-block" data-type="login">
         <form id="login-form" class="margin-bottom-sm" role="alertdialog" method="POST" onsubmit="return false">
           <div class="text-component text-center margin-bottom-lg">
-            <h1 class="font-normal">Log In</h1>
+            <h1 class="font-normal">Beam In</h1>
             <p class="color-contrast-medium">Don't have an account? <a class="js-modal-trigger" data-signin="signup"
                 href="#0">Sign Up!</a>
             </p>
