@@ -750,7 +750,7 @@ function onLogin() {
   // document.getElementById('login-error').style.display = 'none';
 
 	const submitBtn = document.getElementById('login-submit')
-	submitBtn.innerHTML = 'logging in... <img width="20px" src="assets/img/loading.gif"/>'
+	submitBtn.innerHTML = 'Beaming in... <img width="20px" src="assets/img/loading.gif"/>'
 	submitBtn.disabled = true
 	let n = {
 		//email: document.getElementById('login-email').value,
