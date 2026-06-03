@@ -245,6 +245,8 @@
       return avatar;
     }
 
+    console.log("token:", token);
+
     for (var i = 0; i < urls.length; i++) {
       try {
         var response = await fetch(urls[i], {
