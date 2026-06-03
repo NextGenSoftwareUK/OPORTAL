@@ -1,0 +1,83 @@
+<div class="modal__block js-modal-block nft-modal-block" data-type="nft" id="nft-modal-block">
+  <section class="nft-modal-shell" aria-label="NFT Wallet">
+    <div class="nft-modal-card">
+
+      <div class="nft-modal-top">
+        <div class="nft-modal-brand">
+          <div>
+            <h1 class="nft-modal-title">NFT Wallet</h1>
+            <p class="nft-modal-lead">Your OASIS NFTs, Geo-NFTs and virtual land — all in one place.</p>
+          </div>
+        </div>
+        <div class="nft-modal-actions">
+          <button id="nft-modal-close-btn" class="button button--ghost" type="button">Close</button>
+        </div>
+      </div>
+
+      <!-- Provider selector -->
+      <div class="nft-provider-bar">
+        <span class="nft-provider-label">Provider:</span>
+        <div class="nft-provider-pills" id="nft-provider-pills">
+          <button class="nft-provider-pill is-active" data-provider="Solana">Solana</button>
+          <button class="nft-provider-pill" data-provider="Ethereum">Ethereum</button>
+          <button class="nft-provider-pill" data-provider="EOS">EOS</button>
+          <button class="nft-provider-pill" data-provider="Holochain">Holochain</button>
+        </div>
+        <button id="nft-refresh-btn" class="nft-refresh-btn" title="Refresh NFTs">&#8635;</button>
+      </div>
+
+      <!-- Status / loading -->
+      <div id="nft-modal-status" class="nft-status" hidden></div>
+
+      <!-- Tabs -->
+      <div class="nft-tabs">
+        <button class="nft-tab is-active" data-tab="standard">NFTs</button>
+        <button class="nft-tab" data-tab="geo">Geo-NFTs</button>
+        <button class="nft-tab" data-tab="oland">OLAND</button>
+      </div>
+
+      <!-- Standard NFTs -->
+      <div id="nft-tab-standard" class="nft-tab-panel">
+        <div id="nft-grid" class="nft-grid">
+          <div class="nft-empty" id="nft-empty-standard">
+            <div class="nft-empty-icon">🎴</div>
+            <p>No NFTs found for this provider.<br>Mint your first NFT to get started.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Geo-NFTs -->
+      <div id="nft-tab-geo" class="nft-tab-panel" hidden>
+        <div id="nft-geo-grid" class="nft-grid">
+          <div class="nft-empty" id="nft-empty-geo">
+            <div class="nft-empty-icon">🗺️</div>
+            <p>No Geo-NFTs found for this provider.<br>Place a Geo-NFT on the map to get started.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- OLAND -->
+      <div id="nft-tab-oland" class="nft-tab-panel" hidden>
+        <div id="nft-oland-grid" class="nft-grid">
+          <div class="nft-empty" id="nft-empty-oland">
+            <div class="nft-empty-icon">🌍</div>
+            <p>No OLAND parcels found.<br>Purchase virtual land to build your presence in Our World.</p>
+          </div>
+        </div>
+        <div id="nft-oland-price" class="nft-oland-price" hidden>
+          <span class="nft-oland-price-label">Current OLAND Price:</span>
+          <span class="nft-oland-price-value" id="nft-oland-price-value">—</span>
+        </div>
+      </div>
+
+      <!-- Footer actions -->
+      <div class="nft-footer">
+        <button class="button button--ghost nft-action-btn" onclick="showComingSoonMessage()">Mint NFT</button>
+        <button class="button button--ghost nft-action-btn" onclick="showComingSoonMessage()">Send NFT</button>
+        <button class="button button--ghost nft-action-btn" onclick="showComingSoonMessage()">Place Geo-NFT</button>
+        <a class="button button--ghost nft-action-btn" href="https://github.com/NextGenSoftwareUK/OASIS/tree/master/OASIS%20Omniverse" target="_blank" rel="noopener">OASIS Omniverse</a>
+      </div>
+
+    </div>
+  </section>
+</div>
