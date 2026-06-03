@@ -85,6 +85,20 @@
     return value;
   }
 
+  function getAvatarLevel(profile) {
+    var level = pickValue(profile, ['level', 'Level', 'rank', 'Rank', 'avatarLevel', 'AvatarLevel']);
+    if (!level || /^\d+$/.test(level) === false) {
+      return '77';
+    }
+    return level;
+  }
+
+  function formatUsername(profile) {
+    var username = pickValue(profile, ['username', 'userName', 'UserName']);
+    var level = getAvatarLevel(profile);
+    return username ? username + ' (' + level + ')' : 'Avatar';
+  }
+
   function setFieldText(selector, value) {
     var nodes = document.querySelectorAll(selector);
     if (!nodes.length) return;
@@ -132,15 +146,13 @@
   function populate(profile) {
     var normalized = profile || {};
     var displayName = getDisplayName(normalized);
-    var username = pickValue(normalized, ['username', 'userName', 'UserName']);
+    var username = formatUsername(normalized);
     var email = pickValue(normalized, ['email', 'Email', 'emailAddress', 'EmailAddress']);
     var avatarType = normalizeAvatarType(normalized);
     var title = pickValue(normalized, ['title', 'Title']);
     var firstName = pickValue(normalized, ['firstName', 'FirstName']);
     var lastName = pickValue(normalized, ['lastName', 'LastName']);
     var address = pickValue(normalized, ['address', 'Address']);
-
-    username = username + ' (77)';  //TODO: Need to get real level by loading avatar detail. (same as XP, Karma, address etc)
 
     var avatarImage = getById('avatar-image');
     if (avatarImage) {

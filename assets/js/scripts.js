@@ -596,9 +596,11 @@ function addAuthPopup(login, msg, e) {
 
     if (login)
     {
-      localStorage.setItem('avatar', JSON.stringify(msg.result.result));
+      var avatarProfile = msg.result && msg.result.result ? msg.result.result : msg.result;
+      localStorage.setItem('avatar', JSON.stringify(avatarProfile));
       localStorage.setItem('loggedIn', true)
-      window.location.reload();
+      user = avatarProfile;
+      window.user = avatarProfile;
 
       //Reloads page after 5sec
       //setTimeout(()=>window.location.reload(), 5000)
@@ -645,6 +647,80 @@ function addAuthPopup(login, msg, e) {
 		//e.preventDefault()
 }
 
+function extractAvatarData(payload) {
+  if (!payload || typeof payload !== 'object') return null;
+  if (payload.avatar && typeof payload.avatar === 'object') return payload.avatar;
+  if (payload.result && typeof payload.result === 'object') {
+    if (payload.result.result && typeof payload.result.result === 'object') return payload.result.result;
+    if (payload.result.avatar && typeof payload.result.avatar === 'object') return payload.result.avatar;
+    return payload.result;
+  }
+  if (payload.data && typeof payload.data === 'object') return payload.data;
+  return payload;
+}
+
+function getAvatarDetailUrls(profile) {
+  var urls = [];
+  var email = profile && (profile.email || profile.Email || profile.emailAddress || profile.EmailAddress);
+  var username = profile && (profile.username || profile.userName || profile.UserName);
+  var id = profile && (profile.id || profile.Id || profile.avatarId || profile.AvatarId);
+
+  if (email) {
+    urls.push(`${API_BASE}/api/avatar/get-avatar-detail-by-email/${encodeURIComponent(email)}`);
+  }
+  if (username) {
+    urls.push(`${API_BASE}/api/avatar/get-avatar-detail-by-username/${encodeURIComponent(username)}`);
+  }
+  if (id) {
+    urls.push(`${API_BASE}/api/avatar/get-avatar-detail-by-id/${encodeURIComponent(id)}`);
+  }
+
+  return urls.filter(function (url, index, list) {
+    return url && list.indexOf(url) === index;
+  });
+}
+
+async function hydrateLoggedInAvatar(profile) {
+  var avatar = profile || {};
+  var token = avatar.jwtToken || avatar.token || '';
+  if (!token) {
+    return avatar;
+  }
+
+  try {
+    const urls = getAvatarDetailUrls(avatar);
+    for (let i = 0; i < urls.length; i++) {
+      const response = await fetch(urls[i], {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        continue;
+      }
+
+      const data = await response.json();
+      const fullAvatar = extractAvatarData(data);
+      if (!fullAvatar || typeof fullAvatar !== 'object') {
+        continue;
+      }
+
+      const merged = Object.assign({}, avatar, fullAvatar);
+      localStorage.setItem('avatar', JSON.stringify(merged));
+      user = merged;
+      window.user = merged;
+      return merged;
+    }
+  } catch (error) {
+    return avatar;
+  }
+
+  return avatar;
+}
+
 function onLogin() {
 	// Get button and change it when pressed
   // console.log("login-error=", document.getElementById('login-error'));
@@ -675,7 +751,7 @@ function onLogin() {
 		submitBtn.disabled = false
 		var t;
 		200 === e.status
-			? ((t = await e.json()), addAuthPopup(true, t, e))
+			? ((t = await e.json()), addAuthPopup(true, t, e), await hydrateLoggedInAvatar(extractAvatarData(t)), typeof setup === 'function' && setup())
 			: ((submitBtn.classList.add('error')), (t = await e.json()), addAuthPopup(true, t, e))//,
 			//window.location.reload();
 	})();

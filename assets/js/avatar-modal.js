@@ -69,6 +69,20 @@
     return value;
   }
 
+  function getAvatarLevel(profile) {
+    var level = pickValue(profile, ['level', 'Level', 'rank', 'Rank', 'avatarLevel', 'AvatarLevel']);
+    if (!level || /^\d+$/.test(level) === false) {
+      return '77';
+    }
+    return level;
+  }
+
+  function formatUsername(profile) {
+    var username = pickValue(profile, ['username', 'userName', 'UserName']);
+    var level = getAvatarLevel(profile);
+    return username ? username + ' (' + level + ')' : 'Avatar';
+  }
+
   function getDisplayName(profile) {
     var title = pickValue(profile, ['title', 'Title']);
     var firstName = pickValue(profile, ['firstName', 'FirstName']);
@@ -101,9 +115,21 @@
     var isEdit = currentMode === 'edit';
     view.hidden = isEdit;
     edit.hidden = !isEdit;
-    editBtn.hidden = isEdit;
-    cancelBtn.hidden = !isEdit;
-    saveBtn.hidden = !isEdit;
+    if (editBtn) {
+      editBtn.hidden = isEdit;
+      editBtn.style.display = isEdit ? 'none' : 'inline-flex';
+      editBtn.setAttribute('aria-hidden', isEdit ? 'true' : 'false');
+    }
+    if (cancelBtn) {
+      cancelBtn.hidden = !isEdit;
+      cancelBtn.style.display = isEdit ? 'inline-flex' : 'none';
+      cancelBtn.setAttribute('aria-hidden', isEdit ? 'false' : 'true');
+    }
+    if (saveBtn) {
+      saveBtn.hidden = !isEdit;
+      saveBtn.style.display = isEdit ? 'inline-flex' : 'none';
+      saveBtn.setAttribute('aria-hidden', isEdit ? 'false' : 'true');
+    }
 
     if (title) title.textContent = isEdit ? 'Edit Avatar' : 'View Avatar';
     if (subtitle) {
@@ -116,7 +142,7 @@
   function populate(profile) {
     var normalized = profile || {};
     var displayName = getDisplayName(normalized);
-    var username = pickValue(normalized, ['username', 'userName', 'UserName']);
+    var username = formatUsername(normalized);
     var email = pickValue(normalized, ['email', 'Email', 'emailAddress', 'EmailAddress']);
     var avatarType = normalizeAvatarType(normalized);
     var title = pickValue(normalized, ['title', 'Title']);
@@ -144,8 +170,8 @@
     setText('[data-avatar-modal-field="firstName"]', firstName);
     setText('[data-avatar-modal-field="lastName"]', lastName);
     setText('[data-avatar-modal-field="address"]', address);
-    setText('[data-avatar-modal-field="karma"]', karma ? 'Karma: ' + karma : 'Karma: 777');
-    setText('[data-avatar-modal-field="xp"]', xp ? 'XP: ' + xp : 'XP: 777');
+    setText('[data-avatar-modal-field="karma"]', karma !== '' ? 'Karma: ' + karma : 'Karma: 777');
+    setText('[data-avatar-modal-field="xp"]', xp !== '' ? 'XP: ' + xp : 'XP: 777');
 
     var fields = ['title', 'firstName', 'lastName', 'username', 'email', 'address'];
     fields.forEach(function (field) {
@@ -179,6 +205,76 @@
 
   function getAuthToken(profile) {
     return profile && (profile.jwtToken || profile.token || '');
+  }
+
+  function getAvatarDetailUrls(profile) {
+    var urls = [];
+    var email = profile && (profile.email || profile.Email || profile.emailAddress || profile.EmailAddress);
+    var username = profile && (profile.username || profile.userName || profile.UserName);
+    var id = profile && (profile.id || profile.Id || profile.avatarId || profile.AvatarId);
+
+    if (email) {
+      urls.push(API_BASE + '/api/avatar/get-avatar-detail-by-email/' + encodeURIComponent(email));
+    }
+    if (username) {
+      urls.push(API_BASE + '/api/avatar/get-avatar-detail-by-username/' + encodeURIComponent(username));
+    }
+    if (id) {
+      urls.push(API_BASE + '/api/avatar/get-avatar-detail-by-id/' + encodeURIComponent(id));
+    }
+
+    return urls.filter(function (url, index, list) {
+      return url && list.indexOf(url) === index;
+    });
+  }
+
+  function profileNeedsHydration(profile) {
+    return !pickValue(profile, ['title', 'Title']) ||
+      !pickValue(profile, ['address', 'Address']) ||
+      !pickValue(profile, ['karma', 'Karma', 'karmaWeighting', 'KarmaWeighting', 'karmaPoints', 'KarmaPoints']) ||
+      !pickValue(profile, ['xp', 'XP', 'experiencePoints', 'ExperiencePoints', 'experience', 'Experience']) ||
+      !pickValue(profile, ['level', 'Level', 'rank', 'Rank', 'avatarLevel', 'AvatarLevel']);
+  }
+
+  async function hydrateAvatarDetails(profile) {
+    var avatar = profile || {};
+    var token = getAuthToken(avatar);
+    var urls = getAvatarDetailUrls(avatar);
+
+    if (!token || !urls.length) {
+      return avatar;
+    }
+
+    for (var i = 0; i < urls.length; i++) {
+      try {
+        var response = await fetch(urls[i], {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: 'Bearer ' + token } : {}),
+          },
+        });
+
+        if (!response.ok) {
+          continue;
+        }
+
+        var data = await response.json();
+        var fullAvatar = data && typeof data === 'object'
+          ? (data.avatar || (data.result && data.result.result) || (data.result && data.result.avatar) || data.result || data.data || data)
+          : null;
+
+        if (!fullAvatar || typeof fullAvatar !== 'object') {
+          continue;
+        }
+
+        var merged = Object.assign({}, avatar, fullAvatar);
+        saveAvatar(merged);
+        return merged;
+      } catch (error) {}
+    }
+
+    return avatar;
   }
 
   function getUpdateUrl(profile) {
@@ -283,6 +379,20 @@
     setStatus('neutral', currentMode === 'edit' ? 'Edit mode' : 'View mode', currentMode === 'edit'
       ? 'Update the fields below, then save your changes.'
       : 'Your current avatar profile and account information.');
+
+    if (profileNeedsHydration(currentProfile)) {
+      hydrateAvatarDetails(currentProfile).then(function (updated) {
+        if (!updated || updated === currentProfile) return;
+        currentProfile = updated;
+        populate(updated);
+        if (currentMode === 'edit') {
+          setMode('edit');
+        } else {
+          setMode('view');
+        }
+      });
+    }
+
     return false;
   }
 

@@ -1982,32 +1982,35 @@ form {
 
 .avatar-modal-block .edit-form {
   display: grid;
-  gap: 18px;
+  gap: 16px;
+  margin-top: 8px;
 }
 
 .avatar-modal-block .field-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
 }
 
 .avatar-modal-block .field {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .avatar-modal-block .field label {
   font-weight: 700;
   color: var(--color-white);
+  margin-left: 2px;
+  font-size: 0.95rem;
 }
 
 .avatar-modal-block .field input {
   width: 100%;
   min-height: 52px;
   padding: 0 16px;
-  border-radius: 16px;
+  border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.035);
   color: var(--color-white);
   font: inherit;
 }
