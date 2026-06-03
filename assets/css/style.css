@@ -797,6 +797,15 @@ button:focus-visible {
   box-shadow: 0 0 0 1px rgba(155, 226, 255, 0.95), 0 0 18px rgba(107, 208, 255, 0.95), 0 0 34px rgba(69, 175, 255, 0.6)
 }
 
+.portal-submit-button {
+  min-width: 15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
 .btn--md {
   font-size: 1.2em
 }
