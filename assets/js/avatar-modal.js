@@ -1,5 +1,5 @@
 (function () {
-  var API_BASE = window.apiUrl || window.API_BASE || 'https://oasisapionode-hseudrexdvbhenhv.canadacentral-01.azurewebsites.net';
+  var API_BASE = window.apiUrl || window.API_BASE;
   var storageKey = 'avatar';
   var currentMode = 'view';
   var currentProfile = null;
@@ -260,6 +260,7 @@
         }
 
         var data = await response.json();
+        console.log('Fetched avatar details:', data);
         var fullAvatar = data && typeof data === 'object'
           ? (data.avatar || (data.result && data.result.result) || (data.result && data.result.avatar) || data.result || data.data || data)
           : null;
