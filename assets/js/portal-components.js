@@ -10,6 +10,7 @@
     'assets/components/modals/forgot.html',
     'assets/components/modals/reset.html',
     'assets/components/modals/avatar.html',
+    'assets/components/modals/dev-portal.html',
   ];
 
   function getRoot() {
