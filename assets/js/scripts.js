@@ -913,7 +913,7 @@ function onSignup() {
   clearSignupError();
 
   const submitBtn = document.getElementById('signup-submit')
-	submitBtn.innerHTML = 'Loading... <img width="20px" style="margin-left: 5px;" src="assets/img/loading.gif"/>'
+	submitBtn.innerHTML = 'Signing Up... <img width="20px" style="margin-left: 5px;" src="assets/img/loading.gif"/>'
 	submitBtn.disabled = true
 	let n = {
 		firstName: document.getElementById('signup-first-name').value,
