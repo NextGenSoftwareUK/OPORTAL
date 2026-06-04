@@ -93,7 +93,41 @@
 
           <!-- Preferences -->
           <div class="settings-panel" id="settings-tab-preferences" hidden>
-            <div class="settings-section-label">PROVIDER SETTINGS</div>
+            <div class="settings-section-label">NAVIGATION</div>
+            <div class="settings-block">
+              <div class="settings-pref-row">
+                <div>
+                  <div class="settings-pref-label">Use Old Menu Style <span class="settings-badge" id="settings-nav-old-menu-badge">Old</span></div>
+                  <div class="settings-dim"><b>On (Old):</b> Account, World, Network etc. are individual animated sub-menus.<br><b>Off (New):</b> Sections collapse/expand as grouped headers.</div>
+                </div>
+                <label class="settings-toggle">
+                  <input type="checkbox" id="settings-nav-old-menu" />
+                  <span class="settings-toggle-track"></span>
+                </label>
+              </div>
+              <div class="settings-pref-row" style="margin-top:16px">
+                <div>
+                  <div class="settings-pref-label">Show Chevrons</div>
+                  <div class="settings-dim">Show animated arrow indicators on expandable menu items.</div>
+                </div>
+                <label class="settings-toggle">
+                  <input type="checkbox" id="settings-nav-chevrons" />
+                  <span class="settings-toggle-track"></span>
+                </label>
+              </div>
+              <div class="settings-pref-row" style="margin-top:16px">
+                <div>
+                  <div class="settings-pref-label">Title Case Sub-menus</div>
+                  <div class="settings-dim">Show sub-menu items as "My Avatar" instead of "MY AVATAR".</div>
+                </div>
+                <label class="settings-toggle">
+                  <input type="checkbox" id="settings-nav-lowercase" />
+                  <span class="settings-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-section-label" style="margin-top:24px">PROVIDER SETTINGS</div>
             <div class="settings-block">
               <div class="settings-pref-row">
                 <div>

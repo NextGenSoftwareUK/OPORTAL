@@ -2,7 +2,7 @@
   var rootId = 'portal-components-root';
   var shellPaths = [
     'assets/components/menu-message.html',
-    'assets/components/side-nav.html',
+    window.OLD_SIDE_MENU ? 'assets/components/side-nav-old.html' : 'assets/components/side-nav-new.html',
   ];
   var modalPaths = [
     'assets/components/modals/login.html',

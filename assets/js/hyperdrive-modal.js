@@ -490,6 +490,11 @@
   // ── Open / close ──────────────────────────────────────────────────────────────
 
   function openHyperdriveModal() {
+    var loggedIn = localStorage.getItem('loggedIn') === 'true';
+    if (!loggedIn) {
+      if (typeof window.addAuthPopup === 'function') window.addAuthPopup(true, 'Please beam in to access HyperDrive.', null);
+      return false;
+    }
     var modal = document.querySelector('.js-modal');
     var blocks = document.querySelectorAll('.js-modal-block');
     var block = getById('hd-modal-block');

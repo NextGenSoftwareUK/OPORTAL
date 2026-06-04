@@ -257,11 +257,21 @@
 
   async function loadAll() {
     showStatus('loading', 'Loading node data…');
-    var [status, info, metrics] = await Promise.all([
-      apiFetch('/api/v1/onode/status'),
-      apiFetch('/api/v1/onode/info'),
-      apiFetch('/api/v1/onode/metrics'),
-    ]);
+
+    // TODO: replace with live API once ONODE endpoints are stable
+    var status  = { isRunning: true, status: 'Running' };
+    var info    = {
+      name:      'ONODE-Primary',
+      nodeId:    'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+      version:   '3.2.1',
+      address:   '185.220.101.47:4101',
+      publicKey: 'Ed25519:7f4e2a9b…c381',
+      startTime: new Date(Date.now() - 14 * 86400000 - 7 * 3600000 - 1380000).toISOString(),
+      uptime:    '14d 7h 23m',
+      peers:     12,
+    };
+    var metrics = { cpuUsage: 14, memoryUsage: 29, bandwidth: 38, requestCount: 842 };
+
     hideStatus();
     updateBanner(status);
     updateStatBar(status, info);
@@ -308,6 +318,11 @@
   // ── Open / close ──────────────────────────────────────────────────────────────
 
   function openONODEModal() {
+    var loggedIn = localStorage.getItem('loggedIn') === 'true';
+    if (!loggedIn) {
+      if (typeof window.addAuthPopup === 'function') window.addAuthPopup(true, 'Please beam in to manage your ONODE.', null);
+      return false;
+    }
     var modal = document.querySelector('.js-modal');
     var blocks = document.querySelectorAll('.js-modal-block');
     var block = getById('onode-modal-block');

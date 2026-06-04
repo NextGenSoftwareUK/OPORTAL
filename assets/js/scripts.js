@@ -546,6 +546,8 @@ function toggleClass(el, className, bool) {
 
   window.addEventListener('portal-components-ready', function () {
     $('.item--has-children').children('a').removeClass('submenu-open').next('.sub-menu').hide();
+    if (!window.NAV_CHEVRONS) $('.side-nav').addClass('no-chevrons');
+    if (window.SUB_MENU_LOWERCASE) $('.side-nav').addClass('submenu-lowercase');
   });
 })();
 

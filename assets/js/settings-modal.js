@@ -69,6 +69,49 @@
     if (el) el.textContent = value || '—';
   }
 
+  // ── Nav preference toggles ────────────────────────────────────────────────────
+
+  function updateMenuBadge(isOld) {
+    var badge = getById('settings-nav-old-menu-badge');
+    if (!badge) return;
+    badge.textContent = isOld ? 'Old' : 'New';
+    badge.className = 'settings-badge' + (isOld ? '' : ' settings-badge--new');
+  }
+
+  function loadNavPrefs() {
+    var oldMenu  = getById('settings-nav-old-menu');
+    var chevrons = getById('settings-nav-chevrons');
+    var lower    = getById('settings-nav-lowercase');
+    if (oldMenu)  { oldMenu.checked  = !!window.OLD_SIDE_MENU;      updateMenuBadge(!!window.OLD_SIDE_MENU); }
+    if (chevrons) chevrons.checked = !!window.NAV_CHEVRONS;
+    if (lower)    lower.checked    = !!window.SUB_MENU_LOWERCASE;
+  }
+
+  function bindNavPrefs(block) {
+    var oldMenu  = getById('settings-nav-old-menu');
+    var chevrons = getById('settings-nav-chevrons');
+    var lower    = getById('settings-nav-lowercase');
+
+    if (oldMenu) oldMenu.addEventListener('change', function () {
+      localStorage.setItem('nav_old_menu', this.checked);
+      window.OLD_SIDE_MENU = this.checked;
+      updateMenuBadge(this.checked);
+      location.reload();
+    });
+
+    if (chevrons) chevrons.addEventListener('change', function () {
+      localStorage.setItem('nav_chevrons', this.checked);
+      window.NAV_CHEVRONS = this.checked;
+      document.querySelector('.side-nav').classList.toggle('no-chevrons', !this.checked);
+    });
+
+    if (lower) lower.addEventListener('change', function () {
+      localStorage.setItem('nav_lowercase', this.checked);
+      window.SUB_MENU_LOWERCASE = this.checked;
+      document.querySelector('.side-nav').classList.toggle('submenu-lowercase', this.checked);
+    });
+  }
+
   // ── Tab switching ─────────────────────────────────────────────────────────────
 
   function switchTab(tab) {
@@ -81,11 +124,17 @@
     block.querySelectorAll('.settings-panel').forEach(function (p) {
       p.hidden = p.id !== 'settings-tab-' + tab;
     });
+    if (tab === 'preferences') loadNavPrefs();
   }
 
   // ── Open / close ─────────────────────────────────────────────────────────────
 
   function openSettingsModal(tab) {
+    var loggedIn = localStorage.getItem('loggedIn') === 'true';
+    if (!loggedIn) {
+      if (typeof window.addAuthPopup === 'function') window.addAuthPopup(true, 'Please beam in to access Settings.', null);
+      return false;
+    }
     var modal = document.querySelector('.js-modal');
     var blocks = document.querySelectorAll('.js-modal-block');
     var block = getById('settings-modal-block');
@@ -129,6 +178,7 @@
       });
     }
 
+    bindNavPrefs(block);
     block.dataset.settingsBound = 'true';
     window.openSettingsModal = openSettingsModal;
     window.closeSettingsModal = closeSettingsModal;
