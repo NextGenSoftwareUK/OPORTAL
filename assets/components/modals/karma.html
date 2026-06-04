@@ -1,0 +1,67 @@
+<div class="modal__block js-modal-block karma-modal-block" data-type="karma" id="karma-modal-block">
+  <section class="karma-modal-shell" aria-label="Karma">
+    <div class="karma-modal-card">
+
+      <div class="karma-modal-top">
+        <div>
+          <h1 class="karma-modal-title">Karma</h1>
+          <p class="karma-modal-lead">Your OASIS karma score and full Akashic Records history.</p>
+        </div>
+        <button id="karma-modal-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div id="karma-modal-status" class="karma-status" hidden></div>
+
+      <!-- Score banner -->
+      <div class="karma-score-banner" id="karma-score-banner">
+        <div class="karma-score-block">
+          <div class="karma-score-label">KARMA</div>
+          <div class="karma-score-value" id="karma-score-value">—</div>
+        </div>
+        <div class="karma-score-block">
+          <div class="karma-score-label">XP</div>
+          <div class="karma-score-value karma-score-value--xp" id="karma-xp-value">—</div>
+        </div>
+        <div class="karma-score-block">
+          <div class="karma-score-label">LEVEL</div>
+          <div class="karma-score-value karma-score-value--level" id="karma-level-value">—</div>
+        </div>
+        <div class="karma-score-block">
+          <div class="karma-score-label">AVATAR TYPE</div>
+          <div class="karma-score-value karma-score-value--type" id="karma-type-value">—</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="karma-tabs">
+        <button class="karma-tab is-active" data-tab="records">Akashic Records</button>
+        <button class="karma-tab" data-tab="weightings">Weightings</button>
+      </div>
+
+      <!-- Akashic Records -->
+      <div id="karma-tab-records" class="karma-tab-panel">
+        <div id="karma-records-list" class="karma-records-list">
+          <div class="karma-empty">
+            <div class="karma-empty-icon">📜</div>
+            <p>No karma records found.<br>Complete actions in the OASIS ecosystem to build your Akashic Record.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weightings -->
+      <div id="karma-tab-weightings" class="karma-tab-panel" hidden>
+        <div class="karma-weightings-grid" id="karma-weightings-grid">
+          <!-- Populated by JS or static list -->
+        </div>
+        <div class="karma-vote-banner">
+          <div class="karma-vote-text">
+            <strong>Karma Voting</strong>
+            <p>Community voting to adjust karma weightings for different actions is coming soon.</p>
+          </div>
+          <button class="button button--ghost karma-vote-btn" onclick="showComingSoonMessage()">Vote on Weightings <span class="karma-soon-badge">Coming Soon</span></button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

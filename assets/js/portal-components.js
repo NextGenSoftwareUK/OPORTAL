@@ -14,6 +14,8 @@
     'assets/components/modals/nft.html',
     'assets/components/modals/search-avatars.html',
     'assets/components/modals/settings.html',
+    'assets/components/modals/karma.html',
+    'assets/components/modals/data.html',
   ];
 
   function getRoot() {

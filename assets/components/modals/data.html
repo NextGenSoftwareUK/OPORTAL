@@ -1,0 +1,153 @@
+<div class="modal__block js-modal-block data-modal-block" data-type="data" id="data-modal-block">
+  <section class="data-modal-shell" aria-label="Data / Holons">
+    <div class="data-modal-card">
+
+      <div class="data-modal-top">
+        <div>
+          <h1 class="data-modal-title">Data</h1>
+          <p class="data-modal-lead">Browse, load and manage your OASIS Holons across all providers.</p>
+        </div>
+        <button id="data-modal-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div id="data-modal-status" class="data-status" hidden></div>
+
+      <!-- Tabs -->
+      <div class="data-tabs">
+        <button class="data-tab is-active" data-tab="browse">Browse Holons</button>
+        <button class="data-tab" data-tab="load">Load by ID</button>
+        <button class="data-tab" data-tab="save">Save Holon</button>
+        <button class="data-tab" data-tab="offchain">Off-Chain</button>
+      </div>
+
+      <!-- Browse -->
+      <div id="data-tab-browse" class="data-tab-panel">
+        <div class="data-browse-bar">
+          <div class="data-provider-bar">
+            <span class="data-label">Provider:</span>
+            <div class="data-provider-pills" id="data-provider-pills">
+              <button class="data-provider-pill is-active" data-provider="all">All</button>
+              <button class="data-provider-pill" data-provider="HoloOASIS">Holochain</button>
+              <button class="data-provider-pill" data-provider="MongoDBOASIS">MongoDB</button>
+              <button class="data-provider-pill" data-provider="SQLiteOASIS">SQLite</button>
+              <button class="data-provider-pill" data-provider="IPFSOASIS">IPFS</button>
+            </div>
+          </div>
+          <button id="data-refresh-btn" class="nft-refresh-btn" title="Refresh">&#8635;</button>
+        </div>
+        <div id="data-browse-grid" class="data-holon-grid">
+          <div class="data-empty" id="data-browse-empty">
+            <div class="data-empty-icon">🧩</div>
+            <p>No holons found. Your OASIS data objects will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Load by ID -->
+      <div id="data-tab-load" class="data-tab-panel" hidden>
+        <form id="data-load-form" class="data-form" onsubmit="return false">
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-load-id">Holon ID</label>
+            <input class="data-form-input" id="data-load-id" type="text" placeholder="Enter holon UUID…" autocomplete="off" />
+          </div>
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-load-provider">Provider</label>
+            <select class="data-form-select" id="data-load-provider">
+              <option value="">Any</option>
+              <option value="HoloOASIS">Holochain</option>
+              <option value="MongoDBOASIS">MongoDB</option>
+              <option value="SQLiteOASIS">SQLite</option>
+              <option value="IPFSOASIS">IPFS</option>
+              <option value="EthereumOASIS">Ethereum</option>
+              <option value="SolanaOASIS">Solana</option>
+              <option value="EOSIOOASIS">EOSIO</option>
+            </select>
+          </div>
+          <button class="button data-submit-btn" type="submit" id="data-load-btn">Load Holon</button>
+        </form>
+        <div id="data-load-result" class="data-holon-grid" style="margin-top:18px"></div>
+      </div>
+
+      <!-- Save Holon -->
+      <div id="data-tab-save" class="data-tab-panel" hidden>
+        <form id="data-save-form" class="data-form" onsubmit="return false">
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-save-name">Name</label>
+            <input class="data-form-input" id="data-save-name" type="text" placeholder="Holon name…" />
+          </div>
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-save-desc">Description</label>
+            <input class="data-form-input" id="data-save-desc" type="text" placeholder="Optional description…" />
+          </div>
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-save-type">Holon Type</label>
+            <select class="data-form-select" id="data-save-type">
+              <option value="0">All</option>
+              <option value="1">Moon</option>
+              <option value="2">Planet</option>
+              <option value="3">Star</option>
+              <option value="4">SuperStar</option>
+              <option value="5">Omniverse</option>
+              <option value="6">Multiverse</option>
+              <option value="7">Universe</option>
+              <option value="8">Galaxy</option>
+              <option value="9">SolarSystem</option>
+              <option value="10">GreatGrandSuperStar</option>
+              <option value="11">GrandSuperStar</option>
+            </select>
+          </div>
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-save-provider">Provider</label>
+            <select class="data-form-select" id="data-save-provider">
+              <option value="">Default</option>
+              <option value="HoloOASIS">Holochain</option>
+              <option value="MongoDBOASIS">MongoDB</option>
+              <option value="SQLiteOASIS">SQLite</option>
+              <option value="IPFSOASIS">IPFS</option>
+              <option value="EthereumOASIS">Ethereum</option>
+              <option value="SolanaOASIS">Solana</option>
+            </select>
+          </div>
+          <div class="data-form-row data-form-row--check">
+            <label class="data-check-label">
+              <input type="checkbox" id="data-save-offchain" />
+              <span>Save off-chain only</span>
+            </label>
+          </div>
+          <button class="button data-submit-btn" type="submit" id="data-save-btn">Save Holon</button>
+        </form>
+      </div>
+
+      <!-- Off-Chain -->
+      <div id="data-tab-offchain" class="data-tab-panel" hidden>
+        <div class="data-info-block">
+          <div class="data-info-icon">🔒</div>
+          <div>
+            <strong>Off-Chain Storage</strong>
+            <p class="data-info-text">Off-chain holons are stored privately without being written to a blockchain or distributed ledger. Use this for sensitive or high-frequency data.</p>
+          </div>
+        </div>
+        <form id="data-offchain-form" class="data-form" onsubmit="return false">
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-offchain-name">Name</label>
+            <input class="data-form-input" id="data-offchain-name" type="text" placeholder="Holon name…" />
+          </div>
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-offchain-desc">Description</label>
+            <input class="data-form-input" id="data-offchain-desc" type="text" placeholder="Optional description…" />
+          </div>
+          <div class="data-form-row">
+            <label class="data-form-label" for="data-offchain-provider">Provider</label>
+            <select class="data-form-select" id="data-offchain-provider">
+              <option value="">Default</option>
+              <option value="MongoDBOASIS">MongoDB</option>
+              <option value="SQLiteOASIS">SQLite</option>
+            </select>
+          </div>
+          <button class="button data-submit-btn" type="submit" id="data-offchain-btn">Save Off-Chain</button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+</div>
