@@ -16,6 +16,7 @@
     'assets/components/modals/settings.html',
     'assets/components/modals/karma.html',
     'assets/components/modals/data.html',
+    'assets/components/modals/hyperdrive.html',
   ];
 
   function getRoot() {

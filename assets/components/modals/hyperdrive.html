@@ -1,0 +1,210 @@
+<div class="modal__block js-modal-block hd-modal-block" data-type="hyperdrive" id="hd-modal-block">
+  <section class="hd-shell" aria-label="OASIS HyperDrive">
+    <div class="hd-card">
+
+      <!-- Header -->
+      <div class="hd-top">
+        <div class="hd-brand">
+          <div class="hd-brand-icon">⚡</div>
+          <div>
+            <h1 class="hd-title">OASIS HyperDrive</h1>
+            <p class="hd-lead">Intelligent orchestration &amp; interoperability across all Web2 &amp; Web3 infrastructure.</p>
+          </div>
+        </div>
+        <button id="hd-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <!-- Network mode banner -->
+      <div class="hd-mode-banner" id="hd-mode-banner">
+        <div class="hd-mode-dot" id="hd-mode-dot"></div>
+        <span class="hd-mode-label" id="hd-mode-label">Detecting…</span>
+        <span class="hd-mode-desc" id="hd-mode-desc"></span>
+        <div class="hd-mode-actions">
+          <button class="hd-pill-btn" id="hd-refresh-btn" title="Refresh">&#8635; Refresh</button>
+        </div>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="hd-stats-bar">
+        <div class="hd-stat">
+          <div class="hd-stat-label">Active Provider</div>
+          <div class="hd-stat-value" id="hd-stat-active">—</div>
+        </div>
+        <div class="hd-stat">
+          <div class="hd-stat-label">Registered Providers</div>
+          <div class="hd-stat-value" id="hd-stat-count">—</div>
+        </div>
+        <div class="hd-stat">
+          <div class="hd-stat-label">Auto-Failover</div>
+          <div class="hd-stat-value hd-stat-value--on" id="hd-stat-failover">ON</div>
+        </div>
+        <div class="hd-stat">
+          <div class="hd-stat-label">Auto-Replication</div>
+          <div class="hd-stat-value hd-stat-value--on" id="hd-stat-replication">ON</div>
+        </div>
+        <div class="hd-stat">
+          <div class="hd-stat-label">Load Balancing</div>
+          <div class="hd-stat-value hd-stat-value--on" id="hd-stat-lb">ON</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="hd-tabs">
+        <button class="hd-tab is-active" data-tab="overview">Overview</button>
+        <button class="hd-tab" data-tab="failover">Failover</button>
+        <button class="hd-tab" data-tab="replication">Replication</button>
+        <button class="hd-tab" data-tab="loadbalance">Load Balancing</button>
+        <button class="hd-tab" data-tab="offline">Offline Queue</button>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div id="hd-tab-overview" class="hd-tab-panel">
+        <div class="hd-section-label">REGISTERED PROVIDERS</div>
+        <div id="hd-provider-grid" class="hd-provider-grid">
+          <div class="hd-empty"><div class="hd-empty-icon">🔌</div><p>Loading providers…</p></div>
+        </div>
+
+        <!-- Replication visualizer -->
+        <div class="hd-section-label" style="margin-top:24px">LIVE REPLICATION FLOW</div>
+        <div class="hd-replication-canvas" id="hd-replication-canvas">
+          <div class="hd-rep-center">
+            <div class="hd-rep-hub">
+              <div class="hd-rep-hub-ring hd-rep-hub-ring--1"></div>
+              <div class="hd-rep-hub-ring hd-rep-hub-ring--2"></div>
+              <div class="hd-rep-hub-icon">⚡</div>
+              <div class="hd-rep-hub-label">HyperDrive</div>
+            </div>
+          </div>
+          <div class="hd-rep-nodes" id="hd-rep-nodes">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="hd-rep-legend">
+          <span class="hd-rep-legend-item hd-rep-legend-item--active">● Active / Primary</span>
+          <span class="hd-rep-legend-item hd-rep-legend-item--replica">● Replicating</span>
+          <span class="hd-rep-legend-item hd-rep-legend-item--standby">● Standby / Failover</span>
+          <span class="hd-rep-legend-item hd-rep-legend-item--offline">● Offline / Local</span>
+        </div>
+      </div>
+
+      <!-- FAILOVER -->
+      <div id="hd-tab-failover" class="hd-tab-panel" hidden>
+        <div class="hd-info-block">
+          <div class="hd-info-icon">🛡️</div>
+          <div>
+            <strong>Auto-Failover</strong>
+            <p class="hd-info-text">If a provider fails, goes slow, or gas fees spike — HyperDrive instantly reroutes to the next best provider with zero downtime. Order is determined by your OASISDNA config per ONODE.</p>
+          </div>
+        </div>
+        <div class="hd-section-label">FAILOVER CHAIN <span class="hd-badge hd-badge--live">ACTIVE</span></div>
+        <div id="hd-failover-chain" class="hd-failover-chain">
+          <div class="hd-empty"><div class="hd-empty-icon">🔗</div><p>Loading failover chain…</p></div>
+        </div>
+        <div class="hd-section-label" style="margin-top:20px">TRIGGERS</div>
+        <div class="hd-trigger-grid">
+          <div class="hd-trigger-chip hd-trigger-chip--active">Provider Downtime</div>
+          <div class="hd-trigger-chip hd-trigger-chip--active">High Latency</div>
+          <div class="hd-trigger-chip hd-trigger-chip--active">High Gas Fees</div>
+          <div class="hd-trigger-chip hd-trigger-chip--active">Performance Degradation</div>
+          <div class="hd-trigger-chip hd-trigger-chip--active">Network Issues</div>
+          <div class="hd-trigger-chip hd-trigger-chip--active">Cost Threshold</div>
+          <div class="hd-trigger-chip hd-trigger-chip--soon">ML Predictive <span class="hd-soon">v2</span></div>
+        </div>
+      </div>
+
+      <!-- REPLICATION -->
+      <div id="hd-tab-replication" class="hd-tab-panel" hidden>
+        <div class="hd-info-block">
+          <div class="hd-info-icon">🔄</div>
+          <div>
+            <strong>Auto-Replication</strong>
+            <p class="hd-info-text">Every Holon is automatically replicated across multiple providers simultaneously. Configurable per provider type, data type, schedule, cost and permissions in OASISDNA.json. Conflict resolution uses timestamps and version control.</p>
+          </div>
+        </div>
+        <div class="hd-rep-modes">
+          <div class="hd-rep-mode-card hd-rep-mode-card--active">
+            <div class="hd-rep-mode-icon">⚡</div>
+            <div class="hd-rep-mode-name">Synchronous</div>
+            <div class="hd-rep-mode-desc">Real-time for critical data</div>
+          </div>
+          <div class="hd-rep-mode-card">
+            <div class="hd-rep-mode-icon">🔁</div>
+            <div class="hd-rep-mode-name">Asynchronous</div>
+            <div class="hd-rep-mode-desc">Background for non-critical</div>
+          </div>
+          <div class="hd-rep-mode-card">
+            <div class="hd-rep-mode-icon">🎯</div>
+            <div class="hd-rep-mode-name">Selective</div>
+            <div class="hd-rep-mode-desc">Importance-based</div>
+          </div>
+          <div class="hd-rep-mode-card">
+            <div class="hd-rep-mode-icon">🌍</div>
+            <div class="hd-rep-mode-name">Geographic</div>
+            <div class="hd-rep-mode-desc">Region-aware routing</div>
+          </div>
+        </div>
+        <div class="hd-section-label" style="margin-top:20px">REPLICATION TARGETS</div>
+        <div id="hd-rep-targets" class="hd-rep-target-list">
+          <div class="hd-empty"><div class="hd-empty-icon">🔄</div><p>Loading replication targets…</p></div>
+        </div>
+        <div class="hd-sync-log-wrap">
+          <div class="hd-section-label">SYNC LOG <span class="hd-badge hd-badge--live">LIVE</span></div>
+          <div id="hd-sync-log" class="hd-sync-log"></div>
+        </div>
+      </div>
+
+      <!-- LOAD BALANCING -->
+      <div id="hd-tab-loadbalance" class="hd-tab-panel" hidden>
+        <div class="hd-info-block">
+          <div class="hd-info-icon">⚖️</div>
+          <div>
+            <strong>Auto Load Balancing</strong>
+            <p class="hd-info-text">HyperDrive distributes workloads across the optimal nodes in real-time using performance, cost, geographic and latency-first strategies. Continuously re-optimises as conditions change.</p>
+          </div>
+        </div>
+        <div class="hd-lb-strategies">
+          <div class="hd-lb-strategy hd-lb-strategy--active">⚡ Latency-First <span class="hd-badge hd-badge--live">Active</span></div>
+          <div class="hd-lb-strategy">🔄 Round Robin</div>
+          <div class="hd-lb-strategy">⚖️ Weighted</div>
+          <div class="hd-lb-strategy">💰 Cost-Based</div>
+          <div class="hd-lb-strategy">🌍 Geographic</div>
+        </div>
+        <div class="hd-section-label" style="margin-top:20px">PROVIDER LOAD DISTRIBUTION</div>
+        <div id="hd-lb-bars" class="hd-lb-bars">
+          <div class="hd-empty"><div class="hd-empty-icon">⚖️</div><p>Loading provider stats…</p></div>
+        </div>
+      </div>
+
+      <!-- OFFLINE QUEUE -->
+      <div id="hd-tab-offline" class="hd-tab-panel" hidden>
+        <div class="hd-info-block" id="hd-offline-info-block">
+          <div class="hd-info-icon">✈️</div>
+          <div>
+            <strong>Offline Mode</strong>
+            <p class="hd-info-text">When offline or in low-connectivity areas, HyperDrive automatically switches to local providers (SQLite, Holochain, Local Files). All operations are queued and automatically re-synced when connectivity is restored.</p>
+          </div>
+        </div>
+        <div class="hd-offline-providers">
+          <div class="hd-section-label">OFFLINE PROVIDERS <span class="hd-badge">Auto-Selected</span></div>
+          <div class="hd-offline-provider-row">
+            <span class="hd-offline-provider-chip">SQLite</span>
+            <span class="hd-offline-provider-chip">Local Files</span>
+            <span class="hd-offline-provider-chip">Holochain (Local)</span>
+          </div>
+        </div>
+        <div class="hd-section-label" style="margin-top:20px">PENDING SYNC QUEUE <span id="hd-queue-count" class="hd-badge"></span></div>
+        <div id="hd-queue-list" class="hd-queue-list">
+          <div class="hd-queue-empty">
+            <div class="hd-empty-icon">✅</div>
+            <p>All data is synced. No pending operations.</p>
+          </div>
+        </div>
+        <div class="hd-offline-actions">
+          <button class="button hd-action-btn" onclick="showComingSoonMessage()">Force Sync Now</button>
+          <button class="button button--ghost hd-action-btn" onclick="showComingSoonMessage()">Clear Queue</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
