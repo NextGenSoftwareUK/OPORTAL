@@ -38,32 +38,30 @@
 
   async function loadComponents() {
     var root = getRoot();
-    var shellParts = [];
-    var modalParts = [];
 
-    for (var i = 0; i < shellPaths.length; i++) {
-      try {
-        shellParts.push(await fetchFragment(shellPaths[i]));
-      } catch (error) {
-        console.error(error);
-      }
+    // Fetch shell and modals in parallel
+    var shellPromises = shellPaths.map(function (p) {
+      return fetchFragment(p).catch(function (e) { console.error(e); return null; });
+    });
+    var modalPromises = modalPaths.map(function (p) {
+      return fetchFragment(p).catch(function (e) { console.error(e); return null; });
+    });
+
+    // Inject shell (side nav) as soon as it's ready — don't wait for modals
+    var shellParts = (await Promise.all(shellPromises)).filter(Boolean);
+    if (shellParts.length) {
+      root.innerHTML = shellParts.join('\n');
     }
 
-    for (var j = 0; j < modalPaths.length; j++) {
-      try {
-        modalParts.push(await fetchFragment(modalPaths[j]));
-      } catch (error) {
-        console.error(error);
-      }
+    // Then inject modals once they've all arrived in parallel
+    var modalParts = (await Promise.all(modalPromises)).filter(Boolean);
+    if (modalParts.length) {
+      var modalWrapper = document.createElement('div');
+      modalWrapper.className = 'modal js-modal modal--animate-scale';
+      modalWrapper.innerHTML = modalParts.join('\n');
+      root.appendChild(modalWrapper);
     }
 
-    if (!shellParts.length && !modalParts.length) {
-      return;
-    }
-
-    root.innerHTML =
-      shellParts.join('\n') +
-      (modalParts.length ? '<div class="modal js-modal modal--animate-scale">' + modalParts.join('\n') + '</div>' : '');
     window.dispatchEvent(new CustomEvent('portal-components-ready'));
   }
 
