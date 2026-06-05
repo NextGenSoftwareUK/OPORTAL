@@ -2568,17 +2568,13 @@ select option {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-align: center;
-  transition: background 0.18s, border-color 0.18s, transform 0.18s;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: translateZ(0);
-  -webkit-font-smoothing: subpixel-antialiased;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
 }
 
 .dev-portal-link:hover {
   background: rgba(107, 208, 255, 0.1);
   border-color: rgba(107, 208, 255, 0.38);
-  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 4px 18px rgba(107, 208, 255, 0.15);
   color: var(--color-white);
 }
 
