@@ -2681,6 +2681,70 @@ select option {
   margin-bottom: 12px;
 }
 
+/* Demo Videos */
+.dev-portal-video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.dev-portal-video-card {
+  background: rgba(10, 21, 53, 0.82);
+  border: 1px solid rgba(134, 215, 255, 0.14);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.dev-portal-video-card:hover {
+  border-color: rgba(107, 208, 255, 0.35);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dev-portal-video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #020610;
+}
+
+.dev-portal-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.dev-portal-video-info {
+  padding: 14px 16px 16px;
+}
+
+.dev-portal-video-kicker {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(107, 208, 255, 0.7);
+  margin-bottom: 4px;
+}
+
+.dev-portal-video-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-white);
+  margin-bottom: 6px;
+}
+
+.dev-portal-video-text {
+  font-size: 0.78rem;
+  color: var(--color-contrast-medium);
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .dev-portal-video-grid { grid-template-columns: 1fr; }
+}
+
 /* Infographics */
 .dev-portal-infographic-grid {
   display: grid;
