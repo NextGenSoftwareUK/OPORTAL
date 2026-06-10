@@ -3,6 +3,7 @@
   var currentProvider = 'Solana';
   var currentTab = 'standard';
   var isFetching = false;
+  var loadedNfts = [];
 
   function getById(id) { return document.getElementById(id); }
 
@@ -219,6 +220,9 @@
     hideStatus();
     isFetching = false;
 
+    // Store for use in Place Geo-NFT form
+    loadedNfts = nfts || [];
+
     // Standard NFTs
     var nftCards = nfts && nfts.length ? nfts.map(buildNftCard) : [];
     renderGrid('nft-grid', 'nft-empty-standard', nftCards);
@@ -241,6 +245,198 @@
 
     if (!nfts && !geoNfts && !olandList) {
       showStatus('warn', 'Could not load NFT data — API may be unavailable or your session may have expired.');
+    }
+  }
+
+  // ── Action panel ─────────────────────────────────────────────────────────────
+
+  function showActionPanel(panelId) {
+    var panel = getById('nft-action-panel');
+    if (!panel) return;
+    panel.querySelectorAll('.nft-form-panel').forEach(function (p) { p.hidden = true; });
+    var target = getById(panelId);
+    if (target) target.hidden = false;
+    panel.hidden = false;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function closeActionPanel() {
+    var panel = getById('nft-action-panel');
+    if (panel) {
+      panel.hidden = true;
+      panel.querySelectorAll('.nft-form-panel').forEach(function (p) { p.hidden = true; });
+    }
+    hideStatus();
+  }
+
+  function populateNftSelect() {
+    var select = getById('nft-place-nft-select');
+    if (!select) return;
+    var current = select.value;
+    while (select.options.length > 1) select.remove(1);
+    loadedNfts.forEach(function (nft) {
+      var id = nft.id || nft.Id || nft.nftId || nft.NftId || '';
+      if (!id) return;
+      var label = nft.name || nft.Name || nft.title || nft.Title || id.slice(0, 12);
+      var opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = label;
+      select.appendChild(opt);
+    });
+    if (current) select.value = current;
+    if (!loadedNfts.length) {
+      var opt = document.createElement('option');
+      opt.disabled = true;
+      opt.textContent = 'No NFTs loaded — refresh the wallet first';
+      select.appendChild(opt);
+    }
+  }
+
+  // ── API: Mint NFT ────────────────────────────────────────────────────────────
+
+  async function apiMintNft(profile) {
+    var titleEl = getById('nft-mint-title');
+    var title = titleEl ? titleEl.value.trim() : '';
+    if (!title) { showStatus('error', 'Title is required to mint an NFT.'); return; }
+
+    var token = getToken(profile);
+    if (!token) { showStatus('error', 'You must be logged in to mint an NFT.'); return; }
+
+    var body = {
+      title: title,
+      description: (getById('nft-mint-desc') || {}).value || '',
+      imageUrl: (getById('nft-mint-image-url') || {}).value || '',
+      price: parseFloat((getById('nft-mint-price') || {}).value) || 0,
+      symbol: (getById('nft-mint-symbol') || {}).value || '',
+      numberToMint: parseInt((getById('nft-mint-quantity') || {}).value) || 1,
+      memoText: (getById('nft-mint-memo') || {}).value || '',
+      storeNFTMetaDataOnChain: false,
+      waitTillNFTMinted: false
+    };
+
+    var btn = getById('nft-mint-submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Minting…'; }
+    showStatus('loading', 'Minting NFT…');
+
+    try {
+      var res = await fetch(API_BASE + '/api/Nft/mint-nft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(body)
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (res.ok) {
+        showStatus('success', 'NFT minted successfully!');
+        closeActionPanel();
+        loadAll(profile);
+      } else {
+        var msg = (data && (data.message || data.Message || data.error || data.Error)) || ('Error ' + res.status);
+        showStatus('error', 'Mint failed: ' + msg);
+      }
+    } catch (e) {
+      showStatus('error', 'Network error — could not reach the API.');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Mint NFT'; }
+    }
+  }
+
+  // ── API: Send NFT ────────────────────────────────────────────────────────────
+
+  async function apiSendNft(profile) {
+    var fromAddr = ((getById('nft-send-from') || {}).value || '').trim();
+    var toAddr = ((getById('nft-send-to') || {}).value || '').trim();
+    if (!fromAddr || !toAddr) {
+      showStatus('error', 'From and To wallet addresses are required.');
+      return;
+    }
+
+    var token = getToken(profile);
+    if (!token) { showStatus('error', 'You must be logged in to send an NFT.'); return; }
+
+    var body = {
+      fromWalletAddress: fromAddr,
+      toWalletAddress: toAddr,
+      fromProvider: currentProvider,
+      toProvider: currentProvider,
+      amount: parseFloat((getById('nft-send-amount') || {}).value) || 0,
+      memoText: (getById('nft-send-memo') || {}).value || '',
+      waitTillNFTSent: false
+    };
+
+    var btn = getById('nft-send-submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+    showStatus('loading', 'Sending NFT…');
+
+    try {
+      var res = await fetch(API_BASE + '/api/Nft/send-nft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(body)
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (res.ok) {
+        showStatus('success', 'NFT sent successfully!');
+        closeActionPanel();
+        loadAll(profile);
+      } else {
+        var msg = (data && (data.message || data.Message || data.error || data.Error)) || ('Error ' + res.status);
+        showStatus('error', 'Send failed: ' + msg);
+      }
+    } catch (e) {
+      showStatus('error', 'Network error — could not reach the API.');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Send NFT'; }
+    }
+  }
+
+  // ── API: Place Geo-NFT ───────────────────────────────────────────────────────
+
+  async function apiPlaceGeoNft(profile) {
+    var nftId = ((getById('nft-place-nft-select') || {}).value || '').trim();
+    var lat = parseFloat((getById('nft-place-lat') || {}).value);
+    var lng = parseFloat((getById('nft-place-lng') || {}).value);
+
+    if (!nftId) { showStatus('error', 'Please select an NFT to place.'); return; }
+    if (isNaN(lat) || isNaN(lng)) { showStatus('error', 'Valid latitude and longitude are required.'); return; }
+
+    var token = getToken(profile);
+    if (!token) { showStatus('error', 'You must be logged in to place a Geo-NFT.'); return; }
+
+    var body = {
+      originalOASISNFTId: nftId,
+      originalOASISNFTOffChainProvider: currentProvider,
+      lat: lat,
+      long: lng,
+      allowOtherPlayersToAlsoCollect: !!((getById('nft-place-allow-collect') || {}).checked),
+      permSpawn: !!((getById('nft-place-perm-spawn') || {}).checked),
+      globalSpawnQuantity: parseInt((getById('nft-place-global-qty') || {}).value) || 1,
+      playerSpawnQuantity: parseInt((getById('nft-place-player-qty') || {}).value) || 1,
+      respawnDurationInSeconds: 0
+    };
+
+    var btn = getById('nft-place-submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Placing…'; }
+    showStatus('loading', 'Placing Geo-NFT on the map…');
+
+    try {
+      var res = await fetch(API_BASE + '/api/Nft/place-geo-nft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(body)
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (res.ok) {
+        showStatus('success', 'Geo-NFT placed on the map successfully!');
+        closeActionPanel();
+        loadAll(profile);
+      } else {
+        var msg = (data && (data.message || data.Message || data.error || data.Error)) || ('Error ' + res.status);
+        showStatus('error', 'Place failed: ' + msg);
+      }
+    } catch (e) {
+      showStatus('error', 'Network error — could not reach the API.');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Place Geo-NFT'; }
     }
   }
 
@@ -276,6 +472,7 @@
     modal.classList.add('is-visible');
     nftBlock.classList.add('is-selected');
 
+    closeActionPanel();
     switchTab('standard');
 
     var profile = readAvatar();
@@ -284,6 +481,7 @@
   }
 
   function closeNftModal() {
+    closeActionPanel();
     var modal = document.querySelector('.js-modal');
     var nftBlock = getById('nft-modal-block');
     if (modal) modal.classList.remove('is-visible');
@@ -292,11 +490,22 @@
 
   // ── Bind ─────────────────────────────────────────────────────────────────────
 
+  function exposeGlobals() {
+    window.openNftModal = openNftModal;
+    window.closeNftModal = closeNftModal;
+    window.nftShowMintForm = function () { closeActionPanel(); showActionPanel('nft-form-mint'); };
+    window.nftShowSendForm = function () { closeActionPanel(); showActionPanel('nft-form-send'); };
+    window.nftShowPlaceForm = function () { populateNftSelect(); closeActionPanel(); showActionPanel('nft-form-place'); };
+    window.nftCloseActionPanel = closeActionPanel;
+    window.nftSubmitMint = function () { apiMintNft(readAvatar()); };
+    window.nftSubmitSend = function () { apiSendNft(readAvatar()); };
+    window.nftSubmitPlace = function () { apiPlaceGeoNft(readAvatar()); };
+  }
+
   function bind() {
     var nftBlock = getById('nft-modal-block');
     if (!nftBlock || nftBlock.dataset.nftBound === 'true') {
-      window.openNftModal = openNftModal;
-      window.closeNftModal = closeNftModal;
+      exposeGlobals();
       return;
     }
 
@@ -343,8 +552,7 @@
     }
 
     nftBlock.dataset.nftBound = 'true';
-    window.openNftModal = openNftModal;
-    window.closeNftModal = closeNftModal;
+    exposeGlobals();
   }
 
   if (document.readyState === 'loading') {
