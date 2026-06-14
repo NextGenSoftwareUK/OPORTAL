@@ -1,0 +1,21 @@
+{
+  "rewrites": [
+    { "source": "/beamin",     "destination": "/portal.html" },
+    { "source": "/signin",     "destination": "/portal.html" },
+    { "source": "/login",      "destination": "/portal.html" },
+    { "source": "/signup",     "destination": "/portal.html" },
+    { "source": "/avatar",     "destination": "/portal.html" },
+    { "source": "/wallet",     "destination": "/portal.html" },
+    { "source": "/nft",        "destination": "/portal.html" },
+    { "source": "/karma",      "destination": "/portal.html" },
+    { "source": "/messages",   "destination": "/portal.html" },
+    { "source": "/search",     "destination": "/portal.html" },
+    { "source": "/settings",   "destination": "/portal.html" },
+    { "source": "/map",        "destination": "/portal.html" },
+    { "source": "/data",       "destination": "/portal.html" },
+    { "source": "/hyperdrive", "destination": "/portal.html" },
+    { "source": "/onet",       "destination": "/portal.html" },
+    { "source": "/onode",      "destination": "/portal.html" },
+    { "source": "/developer",  "destination": "/portal.html" }
+  ]
+}
