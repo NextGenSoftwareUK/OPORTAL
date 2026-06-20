@@ -118,8 +118,8 @@ section{position:relative;z-index:1}
 .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 
 /* ── FOOTER ── */
-footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5rem 2rem 2rem}
-.foot-inner{max-width:1400px;margin:0 auto;padding:0 1rem}
+footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5rem 0 2rem}
+.foot-inner{max-width:1180px;margin:0 auto;padding:0 2rem}
 .foot-brand{margin-bottom:3.5rem;text-align:center}
 .foot-brand .logo-txt{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:var(--cyan);letter-spacing:.14em;margin-bottom:.6rem}
 .foot-brand p{color:#a8bfd8;font-size:.88rem;line-height:1.7;max-width:600px}
@@ -127,11 +127,11 @@ footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5
 .foot-col h4{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.13em;font-weight:700;color:var(--cyan);margin-bottom:.9rem;text-transform:uppercase}
 .foot-col ul{list-style:none}
 ..foot-col ul li{margin-bottom:.2rem}
-.foot-col ul li a{color:#a8bfd8;text-decoration:none;font-size:.78rem;transition:color .2s}
-.foot-col ul li a:hover{color:var(--cyan)}
+.foot-col ul li a{color:#a8bfd8;text-decoration:none;font-size:.78rem;transition:filter .3s ease,color .3s ease}
+.foot-col ul li a:hover{color:var(--cyan);filter:drop-shadow(0 0 8px rgba(0,229,255,1)) drop-shadow(0 0 20px rgba(0,229,255,.8)) drop-shadow(0 0 40px rgba(0,229,255,.4))}
 .foot-bottom{border-top:1px solid var(--border);padding-top:1.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;color:#a8bfd8;font-size:.82rem}
-.foot-bottom a{color:#a8bfd8;text-decoration:none}
-.foot-bottom a:hover{color:var(--cyan)}
+.foot-bottom a{color:#a8bfd8;text-decoration:none;transition:filter .3s ease,color .3s ease}
+.foot-bottom a:hover{color:var(--cyan);filter:drop-shadow(0 0 8px rgba(0,229,255,1)) drop-shadow(0 0 20px rgba(0,229,255,.8)) drop-shadow(0 0 40px rgba(0,229,255,.4))}
 
 /* ── REVEAL ── */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
@@ -334,24 +334,6 @@ footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5
     </div>
     <div class="foot-grid">
       <div class="foot-col">
-        <h4>PORTAL</h4>
-        <ul>
-          <li><a href="/beamin" target="_blank" rel="noopener">Beam In</a></li>
-          <li><a href="/signup" target="_blank" rel="noopener">Sign Up</a></li>
-          <li><a href="/avatar" target="_blank" rel="noopener">My Avatar</a></li>
-          <li><a href="/developer" target="_blank" rel="noopener">Developer Portal</a></li>
-        </ul>
-      </div>
-      <div class="foot-col">
-        <h4>NETWORK</h4>
-        <ul>
-          <li><a href="/data">Data</a></li>
-          <li><a href="/hyperdrive">HyperDrive</a></li>
-          <li><a href="/onet">ONET</a></li>
-          <li><a href="/map">Map</a></li>
-        </ul>
-      </div>
-      <div class="foot-col">
         <h4>ECOSYSTEM</h4>
         <ul>
           <li><a href="https://oasisomniverse.one" target="_blank" rel="noopener">OASIS Omniverse</a></li>
@@ -383,6 +365,12 @@ footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5
           <li><a href="https://github.com/NextGenSoftwareUK/OASIS" target="_blank" rel="noopener">GitHub</a></li>
           <li><a href="https://github.com/NextGenSoftwareUK/OASIS/tree/master/Docs/Devs/API%20Documentation" target="_blank" rel="noopener">API Reference</a></li>
           <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/DEVELOPER_DOCUMENTATION_INDEX.md" target="_blank" rel="noopener">Developer Index</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/OASIS_Quick_Start_Guide.md" target="_blank" rel="noopener">Quick Start Guide</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/OASIS_ARCHITECTURE_OVERVIEW.md" target="_blank" rel="noopener">Architecture Overview</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/DEVELOPMENT_ENVIRONMENT_SETUP.md" target="_blank" rel="noopener">Environment Setup</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/OASIS-BEST-PRACTICES.md" target="_blank" rel="noopener">Best Practices</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/DOCKER_DEPLOYMENT_GUIDE.md" target="_blank" rel="noopener">Docker Deployment Guide</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/releases/tag/OASIS-Runtime-v4.5.1" target="_blank" rel="noopener">OASIS Runtime v4.5.1</a></li>
         </ul>
       </div>
       <div class="foot-col">
@@ -397,6 +385,30 @@ footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5
           <li><a href="https://www.oasisweb4.com/holonic-architecture" target="_blank" rel="noopener">Holonic Architecture</a></li>
           <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/WIKI_DOCUMENTATION_INDEX.md" target="_blank" rel="noopener">Wiki</a></li>
           <li><a href="https://www.ourworldthegame.com/blog" target="_blank" rel="noopener">Blog</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/OASIS_Lite_Paper.md" target="_blank" rel="noopener">OASIS Lite Paper</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/OASIS_HYPERDRIVE_WHITEPAPER.md" target="_blank" rel="noopener">HyperDrive Whitepaper</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/OASIS_COSMIC_ORM_WHITEPAPER.md" target="_blank" rel="noopener">Cosmic ORM Whitepaper</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/OASIS_NFT_SYSTEM_WHITEPAPER.md" target="_blank" rel="noopener">NFT System Whitepaper</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/OASIS_UNIVERSAL_WALLET_WHITEPAPER.md" target="_blank" rel="noopener">Universal Wallet Whitepaper</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/OASIS_TECHNOLOGY_SUMMARY_AND_USE_CASES.md" target="_blank" rel="noopener">Use Cases</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>PORTAL</h4>
+        <ul>
+          <li><a href="/beamin" target="_blank" rel="noopener">Beam In</a></li>
+          <li><a href="/signup" target="_blank" rel="noopener">Sign Up</a></li>
+          <li><a href="/avatar" target="_blank" rel="noopener">My Avatar</a></li>
+          <li><a href="/developer" target="_blank" rel="noopener">Developer Portal</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>NETWORK</h4>
+        <ul>
+          <li><a href="/data">Data</a></li>
+          <li><a href="/hyperdrive">HyperDrive</a></li>
+          <li><a href="/onet">ONET</a></li>
+          <li><a href="/map">Map</a></li>
         </ul>
       </div>
       <div class="foot-col">
@@ -404,9 +416,9 @@ footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5
         <ul>
           <li><a href="https://discord.gg/q9gMKU6" target="_blank" rel="noopener">Discord</a></li>
           <li><a href="https://t.me/oasisweb4chat" target="_blank" rel="noopener">Telegram</a></li>
-          <li><a href="https://x.com/OASISWEB4" target="_blank" rel="noopener">𝕏 OASIS WEB4</a></li>
-          <li><a href="https://x.com/OurWorldTheGame" target="_blank" rel="noopener">𝕏 Our World</a></li>
-          <li><a href="https://x.com/HoloNET_OASIS" target="_blank" rel="noopener">𝕏 HoloNET</a></li>
+          <li><a href="https://x.com/OASISWEB4" target="_blank" rel="noopener">X OASIS WEB4</a></li>
+          <li><a href="https://x.com/OurWorldTheGame" target="_blank" rel="noopener">X Our World</a></li>
+          <li><a href="https://x.com/HoloNET_OASIS" target="_blank" rel="noopener">X HoloNET</a></li>
           <li><a href="https://www.youtube.com/@WEB4OASIS" target="_blank" rel="noopener">YouTube OASIS</a></li>
           <li><a href="https://www.youtube.com/@ourworld-the-game" target="_blank" rel="noopener">YouTube Our World</a></li>
           <li><a href="https://www.youtube.com/channel/UC0_O4RwdY3lq1m3-K-njUxA" target="_blank" rel="noopener">YouTube Our World Legacy</a></li>
@@ -419,6 +431,8 @@ footer{background:var(--surface2);border-top:1px solid var(--border);padding:3.5
           <li><a href="https://github.com/NextGenSoftwareUK/OASIS/issues" target="_blank" rel="noopener">Report an Issue</a></li>
           <li><a href="https://github.com/NextGenSoftwareUK/OASIS/discussions" target="_blank" rel="noopener">Discussions</a></li>
           <li><a href="https://tally.so/r/WOZjNa" target="_blank" rel="noopener">Submit a Support Ticket</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+          <li><a href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">Code of Conduct</a></li>
         </ul>
       </div>
     </div>
