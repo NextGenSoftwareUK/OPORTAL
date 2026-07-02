@@ -128,10 +128,28 @@
     document.addEventListener('click', function (e) {
       var trig = e.target.closest && e.target.closest('.js-modal-trigger[data-signin]');
       if (!trig) return;
+      // Prevent href="#0" from pushing a spurious hash history entry.
+      // Without this, every trigger click adds e.g. /beamin#0 to the stack, so
+      // watchClose's history.back() lands on that instead of the base entry and
+      // popstate re-opens the modal — creating an infinite close→reopen loop.
+      e.preventDefault();
       var type = trig.getAttribute('data-signin');           // login | signup
       var route = type === 'signup' ? 'signup' : 'beamin';
-      // the existing ModalSignin handler opens the form; we just log the route
-      setTimeout(function () { if (!applyingRoute && modalIsVisible()) pushRoute(route); }, 0);
+      // Capture visibility BEFORE the ModalSignin bubble handler opens the form.
+      var wasVisible = modalIsVisible();
+      // the existing ModalSignin handler opens the form; we just record the route
+      setTimeout(function () {
+        if (!applyingRoute && modalIsVisible()) {
+          if (wasVisible) {
+            // Cross-modal switch (login ↔ signup): replace so Back doesn't
+            // traverse every form switch before returning to the portal base.
+            history.replaceState({ oportal: true, route: route }, '', '/' + route);
+          } else {
+            // Opening from closed state: push so Back returns to portal base.
+            pushRoute(route);
+          }
+        }
+      }, 0);
     }, true);
   }
 
