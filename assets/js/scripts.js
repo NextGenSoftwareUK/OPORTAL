@@ -724,7 +724,7 @@ function addAuthPopup(login, msg, e) {
       //divError.classList.add('error');
     }
 		//console.log(type)
-		//e.preventDefault()
+		e.preventDefault()
 }
 
 function extractAvatarData(payload) {
