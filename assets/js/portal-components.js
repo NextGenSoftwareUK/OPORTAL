@@ -27,6 +27,13 @@
     'assets/components/modals/missions.html',
     'assets/components/modals/eggs.html',
     'assets/components/modals/ai.html',
+    'assets/components/modals/files.html',
+    'assets/components/modals/competition.html',
+    'assets/components/modals/clan.html',
+    'assets/components/modals/gifts.html',
+    'assets/components/modals/subscription.html',
+    'assets/components/modals/games.html',
+    'assets/components/modals/inventory.html',
   ];
 
   function getRoot() {

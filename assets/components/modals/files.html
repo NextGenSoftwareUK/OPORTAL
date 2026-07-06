@@ -1,0 +1,62 @@
+<div class="modal__block js-modal-block files-modal-block" data-type="files" id="files-modal-block">
+  <section class="map-modal-shell" aria-label="Files">
+    <div class="map-modal-card">
+
+      <div class="map-modal-top">
+        <div>
+          <h1 class="map-modal-title">My Files</h1>
+          <p class="map-modal-lead">Upload, download and manage files stored on the OASIS HyperDrive.</p>
+        </div>
+        <button id="files-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div class="map-stats-bar" style="grid-template-columns:repeat(2,1fr)">
+        <div class="map-stat-block">
+          <div class="map-stat-label">Total Files</div>
+          <div class="map-stat-value" id="files-stat-count">—</div>
+        </div>
+        <div class="map-stat-block">
+          <div class="map-stat-label">Total Size</div>
+          <div class="map-stat-value" id="files-stat-size">—</div>
+        </div>
+      </div>
+
+      <div id="files-status" class="files-status" hidden></div>
+
+      <div class="map-tabs">
+        <button class="map-tab is-active" data-tab="list">My Files</button>
+        <button class="map-tab" data-tab="upload">Upload</button>
+      </div>
+
+      <!-- My Files -->
+      <div id="files-tab-list" class="map-tab-panel">
+        <div class="modal-toolbar">
+          <button id="files-refresh-btn" class="button button--ghost" type="button" style="font-size:0.85rem;padding:5px 14px;">⟳ Refresh</button>
+        </div>
+        <div id="files-list" class="modal-item-list">
+          <div class="map-empty"><div class="map-empty-icon">📁</div><p>Loading files…</p></div>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div id="files-tab-upload" class="map-tab-panel" hidden>
+        <div class="modal-form">
+          <div class="modal-form-group">
+            <label class="modal-label" for="files-upload-input">File</label>
+            <input id="files-upload-input" type="file" class="modal-file-input" />
+          </div>
+          <div class="modal-form-group">
+            <label class="modal-label" for="files-upload-name">Display Name (optional)</label>
+            <input id="files-upload-name" type="text" class="modal-input" placeholder="Leave blank to use filename" />
+          </div>
+          <div class="modal-form-group">
+            <label class="modal-label" for="files-upload-desc">Description (optional)</label>
+            <textarea id="files-upload-desc" class="modal-input modal-textarea" rows="2" placeholder="Brief description of this file…"></textarea>
+          </div>
+          <button id="files-upload-btn" class="button button--primary" type="button">Upload File</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

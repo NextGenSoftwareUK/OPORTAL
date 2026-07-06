@@ -179,15 +179,20 @@
       }
     }
 
-    // Fire parallel API calls — SDK: @oasisomniverse/web4-api
+    // Fire parallel API calls — SDK: @oasisomniverse/web4-api + web5-api
     var safe = function (p) { return p.catch(function () { return { isError: true }; }); };
     var results = await Promise.allSettled([
-      avatarId && token ? safe(window.oasisClient.karma.getKarmaAkashicRecordsForAvatar({ avatarId: avatarId })) : Promise.resolve(null),
-      avatarId && token ? safe(window.oasisClient.karma.getKarmaStats({ avatarId: avatarId })) : Promise.resolve(null),
-      token ? safe(window.oasisClient.data.loadAllHolons({})) : Promise.resolve(null),
-      avatarId && token ? safe(window.oasisClient.nft.loadAllWeb4NFTsForAvatarAsync({ avatarId: avatarId })) : Promise.resolve(null),
-      avatarId && token ? safe(window.oasisClient.nft.loadAllWeb4GeoNFTsForAvatarAsync({ avatarId: avatarId })) : Promise.resolve(null),
-      token ? safe(window.oasisClient.map.getMapStats()) : Promise.resolve(null),
+      avatarId && token ? safe(window.oasisClient.karma.getKarmaAkashicRecordsForAvatar({ avatarId: avatarId })) : Promise.resolve(null),  // [0]
+      avatarId && token ? safe(window.oasisClient.karma.getKarmaStats({ avatarId: avatarId })) : Promise.resolve(null),                      // [1]
+      token ? safe(window.oasisClient.data.loadAllHolons({})) : Promise.resolve(null),                                                       // [2]
+      avatarId && token ? safe(window.oasisClient.nft.loadAllWeb4NFTsForAvatarAsync({ avatarId: avatarId })) : Promise.resolve(null),        // [3]
+      avatarId && token ? safe(window.oasisClient.nft.loadAllWeb4GeoNFTsForAvatarAsync({ avatarId: avatarId })) : Promise.resolve(null),     // [4]
+      token ? safe(window.oasisClient.map.getMapStats()) : Promise.resolve(null),                                                             // [5]
+      token ? safe(window.oasisClient.files.getAllFilesStoredForCurrentLoggedInAvatar()) : Promise.resolve(null),                             // [6]
+      token ? safe(window.oasisClient.competition.getMyRank({ competitionType: 'Karma', seasonType: 'AllTime' })) : Promise.resolve(null),   // [7]
+      token ? safe(window.oasisClient.subscription.getMySubscriptions()) : Promise.resolve(null),                                            // [8]
+      token && window.starClient ? safe(window.starClient.games.getAllGames()) : Promise.resolve(null),                                       // [9]
+      token ? safe(window.oasisClient.gifts.getMyGifts()) : Promise.resolve(null),                                                           // [10]
     ]);
     /* OLD fetch calls:
     apiFetch(API_BASE + '/api/karma/get-karma-akashic-records-for-avatar/' + avatarId, token)
@@ -198,12 +203,17 @@
     apiFetch(API_BASE + '/api/map/stats', token)
     */
 
-    var akashicData = sdkVal(results[0].value);
-    var karmaStats  = sdkVal(results[1].value);
-    var holonData   = sdkVal(results[2].value);
-    var nftData     = sdkVal(results[3].value);
-    var geoNftData  = sdkVal(results[4].value);
-    var mapData     = sdkVal(results[5].value);
+    var akashicData  = sdkVal(results[0].value);
+    var karmaStats   = sdkVal(results[1].value);
+    var holonData    = sdkVal(results[2].value);
+    var nftData      = sdkVal(results[3].value);
+    var geoNftData   = sdkVal(results[4].value);
+    var mapData      = sdkVal(results[5].value);
+    var filesData    = sdkVal(results[6].value);
+    var rankData     = sdkVal(results[7].value);
+    var subsData     = sdkVal(results[8].value);
+    var gamesData    = sdkVal(results[9].value);
+    var giftsData    = sdkVal(results[10].value);
 
     // Akashic records
     var records = extractList(akashicData);
@@ -254,6 +264,30 @@
     // Quests & Missions (placeholders — APIs TBD)
     set('dash-card-quests', '—');
     set('dash-card-missions', '—');
+
+    // Files
+    var files = extractList(filesData);
+    set('dash-card-files', fmtNum(files.length) || '0');
+
+    // Competition rank
+    var rank = rankData && (rankData.result || rankData);
+    var rankVal = rank && (rank.rank || rank.Rank || rank.position || rank.Position);
+    set('dash-card-rank', rankVal != null ? '#' + rankVal : '—');
+
+    // Subscription plan
+    var subs = extractList(subsData);
+    var activeSub = subs.find(function(s) { return s.isActive || s.IsActive || s.status === 'active' || s.Status === 'active'; });
+    var planName = activeSub && (activeSub.planName || activeSub.PlanName || activeSub.name || activeSub.Name);
+    set('dash-card-plan', planName || (subs.length ? 'Active' : 'Free'));
+
+    // Games (web5)
+    var games = extractList(gamesData);
+    set('dash-card-games', fmtNum(games.length) || '0');
+
+    // Gifts — update OAPPs panel to show pending gifts count too
+    var gifts = extractList(giftsData);
+    var pendingGifts = gifts.filter(function(g) { return !(g.isOpened || g.IsOpened || g.opened); }).length;
+    if (pendingGifts > 0) set('dash-oapps-msg', pendingGifts + ' gift' + (pendingGifts === 1 ? '' : 's') + ' waiting!');
   }
 
   // ---- Show / Hide ----

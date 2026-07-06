@@ -1,0 +1,73 @@
+<div class="modal__block js-modal-block competition-modal-block" data-type="competition" id="competition-modal-block">
+  <section class="map-modal-shell" aria-label="Competition">
+    <div class="map-modal-card">
+
+      <div class="map-modal-top">
+        <div>
+          <h1 class="map-modal-title">Competition</h1>
+          <p class="map-modal-lead">View leaderboards, your rank and active tournaments across the OASIS.</p>
+        </div>
+        <button id="competition-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div class="map-stats-bar" style="grid-template-columns:repeat(3,1fr)">
+        <div class="map-stat-block">
+          <div class="map-stat-label">My Rank</div>
+          <div class="map-stat-value" id="comp-stat-rank">—</div>
+        </div>
+        <div class="map-stat-block">
+          <div class="map-stat-label">League</div>
+          <div class="map-stat-value" id="comp-stat-league">—</div>
+        </div>
+        <div class="map-stat-block">
+          <div class="map-stat-label">Tournaments</div>
+          <div class="map-stat-value" id="comp-stat-tournaments">—</div>
+        </div>
+      </div>
+
+      <div id="competition-status" class="competition-status" hidden></div>
+
+      <!-- Filter bar -->
+      <div class="modal-toolbar" style="margin-bottom:14px">
+        <select id="comp-type-sel" class="modal-select" style="flex:1">
+          <option value="Karma">Karma</option>
+          <option value="XP">XP</option>
+          <option value="Quest">Quests</option>
+          <option value="NFT">NFTs</option>
+        </select>
+        <select id="comp-season-sel" class="modal-select" style="flex:1">
+          <option value="AllTime">All Time</option>
+          <option value="Season1">Season 1</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Monthly">Monthly</option>
+        </select>
+        <button id="comp-load-btn" class="button" type="button">Load</button>
+      </div>
+
+      <div class="map-tabs">
+        <button class="map-tab is-active" data-tab="leaderboard">Leaderboard</button>
+        <button class="map-tab" data-tab="myrank">My Rank</button>
+        <button class="map-tab" data-tab="tournaments">Tournaments</button>
+      </div>
+
+      <div id="comp-tab-leaderboard" class="map-tab-panel">
+        <div id="comp-leaderboard-list" class="modal-item-list">
+          <div class="map-empty"><p>Select filters above and click Load.</p></div>
+        </div>
+      </div>
+
+      <div id="comp-tab-myrank" class="map-tab-panel" hidden>
+        <div id="comp-myrank-panel" class="modal-detail-panel">
+          <div class="map-empty"><p>Click Load to see your rank.</p></div>
+        </div>
+      </div>
+
+      <div id="comp-tab-tournaments" class="map-tab-panel" hidden>
+        <div id="comp-tournaments-list" class="modal-item-list">
+          <div class="map-empty"><p>Loading tournaments…</p></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

@@ -60,18 +60,46 @@
         <div class="dash-card-label">Geo NFTs</div>
       </div>
     </div>
-    <div class="dash-card dash-card--coral" onclick="showComingSoonMessage()">
+    <div class="dash-card dash-card--coral" onclick="if(typeof openQuestsModal==='function')openQuestsModal()">
       <div class="dash-card-icon">&#127918;</div>
       <div class="dash-card-body">
         <div class="dash-card-value" id="dash-card-quests">—</div>
         <div class="dash-card-label">Quests</div>
       </div>
     </div>
-    <div class="dash-card dash-card--teal" onclick="showComingSoonMessage()">
+    <div class="dash-card dash-card--teal" onclick="if(typeof openMissionsModal==='function')openMissionsModal()">
       <div class="dash-card-icon">&#9876;</div>
       <div class="dash-card-body">
         <div class="dash-card-value" id="dash-card-missions">—</div>
         <div class="dash-card-label">Missions</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--purple" onclick="if(typeof openFilesModal==='function')openFilesModal()">
+      <div class="dash-card-icon">&#128193;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-files">—</div>
+        <div class="dash-card-label">Files</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--amber" onclick="if(typeof openGamesModal==='function')openGamesModal()">
+      <div class="dash-card-icon">&#127918;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-games">—</div>
+        <div class="dash-card-label">Games</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--cyan" onclick="if(typeof openCompetitionModal==='function')openCompetitionModal()">
+      <div class="dash-card-icon">&#127942;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-rank">—</div>
+        <div class="dash-card-label">My Rank</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--green" onclick="if(typeof openSubscriptionModal==='function')openSubscriptionModal()">
+      <div class="dash-card-icon">&#11088;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-plan">—</div>
+        <div class="dash-card-label">Subscription</div>
       </div>
     </div>
   </div>
@@ -218,6 +246,38 @@
       <button class="dash-qa-btn" onclick="if(typeof openEggsModal==='function')openEggsModal()">
         <span class="dash-qa-icon">&#129424;</span>
         <span class="dash-qa-label">Eggs</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openFilesModal==='function')openFilesModal()">
+        <span class="dash-qa-icon">&#128193;</span>
+        <span class="dash-qa-label">My Files</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openGamesModal==='function')openGamesModal()">
+        <span class="dash-qa-icon">&#127918;</span>
+        <span class="dash-qa-label">Games</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openInventoryModal==='function')openInventoryModal()">
+        <span class="dash-qa-icon">&#127930;</span>
+        <span class="dash-qa-label">Inventory</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openCompetitionModal==='function')openCompetitionModal()">
+        <span class="dash-qa-icon">&#127942;</span>
+        <span class="dash-qa-label">Competition</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openClanModal==='function')openClanModal()">
+        <span class="dash-qa-icon">&#128737;</span>
+        <span class="dash-qa-label">Clans</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openGiftsModal==='function')openGiftsModal()">
+        <span class="dash-qa-icon">&#127873;</span>
+        <span class="dash-qa-label">Gifts</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openSubscriptionModal==='function')openSubscriptionModal()">
+        <span class="dash-qa-icon">&#11088;</span>
+        <span class="dash-qa-label">Subscription</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openAiModal==='function')openAiModal()">
+        <span class="dash-qa-icon">&#129504;</span>
+        <span class="dash-qa-label">OASIS AI</span>
       </button>
     </div>
   </div>

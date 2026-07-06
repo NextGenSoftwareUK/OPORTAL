@@ -1,0 +1,66 @@
+<div class="modal__block js-modal-block clan-modal-block" data-type="clan" id="clan-modal-block">
+  <section class="map-modal-shell" aria-label="Clans">
+    <div class="map-modal-card">
+
+      <div class="map-modal-top">
+        <div>
+          <h1 class="map-modal-title">Clans</h1>
+          <p class="map-modal-lead">Browse and manage clans — form alliances and explore shared inventories.</p>
+        </div>
+        <button id="clan-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div class="map-stats-bar" style="grid-template-columns:repeat(2,1fr)">
+        <div class="map-stat-block">
+          <div class="map-stat-label">Total Clans</div>
+          <div class="map-stat-value" id="clan-stat-total">—</div>
+        </div>
+        <div class="map-stat-block">
+          <div class="map-stat-label">My Clan</div>
+          <div class="map-stat-value" id="clan-stat-mine">—</div>
+        </div>
+      </div>
+
+      <div id="clan-status" class="clan-status" hidden></div>
+
+      <div class="map-tabs">
+        <button class="map-tab is-active" data-tab="browse">Browse</button>
+        <button class="map-tab" data-tab="detail">Clan Detail</button>
+        <button class="map-tab" data-tab="create">Create</button>
+      </div>
+
+      <!-- Browse -->
+      <div id="clan-tab-browse" class="map-tab-panel">
+        <div class="modal-toolbar">
+          <button id="clan-refresh-btn" class="button button--ghost" type="button" style="font-size:0.85rem;padding:5px 14px;">⟳ Refresh</button>
+        </div>
+        <div id="clan-browse-list" class="modal-item-list">
+          <div class="map-empty"><div class="map-empty-icon">🛡️</div><p>Loading clans…</p></div>
+        </div>
+      </div>
+
+      <!-- Detail -->
+      <div id="clan-tab-detail" class="map-tab-panel" hidden>
+        <div id="clan-detail-panel">
+          <div class="map-empty"><p>Select a clan from Browse to view details.</p></div>
+        </div>
+      </div>
+
+      <!-- Create -->
+      <div id="clan-tab-create" class="map-tab-panel" hidden>
+        <div class="modal-form">
+          <div class="modal-form-group">
+            <label class="modal-label" for="clan-create-name">Clan Name</label>
+            <input id="clan-create-name" type="text" class="modal-input" placeholder="Enter clan name…" />
+          </div>
+          <div class="modal-form-group">
+            <label class="modal-label" for="clan-create-desc">Description</label>
+            <textarea id="clan-create-desc" class="modal-input modal-textarea" rows="3" placeholder="What is this clan about?…"></textarea>
+          </div>
+          <button id="clan-create-btn" class="button button--primary" type="button">Create Clan</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

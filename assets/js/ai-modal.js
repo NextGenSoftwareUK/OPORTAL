@@ -263,6 +263,155 @@
     if (btn) { btn.disabled = false; btn.textContent = 'Record Memory'; }
   }
 
+  // ── Orchestrator ──────────────────────────────────────────────────────────────
+
+  async function loadAdapters() {
+    var container = getById('ai-orch-adapters');
+    if (!container || !window.aiClient) return;
+    container.innerHTML = '<p>Loading…</p>';
+    try {
+      var sdkRes = await window.aiClient.orchestrator.getAdapters();
+      var adapters = sdkRes && !sdkRes.isError && sdkRes.result;
+      if (Array.isArray(adapters) && adapters.length) {
+        container.innerHTML = adapters.map(function(a) {
+          var name = a.name || a.Name || a.adapterId || a.id || String(a);
+          var type = a.type || a.Type || a.adapterType || '';
+          return '<div class="ai-adapter-row"><span class="ai-adapter-name">' + escHtml(name) + '</span>' +
+            (type ? '<span class="ai-adapter-type">' + escHtml(type) + '</span>' : '') + '</div>';
+        }).join('');
+      } else {
+        container.innerHTML = '<p class="ai-empty">No adapters registered.</p>';
+      }
+    } catch(e) { container.innerHTML = '<p class="ai-empty">Could not load adapters.</p>'; }
+  }
+
+  async function invokeAdapter() {
+    var adapterEl = getById('ai-orch-adapter');
+    var inputEl   = getById('ai-orch-input');
+    var resultEl  = getById('ai-orch-result');
+    var btn       = getById('ai-orch-invoke-btn');
+    if (!adapterEl || !adapterEl.value.trim()) { showStatusBrief('warn', 'Enter an adapter name.'); return; }
+    if (!window.aiClient) { showStatusBrief('error', 'AI client not ready.'); return; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Invoking…'; }
+    if (resultEl) { resultEl.hidden = true; resultEl.innerHTML = ''; }
+    try {
+      var inputStr = inputEl ? inputEl.value.trim() : '';
+      var inputPayload;
+      try { inputPayload = JSON.parse(inputStr); } catch(e) { inputPayload = { input: inputStr }; }
+      var payload = Object.assign({ adapter: adapterEl.value.trim() }, inputPayload);
+      var sdkRes = await window.aiClient.orchestrator.invoke(payload);
+      if (sdkRes && !sdkRes.isError) {
+        var out = sdkRes.result;
+        var text = typeof out === 'string' ? out : JSON.stringify(out, null, 2);
+        resultEl.innerHTML = '<pre class="ai-result-pre">' + escHtml(text) + '</pre>';
+        resultEl.hidden = false;
+      } else {
+        showStatusBrief('error', (sdkRes && sdkRes.message) || 'Invocation failed.');
+      }
+    } catch(e) { showStatusBrief('error', 'Error invoking adapter.'); }
+    if (btn) { btn.disabled = false; btn.textContent = 'Invoke Adapter'; }
+  }
+
+  // ── Reasoning Network ─────────────────────────────────────────────────────────
+
+  async function loadAgents() {
+    var container = getById('ai-rn-agents');
+    var sel       = getById('ai-rn-agent-sel');
+    if (!container || !window.aiClient) return;
+    container.innerHTML = '<p>Loading…</p>';
+    try {
+      var sdkRes = await window.aiClient.reasoningNetwork.getAgents();
+      var agents = sdkRes && !sdkRes.isError && sdkRes.result;
+      if (Array.isArray(agents) && agents.length) {
+        container.innerHTML = agents.map(function(a) {
+          var name = a.name || a.Name || a.agentId || a.id || String(a);
+          var role = a.role || a.Role || a.type || '';
+          return '<div class="ai-adapter-row"><span class="ai-adapter-name">' + escHtml(name) + '</span>' +
+            (role ? '<span class="ai-adapter-type">' + escHtml(role) + '</span>' : '') + '</div>';
+        }).join('');
+        if (sel) {
+          var opts = agents.map(function(a) {
+            var id   = a.id || a.agentId || a.name || String(a);
+            var name = a.name || a.Name || id;
+            return '<option value="' + escHtml(String(id)) + '">' + escHtml(String(name)) + '</option>';
+          });
+          sel.innerHTML = '<option value="">Any available agent</option>' + opts.join('');
+        }
+      } else {
+        container.innerHTML = '<p class="ai-empty">No agents registered.</p>';
+      }
+    } catch(e) { container.innerHTML = '<p class="ai-empty">Could not load agents.</p>'; }
+  }
+
+  async function dispatchTask() {
+    var taskEl   = getById('ai-rn-task');
+    var agentSel = getById('ai-rn-agent-sel');
+    var resultEl = getById('ai-rn-result');
+    var btn      = getById('ai-rn-dispatch-btn');
+    if (!taskEl || !taskEl.value.trim()) { showStatusBrief('warn', 'Enter a task to dispatch.'); return; }
+    if (!window.aiClient) { showStatusBrief('error', 'AI client not ready.'); return; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Dispatching…'; }
+    if (resultEl) { resultEl.hidden = true; }
+    try {
+      var payload = { task: taskEl.value.trim() };
+      if (agentSel && agentSel.value) payload.agentId = agentSel.value;
+      var sdkRes = await window.aiClient.reasoningNetwork.dispatch(payload);
+      if (sdkRes && !sdkRes.isError) {
+        var out  = sdkRes.result;
+        var text = typeof out === 'string' ? out : JSON.stringify(out, null, 2);
+        resultEl.innerHTML = '<pre class="ai-result-pre">' + escHtml(text) + '</pre>';
+        resultEl.hidden = false;
+      } else {
+        showStatusBrief('error', (sdkRes && sdkRes.message) || 'Dispatch failed.');
+      }
+    } catch(e) { showStatusBrief('error', 'Error dispatching task.'); }
+    if (btn) { btn.disabled = false; btn.textContent = 'Dispatch Task'; }
+  }
+
+  // ── Holonic Braid ─────────────────────────────────────────────────────────────
+
+  async function loadBraidGraph() {
+    var taskTypeEl = getById('ai-braid-task-type');
+    var graphEl    = getById('ai-braid-graph');
+    var statusEl   = getById('ai-braid-status');
+    if (!taskTypeEl || !taskTypeEl.value.trim()) { showStatusBrief('warn', 'Enter a task type.'); return; }
+    if (!window.aiClient) { showStatusBrief('error', 'AI client not ready.'); return; }
+    if (statusEl) { statusEl.textContent = 'Loading graph…'; statusEl.hidden = false; }
+    try {
+      var sdkRes = await window.aiClient.holonicBraid.getGraph({ taskType: taskTypeEl.value.trim() });
+      if (sdkRes && !sdkRes.isError && sdkRes.result) {
+        if (graphEl) graphEl.value = JSON.stringify(sdkRes.result, null, 2);
+        if (statusEl) { statusEl.textContent = 'Graph loaded.'; setTimeout(function(){ statusEl.hidden = true; }, 2000); }
+      } else {
+        if (statusEl) { statusEl.textContent = 'No graph found for this task type.'; setTimeout(function(){ statusEl.hidden = true; }, 3000); }
+      }
+    } catch(e) {
+      if (statusEl) { statusEl.textContent = 'Error loading graph.'; setTimeout(function(){ statusEl.hidden = true; }, 3000); }
+    }
+  }
+
+  async function saveBraidGraph() {
+    var taskTypeEl = getById('ai-braid-task-type');
+    var graphEl    = getById('ai-braid-graph');
+    var statusEl   = getById('ai-braid-status');
+    var btn        = getById('ai-braid-save-btn');
+    if (!taskTypeEl || !taskTypeEl.value.trim()) { showStatusBrief('warn', 'Enter a task type.'); return; }
+    if (!graphEl || !graphEl.value.trim()) { showStatusBrief('warn', 'Enter graph JSON.'); return; }
+    if (!window.aiClient) { showStatusBrief('error', 'AI client not ready.'); return; }
+    var graphData;
+    try { graphData = JSON.parse(graphEl.value); } catch(e) { showStatusBrief('error', 'Invalid JSON in graph field.'); return; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+    try {
+      var sdkRes = await window.aiClient.holonicBraid.saveGraph(Object.assign({ taskType: taskTypeEl.value.trim() }, graphData));
+      if (sdkRes && !sdkRes.isError) {
+        if (statusEl) { statusEl.textContent = 'Graph saved.'; statusEl.hidden = false; setTimeout(function(){ statusEl.hidden = true; }, 2000); }
+      } else {
+        showStatusBrief('error', (sdkRes && sdkRes.message) || 'Could not save graph.');
+      }
+    } catch(e) { showStatusBrief('error', 'Error saving graph.'); }
+    if (btn) { btn.disabled = false; btn.textContent = 'Save Graph'; }
+  }
+
   // ── Tabs ──────────────────────────────────────────────────────────────────────
 
   function switchTab(tab) {
@@ -276,7 +425,9 @@
     block.querySelectorAll('.ai-tab-panel').forEach(function (p) {
       p.hidden = p.id !== 'ai-tab-' + tab;
     });
-    if (tab === 'memory') loadEarthHolon();
+    if (tab === 'memory')       loadEarthHolon();
+    if (tab === 'orchestrator') loadAdapters();
+    if (tab === 'reasoning')    loadAgents();
   }
 
   // ── Open / close ──────────────────────────────────────────────────────────────
@@ -339,6 +490,18 @@
 
     var memBtn = getById('ai-memory-record-btn');
     if (memBtn) memBtn.addEventListener('click', recordMemory);
+
+    var orchInvokeBtn = getById('ai-orch-invoke-btn');
+    if (orchInvokeBtn) orchInvokeBtn.addEventListener('click', invokeAdapter);
+
+    var rnDispatchBtn = getById('ai-rn-dispatch-btn');
+    if (rnDispatchBtn) rnDispatchBtn.addEventListener('click', dispatchTask);
+
+    var braidLoadBtn = getById('ai-braid-load-btn');
+    if (braidLoadBtn) braidLoadBtn.addEventListener('click', loadBraidGraph);
+
+    var braidSaveBtn = getById('ai-braid-save-btn');
+    if (braidSaveBtn) braidSaveBtn.addEventListener('click', saveBraidGraph);
 
     block.dataset.aiBound = 'true';
     window.openAiModal  = openAiModal;

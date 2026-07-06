@@ -1,0 +1,49 @@
+<div class="modal__block js-modal-block inventory-modal-block" data-type="inventory" id="inventory-modal-block">
+  <section class="map-modal-shell" aria-label="Inventory">
+    <div class="map-modal-card">
+
+      <div class="map-modal-top">
+        <div>
+          <h1 class="map-modal-title">Inventory</h1>
+          <p class="map-modal-lead">Browse inventory items available across the OASIS and your personal collection.</p>
+        </div>
+        <button id="inventory-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div class="map-stats-bar" style="grid-template-columns:repeat(2,1fr)">
+        <div class="map-stat-block">
+          <div class="map-stat-label">All Items</div>
+          <div class="map-stat-value" id="inv-stat-total">—</div>
+        </div>
+        <div class="map-stat-block">
+          <div class="map-stat-label">My Items</div>
+          <div class="map-stat-value" id="inv-stat-mine">—</div>
+        </div>
+      </div>
+
+      <div id="inventory-status" class="inventory-status" hidden></div>
+
+      <div class="map-tabs">
+        <button class="map-tab is-active" data-tab="all">All Items</button>
+        <button class="map-tab" data-tab="mine">My Items</button>
+      </div>
+
+      <div id="inv-tab-all" class="map-tab-panel">
+        <div class="modal-toolbar">
+          <button id="inv-refresh-btn" class="button button--ghost" type="button" style="font-size:0.85rem;padding:5px 14px;">⟳ Refresh</button>
+          <input id="inv-search" type="text" class="modal-input" placeholder="Search items…" style="flex:1" />
+        </div>
+        <div id="inv-all-list" class="modal-item-grid">
+          <div class="map-empty"><div class="map-empty-icon">🎒</div><p>Loading items…</p></div>
+        </div>
+      </div>
+
+      <div id="inv-tab-mine" class="map-tab-panel" hidden>
+        <div id="inv-mine-list" class="modal-item-grid">
+          <div class="map-empty"><div class="map-empty-icon">🎒</div><p>Loading your items…</p></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

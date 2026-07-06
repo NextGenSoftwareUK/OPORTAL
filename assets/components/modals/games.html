@@ -1,0 +1,62 @@
+<div class="modal__block js-modal-block games-modal-block" data-type="games" id="games-modal-block">
+  <section class="map-modal-shell" aria-label="Games">
+    <div class="map-modal-card">
+
+      <div class="map-modal-top">
+        <div>
+          <h1 class="map-modal-title">Games</h1>
+          <p class="map-modal-lead">Browse OApp games built on the OASIS STAR ODK, cross-game quests and your game library.</p>
+        </div>
+        <button id="games-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div class="map-stats-bar" style="grid-template-columns:repeat(3,1fr)">
+        <div class="map-stat-block">
+          <div class="map-stat-label">Total Games</div>
+          <div class="map-stat-value" id="games-stat-total">—</div>
+        </div>
+        <div class="map-stat-block">
+          <div class="map-stat-label">My Games</div>
+          <div class="map-stat-value" id="games-stat-mine">—</div>
+        </div>
+        <div class="map-stat-block">
+          <div class="map-stat-label">Cross-Game Quests</div>
+          <div class="map-stat-value" id="games-stat-quests">—</div>
+        </div>
+      </div>
+
+      <div id="games-status" class="games-status" hidden></div>
+
+      <div class="map-tabs">
+        <button class="map-tab is-active" data-tab="all">All Games</button>
+        <button class="map-tab" data-tab="mine">My Games</button>
+        <button class="map-tab" data-tab="quests">Cross-Game Quests</button>
+      </div>
+
+      <!-- All Games -->
+      <div id="games-tab-all" class="map-tab-panel">
+        <div class="modal-toolbar">
+          <button id="games-refresh-btn" class="button button--ghost" type="button" style="font-size:0.85rem;padding:5px 14px;">⟳ Refresh</button>
+        </div>
+        <div id="games-all-list" class="modal-item-grid">
+          <div class="map-empty"><div class="map-empty-icon">🎮</div><p>Loading games…</p></div>
+        </div>
+      </div>
+
+      <!-- My Games -->
+      <div id="games-tab-mine" class="map-tab-panel" hidden>
+        <div id="games-mine-list" class="modal-item-grid">
+          <div class="map-empty"><div class="map-empty-icon">🎮</div><p>Loading your games…</p></div>
+        </div>
+      </div>
+
+      <!-- Cross-Game Quests -->
+      <div id="games-tab-quests" class="map-tab-panel" hidden>
+        <div id="games-quests-list" class="modal-item-list">
+          <div class="map-empty"><p>Loading cross-game quests…</p></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
