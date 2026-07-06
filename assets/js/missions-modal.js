@@ -46,6 +46,26 @@
     '</div>';
   }
 
+  async function loadMyMissions() {
+    var p = getProfile(); var token = getToken(p);
+    var el = document.getElementById('missions-my-list');
+    if (!el) return;
+    if (!token) {
+      el.innerHTML = '<div class="missions-empty"><p>Sign in to see your missions.</p></div>';
+      return;
+    }
+    el.innerHTML = '<div class="missions-loading">Loading your missions…</div>';
+    try {
+      var res = await fetch(API_BASE + '/api/Missions/my-missions', { headers: { 'Authorization': 'Bearer ' + token } });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      var list = extractList(data);
+      el.innerHTML = list.length ? list.map(renderMission).join('') : '<div class="missions-empty"><div class="missions-empty-icon">&#9876;</div><p>You have no active missions yet.<br>Explore the world to unlock missions.</p></div>';
+    } catch (e) {
+      el.innerHTML = '<div class="missions-empty"><p>Could not load your missions.</p></div>';
+    }
+  }
+
   async function loadAllMissions() {
     var p = getProfile(); var token = getToken(p);
     var el = document.getElementById('missions-all-list');
@@ -82,7 +102,8 @@
   function switchTab(tab) {
     document.querySelectorAll('.missions-tab').forEach(function(b){ b.classList.toggle('is-active', b.dataset.tab === tab); });
     document.querySelectorAll('.missions-tab-panel').forEach(function(p){ p.hidden = p.id !== 'missions-tab-' + tab; });
-    if (tab === 'all') loadAllMissions();
+    if (tab === 'my') loadMyMissions();
+    else if (tab === 'all') loadAllMissions();
   }
 
   function openMissionsModal() {
@@ -92,7 +113,7 @@
     document.querySelectorAll('.js-modal-block').forEach(function(b){ b.classList.remove('is-selected'); });
     modal.classList.add('is-visible');
     block.classList.add('is-selected');
-    switchTab('all');
+    switchTab('my');
     return false;
   }
 

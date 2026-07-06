@@ -157,7 +157,7 @@
     var token = getToken(profile);
     if (!avatarId || !token) return null;
 
-    var url = API_BASE + '/api/Nft/load-all-nfts-for_avatar/' + encodeURIComponent(avatarId) + '/' + encodeURIComponent(currentProvider);
+    var url = API_BASE + '/api/Nft/load-all-nfts-for-avatar/' + encodeURIComponent(avatarId) + '/' + encodeURIComponent(currentProvider);
     try {
       var res = await fetch(url, {
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }

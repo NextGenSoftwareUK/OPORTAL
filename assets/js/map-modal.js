@@ -320,16 +320,16 @@
 
     // Pan controls
     var panUp = getById('map-pan-up-btn');
-    if (panUp) panUp.addEventListener('click', function () { mapControl('PamMapUp/' + getPanVal()); });
+    if (panUp) panUp.addEventListener('click', function () { mapControl('PanMapUp/' + getPanVal()); });
 
     var panDown = getById('map-pan-down-btn');
-    if (panDown) panDown.addEventListener('click', function () { mapControl('PamMapDown/' + getPanVal()); });
+    if (panDown) panDown.addEventListener('click', function () { mapControl('PanMapDown/' + getPanVal()); });
 
     var panLeft = getById('map-pan-left-btn');
-    if (panLeft) panLeft.addEventListener('click', function () { mapControl('PamMapLeft/' + getPanVal()); });
+    if (panLeft) panLeft.addEventListener('click', function () { mapControl('PanMapLeft/' + getPanVal()); });
 
     var panRight = getById('map-pan-right-btn');
-    if (panRight) panRight.addEventListener('click', function () { mapControl('PamMapRight/' + getPanVal()); });
+    if (panRight) panRight.addEventListener('click', function () { mapControl('PanMapRight/' + getPanVal()); });
 
     // Select holon
     var selectHolonBtn = getById('map-select-holon-btn');
