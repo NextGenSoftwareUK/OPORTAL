@@ -39,16 +39,10 @@
   async function loadComponents() {
     var root = getRoot();
 
-    // Load dashboard HTML into .content-wrapper
+    // Load dashboard HTML into .content-wrapper (hidden by default; setup() reveals it after login)
     fetchFragment('assets/components/dashboard.html').then(function (html) {
       var wrapper = document.querySelector('.content-wrapper');
-      if (wrapper && html) {
-        wrapper.innerHTML = html;
-        // Show immediately if already logged in
-        if (localStorage.getItem('loggedIn') === 'true') {
-          if (typeof window.showDashboard === 'function') window.showDashboard();
-        }
-      }
+      if (wrapper && html) wrapper.innerHTML = html;
     }).catch(function (e) { console.error('dashboard load failed', e); });
 
     // Fetch shell and modals in parallel
