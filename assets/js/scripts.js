@@ -608,19 +608,34 @@ function toggleClass(el, className, bool) {
   window.stopJWTRefresh  = stopRefresh;
 })();
 
+function isJwtValid() {
+  try {
+    var avatarRaw = localStorage.getItem('avatar');
+    if (!avatarRaw || avatarRaw === 'undefined') return false;
+    var avatar = JSON.parse(avatarRaw);
+    var token = avatar && (avatar.jwtToken || avatar.JwtToken || avatar.token || avatar.Token);
+    if (!token) return false;
+    var parts = token.split('.');
+    if (parts.length !== 3) return false;
+    var payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+    if (!payload.exp) return true; // no expiry claim — assume valid
+    return payload.exp * 1000 > Date.now();
+  } catch (e) { return false; }
+}
+
 function setup() {
 const avatarRaw = localStorage.getItem('avatar');
 if (avatarRaw && avatarRaw !== 'undefined') {
     user = JSON.parse(avatarRaw);
     console.log("username=", user);
 }
-  
+
   var loginDiv = document.querySelector('[data-display="loggedIn"]')
   var avatarDiv = document.querySelector('.nav__item--account')
   var icon = document.getElementsByClassName('avatar')[0]
 
   /*if logged in, hide guest links*/
-  if (localStorage.getItem('loggedIn') === "true"){
+  if (localStorage.getItem('loggedIn') === "true" && isJwtValid()){
     var guest_links = document.getElementById('guest-links')
     var username = document.getElementById("username")
     guest_links.style.display = "none"
