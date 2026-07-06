@@ -58,9 +58,14 @@
     if (!token) { el.innerHTML = '<div class="oapps-empty"><p>Please log in to view your OAPPs.</p></div>'; return; }
     el.innerHTML = '<div class="oapps-loading">Loading your OAPPs…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.oAPPs.loadAllOAPPsForAvatar();
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/OAPPs/load-all-for-avatar', { headers: { 'Authorization': 'Bearer ' + token } });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       if (!list.length) {
         el.innerHTML = '<div class="oapps-empty"><div class="oapps-empty-icon">&#128421;</div><p>You have no OAPPs yet.<br>Create one using the STAR SDK.</p></div>';
       } else {
@@ -72,15 +77,19 @@
   }
 
   async function loadAllOAPPs() {
-    var p = getProfile(); var token = getToken(p);
     var el = document.getElementById('oapps-all-list');
     if (!el) return;
     el.innerHTML = '<div class="oapps-loading">Loading OAPPs…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.oAPPs.getAllOAPPs();
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/OAPPs', { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       if (!list.length) {
         el.innerHTML = '<div class="oapps-empty"><div class="oapps-empty-icon">&#128421;</div><p>No OAPPs found in the OASIS yet.</p></div>';
       } else {
@@ -95,13 +104,17 @@
     var q = (document.getElementById('oapps-search-input') || {}).value || '';
     var el = document.getElementById('oapps-search-results');
     if (!el || !q.trim()) return;
-    var p = getProfile(); var token = getToken(p);
     el.innerHTML = '<div class="oapps-loading">Searching…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api (search is POST)
+      var sdkRes = await window.starClient.oAPPs.searchOAPPs({ searchTerm: q });
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/OAPPs/search?searchTerm=' + encodeURIComponent(q), { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderOAPPCard).join('') : '<div class="oapps-empty"><p>No OAPPs found for "' + escHtml(q) + '".</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="oapps-empty"><p>Search failed.</p></div>';

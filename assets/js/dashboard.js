@@ -36,16 +36,11 @@
   function escHtml(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-  function authHeaders(token) {
-    return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-  }
-  async function apiFetch(url, token) {
-    try {
-      var r = await fetch(url, { headers: authHeaders(token) });
-      if (!r.ok) return null;
-      return await r.json();
-    } catch (e) { return null; }
-  }
+  /* OLD fetch helpers:
+  function authHeaders(token) { return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }; }
+  async function apiFetch(url, token) { ... }
+  */
+  function sdkVal(res) { return res && !res.isError ? res.result : null; }
   function extractList(data) {
     if (!data) return [];
     if (Array.isArray(data)) return data;
@@ -184,22 +179,31 @@
       }
     }
 
-    // Fire parallel API calls
+    // Fire parallel API calls — SDK: @oasisomniverse/web4-api
+    var safe = function (p) { return p.catch(function () { return { isError: true }; }); };
     var results = await Promise.allSettled([
-      avatarId && token ? apiFetch(API_BASE + '/api/karma/get-karma-akashic-records-for-avatar/' + encodeURIComponent(avatarId), token) : Promise.resolve(null),
-      avatarId && token ? apiFetch(API_BASE + '/api/karma/get-karma-stats/' + encodeURIComponent(avatarId), token) : Promise.resolve(null),
-      token ? apiFetch(API_BASE + '/api/data/load-all-holons/all', token) : Promise.resolve(null),
-      avatarId && token ? apiFetch(API_BASE + '/api/Nft/load-all-nfts-for_avatar/' + encodeURIComponent(avatarId) + '/Solana', token) : Promise.resolve(null),
-      avatarId && token ? apiFetch(API_BASE + '/api/Nft/load-all-geo-nfts-for-avatar/' + encodeURIComponent(avatarId) + '/Solana', token) : Promise.resolve(null),
-      avatarId && token ? apiFetch(API_BASE + '/api/map/stats', token) : Promise.resolve(null),
+      avatarId && token ? safe(window.oasisClient.karma.getKarmaAkashicRecordsForAvatar({ avatarId: avatarId })) : Promise.resolve(null),
+      avatarId && token ? safe(window.oasisClient.karma.getKarmaStats({ avatarId: avatarId })) : Promise.resolve(null),
+      token ? safe(window.oasisClient.data.loadAllHolons({})) : Promise.resolve(null),
+      avatarId && token ? safe(window.oasisClient.nft.loadAllWeb4NFTsForAvatarAsync({ avatarId: avatarId })) : Promise.resolve(null),
+      avatarId && token ? safe(window.oasisClient.nft.loadAllWeb4GeoNFTsForAvatarAsync({ avatarId: avatarId })) : Promise.resolve(null),
+      token ? safe(window.oasisClient.map.getMapStats()) : Promise.resolve(null),
     ]);
+    /* OLD fetch calls:
+    apiFetch(API_BASE + '/api/karma/get-karma-akashic-records-for-avatar/' + avatarId, token)
+    apiFetch(API_BASE + '/api/karma/get-karma-stats/' + avatarId, token)
+    apiFetch(API_BASE + '/api/data/load-all-holons/all', token)
+    apiFetch(API_BASE + '/api/Nft/load-all-nfts-for_avatar/' + avatarId + '/Solana', token)
+    apiFetch(API_BASE + '/api/Nft/load-all-geo-nfts-for-avatar/' + avatarId + '/Solana', token)
+    apiFetch(API_BASE + '/api/map/stats', token)
+    */
 
-    var akashicData = results[0].value;
-    var karmaStats  = results[1].value;
-    var holonData   = results[2].value;
-    var nftData     = results[3].value;
-    var geoNftData  = results[4].value;
-    var mapData     = results[5].value;
+    var akashicData = sdkVal(results[0].value);
+    var karmaStats  = sdkVal(results[1].value);
+    var holonData   = sdkVal(results[2].value);
+    var nftData     = sdkVal(results[3].value);
+    var geoNftData  = sdkVal(results[4].value);
+    var mapData     = sdkVal(results[5].value);
 
     // Akashic records
     var records = extractList(akashicData);

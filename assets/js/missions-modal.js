@@ -56,10 +56,15 @@
     }
     el.innerHTML = '<div class="missions-loading">Loading your missions…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.missions.loadAllMissionsForAvatar();
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Missions/my-missions', { headers: { 'Authorization': 'Bearer ' + token } });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       var data = await res.json();
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderMission).join('') : '<div class="missions-empty"><div class="missions-empty-icon">&#9876;</div><p>You have no active missions yet.<br>Explore the world to unlock missions.</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="missions-empty"><p>Could not load your missions.</p></div>';
@@ -67,15 +72,19 @@
   }
 
   async function loadAllMissions() {
-    var p = getProfile(); var token = getToken(p);
     var el = document.getElementById('missions-all-list');
     if (!el) return;
     el.innerHTML = '<div class="missions-loading">Loading missions…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.missions.getAllMissions();
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/Missions', { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderMission).join('') : '<div class="missions-empty"><div class="missions-empty-icon">&#9876;</div><p>No missions available yet.<br>Complete quests to unlock missions.</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="missions-empty"><p>Could not load missions.</p></div>';
@@ -86,13 +95,17 @@
     var q = (document.getElementById('missions-search-input') || {}).value || '';
     var el = document.getElementById('missions-search-results');
     if (!el || !q.trim()) return;
-    var p = getProfile(); var token = getToken(p);
     el.innerHTML = '<div class="missions-loading">Searching…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.missions.searchMissions({ query: q });
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/Missions/search?query=' + encodeURIComponent(q), { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderMission).join('') : '<div class="missions-empty"><p>No missions found for "' + escHtml(q) + '".</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="missions-empty"><p>Search failed.</p></div>';

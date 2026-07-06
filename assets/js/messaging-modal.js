@@ -128,17 +128,10 @@
 
   // ── API helpers ───────────────────────────────────────────────────────────────
 
-  function authHeaders(token) {
-    return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
-  }
-
-  async function apiFetch(url, options) {
-    try {
-      var res = await fetch(url, options);
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
-  }
+  /* OLD helpers:
+  function authHeaders(token) { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }; }
+  async function apiFetch(url, options) { try { var res = await fetch(url, options); if (!res.ok) return null; return await res.json(); } catch (e) { return null; } }
+  */
 
   // ── Conversations ────────────────────────────────────────────────────────────
 
@@ -147,9 +140,12 @@
     var token = getToken(profile);
     if (!token) return;
 
-    var data = await apiFetch(API_BASE + '/api/messaging/messages', {
-      headers: authHeaders(token)
-    });
+    // SDK: @oasisomniverse/web4-api
+    var sdkRes = await window.oasisClient.messaging.getMessages().catch(function () { return { isError: true }; });
+    /* OLD fetch:
+    var data = await apiFetch(API_BASE + '/api/messaging/messages', { headers: authHeaders(token) });
+    */
+    var data = sdkRes.isError ? null : sdkRes.result;
 
     var messages = extractList(data);
     var list = getById('msg-conversations-list');
@@ -197,9 +193,10 @@
     var token = getToken(profile);
     if (!token) return;
 
-    var data = await apiFetch(API_BASE + '/api/messaging/notifications', {
-      headers: authHeaders(token)
-    });
+    // SDK: @oasisomniverse/web4-api
+    var sdkRes = await window.oasisClient.messaging.getNotifications().catch(function () { return { isError: true }; });
+    /* OLD fetch: var data = await apiFetch(API_BASE + '/api/messaging/notifications', { headers: authHeaders(token) }); */
+    var data = sdkRes.isError ? null : sdkRes.result;
 
     var notifs = extractList(data);
     var list = getById('msg-notifications-list');
@@ -231,16 +228,22 @@
 
     renderStatus('loading', 'Sending message…');
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.messaging.sendMessageToAvatar({ toAvatarId: toAvatarId, message: body });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/messaging/send-message-to-avatar/' + encodeURIComponent(toAvatarId), {
-        method: 'POST',
-        headers: authHeaders(token),
-        body: JSON.stringify({ message: body })
+        method: 'POST', headers: authHeaders(token), body: JSON.stringify({ message: body })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      renderStatus('success', 'Message sent.');
-      var form = getById('msg-send-form');
-      if (form) form.reset();
-      setTimeout(hideStatus, 3000);
+      */
+      if (!sdkRes.isError) {
+        renderStatus('success', 'Message sent.');
+        var form = getById('msg-send-form');
+        if (form) form.reset();
+        setTimeout(hideStatus, 3000);
+      } else {
+        renderStatus('error', 'Failed to send: ' + (sdkRes.message || 'Unknown error'));
+      }
     } catch (e) {
       renderStatus('error', 'Failed to send: ' + e.message);
     }
@@ -254,16 +257,13 @@
     if (!token) return;
     renderStatus('loading', 'Marking messages as read…');
     try {
-      await fetch(API_BASE + '/api/messaging/mark-messages-read', {
-        method: 'POST',
-        headers: authHeaders(token),
-        body: JSON.stringify({})
-      });
-      await fetch(API_BASE + '/api/messaging/mark-notifications-read', {
-        method: 'POST',
-        headers: authHeaders(token),
-        body: JSON.stringify({})
-      });
+      // SDK: @oasisomniverse/web4-api
+      await window.oasisClient.messaging.markMessagesAsRead();
+      await window.oasisClient.messaging.markNotificationsAsRead();
+      /* OLD fetch:
+      await fetch(API_BASE + '/api/messaging/mark-messages-read', { method: 'POST', headers: authHeaders(token), body: JSON.stringify({}) });
+      await fetch(API_BASE + '/api/messaging/mark-notifications-read', { method: 'POST', headers: authHeaders(token), body: JSON.stringify({}) });
+      */
       renderStatus('success', 'All marked as read.');
       setTimeout(function () { hideStatus(); loadNotifications(); loadConversations(); }, 1500);
     } catch (e) {
@@ -305,14 +305,17 @@
 
     renderStatus('loading', 'Starting chat session…');
     try {
-      var res = await fetch(API_BASE + '/api/chat/start-new-chat-session', {
-        method: 'POST',
-        headers: authHeaders(token),
-        body: JSON.stringify({})
-      });
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.chat.startNewChatSession();
+      /* OLD fetch:
+      var res = await fetch(API_BASE + '/api/chat/start-new-chat-session', { method: 'POST', headers: authHeaders(token), body: JSON.stringify({}) });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       var data = await res.json();
       var sessionId = (data && (data.sessionId || data.SessionId || data.id || data.Id || data.result)) || null;
+      */
+      if (sdkRes.isError) throw new Error(sdkRes.message || 'Failed to start session');
+      var r = sdkRes.result || {};
+      var sessionId = r.sessionId || r.SessionId || r.id || r.Id || r || null;
       if (!sessionId) throw new Error('No session ID returned');
       hideStatus();
       showChatUI(sessionId);
@@ -333,11 +336,13 @@
     if (input) input.value = '';
 
     try {
+      // SDK: @oasisomniverse/web4-api
+      await window.oasisClient.chat.sendMessage({ sessionId: currentSessionId, message: text });
+      /* OLD fetch:
       await fetch(API_BASE + '/api/chat/send-message/' + encodeURIComponent(currentSessionId), {
-        method: 'POST',
-        headers: authHeaders(token),
-        body: JSON.stringify({ message: text })
+        method: 'POST', headers: authHeaders(token), body: JSON.stringify({ message: text })
       });
+      */
       loadChatHistory();
     } catch (e) { /* silent */ }
   }
@@ -348,11 +353,10 @@
     var token = getToken(profile);
     if (!token) return;
 
-    var data = await apiFetch(API_BASE + '/api/chat/history/' + encodeURIComponent(currentSessionId), {
-      headers: authHeaders(token)
-    });
-
-    var messages = extractList(data);
+    // SDK: @oasisomniverse/web4-api
+    var sdkRes = await window.oasisClient.chat.getChatHistory({ sessionId: currentSessionId }).catch(function () { return { isError: true }; });
+    /* OLD fetch: var data = await apiFetch(API_BASE + '/api/chat/history/' + encodeURIComponent(currentSessionId), { headers: authHeaders(token) }); */
+    var messages = sdkRes.isError ? null : extractList(sdkRes.result);
     var container = getById('msg-chat-messages');
     if (!container) return;
     if (!messages || !messages.length) return;

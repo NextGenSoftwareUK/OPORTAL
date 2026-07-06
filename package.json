@@ -1,0 +1,17 @@
+{
+  "name": "oportal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OPORTAL - OASIS Portal static site",
+  "scripts": {
+    "build-sdk": "node build/build-sdk.js",
+    "build": "npm run build-sdk"
+  },
+  "dependencies": {
+    "@oasisomniverse/web4-api": "^2.0.3",
+    "@oasisomniverse/web5-api": "^1.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2"
+  }
+}

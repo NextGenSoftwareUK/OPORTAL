@@ -87,23 +87,24 @@
     if (btn) btn.disabled = true;
 
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.avatar.searchAvatar({ SearchQuery: query, SearchAllProviders: !!searchAllProviders });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Avatar/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ SearchQuery: query, SearchAllProviders: !!searchAllProviders })
       });
-
-      var data = {};
-      try { data = await res.json(); } catch (e) {}
-
-      if (!res.ok) {
-        showStatus('error', (data && (data.message || data.error)) || 'Search failed. Please try again.');
+      var data = {}; try { data = await res.json(); } catch (e) {}
+      if (!res.ok) { showStatus('error', (data && (data.message || data.error)) || 'Search failed.'); renderResults(null, query); return; }
+      */
+      if (sdkRes.isError) {
+        showStatus('error', sdkRes.message || 'Search failed. Please try again.');
         renderResults(null, query);
         return;
       }
-
       hideStatus();
-      var list = extractList(data);
+      var list = extractList(sdkRes.result);
       renderResults(list, query);
     } catch (e) {
       showStatus('error', 'Network error — could not reach the API.');
@@ -120,13 +121,16 @@
     if (!token) return;
 
     try {
-      var res = await fetch(API_BASE + '/api/Avatar/get-all-avatars', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.avatar.getAll();
+      /* OLD fetch:
+      var res = await fetch(API_BASE + '/api/Avatar/get-all-avatars', { headers: { 'Authorization': 'Bearer ' + token } });
       if (!res.ok) return;
       var data = await res.json();
       var list = extractList(data);
       renderBrowse(list);
+      */
+      if (!sdkRes.isError) renderBrowse(extractList(sdkRes.result));
     } catch (e) {}
   }
 

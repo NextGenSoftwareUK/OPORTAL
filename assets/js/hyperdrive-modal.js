@@ -89,110 +89,66 @@
     return null;
   }
 
-  // ── HyperDrive API ────────────────────────────────────────────────────────────
+  // ── HyperDrive + Provider API (SDK: @oasisomniverse/web4-api) ─────────────────
+
+  function sdkVal(res) { return res && !res.isError ? res.result : null; }
 
   async function fetchHDStatus(token) {
-    try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/status', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { return sdkVal(await window.oasisClient.hyperDrive.getStatus()); } catch (e) { return null; }
+    /* OLD: fetch(API_BASE + '/api/HyperDrive/status', { headers: { 'Authorization': 'Bearer ' + token } }) */
   }
 
   async function fetchHDMetrics(token) {
-    try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/metrics', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { return sdkVal(await window.oasisClient.hyperDrive.getMetrics()); } catch (e) { return null; }
+    /* OLD: fetch(API_BASE + '/api/HyperDrive/metrics', ...) */
   }
 
   async function fetchHDBestProvider(token) {
     try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/best-provider', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      var data = await res.json();
-      return data && (data.result || data.providerType || data.ProviderType || data);
+      var r = sdkVal(await window.oasisClient.hyperDrive.getBestProvider());
+      /* OLD: fetch(API_BASE + '/api/HyperDrive/best-provider', ...) */
+      return r && (r.result || r.providerType || r.ProviderType || r);
     } catch (e) { return null; }
   }
 
   async function fetchHDFailoverRules(token) {
-    try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/failover/rules', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { return sdkVal(await window.oasisClient.hyperDrive.getFailoverRules()); } catch (e) { return null; }
+    /* OLD: fetch(API_BASE + '/api/HyperDrive/failover/rules', ...) */
   }
 
   async function fetchHDReplicationRules(token) {
-    try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/replication/rules', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { return sdkVal(await window.oasisClient.hyperDrive.getReplicationRules()); } catch (e) { return null; }
+    /* OLD: fetch(API_BASE + '/api/HyperDrive/replication/rules', ...) */
   }
 
   async function fetchHDCosts(token) {
-    try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/costs/current', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { return sdkVal(await window.oasisClient.hyperDrive.getCurrentCosts()); } catch (e) { return null; }
+    /* OLD: fetch(API_BASE + '/api/HyperDrive/costs/current', ...) */
   }
 
   async function fetchHDIntelligentMode(token) {
-    try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/intelligent-mode', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { return sdkVal(await window.oasisClient.hyperDrive.getIntelligentMode()); } catch (e) { return null; }
+    /* OLD: fetch(API_BASE + '/api/HyperDrive/intelligent-mode', ...) */
   }
 
   async function fetchHDQuota(token) {
-    try {
-      var res = await fetch(API_BASE + '/api/HyperDrive/quota/status', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { return sdkVal(await window.oasisClient.hyperDrive.checkQuotaStatus()); } catch (e) { return null; }
+    /* OLD: fetch(API_BASE + '/api/HyperDrive/quota/status', ...) */
   }
-
-  // ── Provider API ───────────────────────────────────────────────────────────────
 
   async function fetchCurrentProvider(token) {
     try {
-      var res = await fetch(API_BASE + '/api/provider/get-current-storage-provider-type', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      var data = await res.json();
-      return data && (data.result || data.providerType || data.ProviderType || data);
+      var r = sdkVal(await window.oasisClient.provider.getCurrentStorageProviderType());
+      /* OLD: fetch(API_BASE + '/api/provider/get-current-storage-provider-type', ...) */
+      return r && (r.result || r.providerType || r.ProviderType || r);
     } catch (e) { return null; }
   }
 
   async function fetchAllProviders(token) {
     try {
-      var res = await fetch(API_BASE + '/api/provider/get-all-registered-providers', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      var data = await res.json();
-      return extractList(data);
+      var r = sdkVal(await window.oasisClient.provider.getAllRegisteredProviders());
+      /* OLD: fetch(API_BASE + '/api/provider/get-all-registered-providers', ...) */
+      return extractList(r);
     } catch (e) { return null; }
   }
 

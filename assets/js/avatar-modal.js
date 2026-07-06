@@ -202,24 +202,25 @@
 
   async function hydrateAvatar(profile) {
     var token = profile && (profile.jwtToken || profile.token || '');
+    if (!token) return profile;
+    // SDK: @oasisomniverse/web4-api — try by email then username then id
+    var email = profile && (profile.email || profile.Email);
+    var username = profile && (profile.username || profile.userName || profile.UserName);
+    var id = profile && (profile.id || profile.Id || profile.avatarId || profile.AvatarId);
+    var sdkRes = null;
+    /* OLD fetch using getDetailUrls/loop:
     var urls = getDetailUrls(profile);
-    if (!token || !urls.length) return profile;
-
-    for (var i = 0; i < urls.length; i++) {
-      try {
-        var res = await fetch(urls[i], {
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
-        });
-        if (!res.ok) continue;
-        var data = await res.json();
-        var full = data && (data.avatar || (data.result && data.result.result) || (data.result && data.result.avatar) || data.result || data.data || data);
-        if (!full || typeof full !== 'object') continue;
-        var merged = Object.assign({}, profile, full);
-        saveAvatar(merged);
-        return merged;
-      } catch (e) {}
-    }
-    return profile;
+    for (var i = 0; i < urls.length; i++) { ... fetch(urls[i]) ... }
+    */
+    try {
+      if (email) sdkRes = await window.oasisClient.avatar.getAvatarDetailByEmail({ email: email });
+      if ((!sdkRes || sdkRes.isError) && username) sdkRes = await window.oasisClient.avatar.getAvatarDetailByUsername({ username: username });
+      if ((!sdkRes || sdkRes.isError) && id) sdkRes = await window.oasisClient.avatar.getAvatarDetail({ 'id:guid': id });
+    } catch (e) {}
+    if (!sdkRes || sdkRes.isError || !sdkRes.result) return profile;
+    var merged = Object.assign({}, profile, sdkRes.result);
+    saveAvatar(merged);
+    return merged;
   }
 
   // ── Save ──────────────────────────────────────────────────────────────────────
@@ -245,34 +246,35 @@
     var profile = currentProfile || readAvatar();
     if (!profile) { showStatus('error', 'Not signed in. Please sign in before editing your avatar.'); return; }
 
-    var token = profile.jwtToken || profile.token || '';
-    var url = getUpdateUrl(profile);
     var payload = buildPayload();
     var saveBtn = getById('avatar-modal-save-btn');
+    var email = profile.email || profile.Email;
+    var username = profile.username || profile.userName || profile.UserName;
 
-    if (!url) { showStatus('error', 'Could not determine which avatar record to update.'); return; }
+    if (!email && !username) { showStatus('error', 'Could not determine which avatar record to update.'); return; }
 
     showStatus('loading', 'Saving changes…');
     if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
 
     try {
-      var res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(payload)
-      });
-      var data = {};
-      try { data = await res.json(); } catch (e) {}
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = email
+        ? await window.oasisClient.avatar.updateAvatarDetailByEmail(Object.assign({ email: email }, payload))
+        : await window.oasisClient.avatar.updateAvatarDetailByUsername(Object.assign({ username: username }, payload));
+      /* OLD fetch:
+      var url = getUpdateUrl(profile);
+      var res = await fetch(url, { method: 'POST', headers: {...}, body: JSON.stringify(payload) });
+      */
 
-      if (res.ok) {
+      if (!sdkRes.isError) {
         var updated = Object.assign({}, profile, payload);
         saveAvatar(updated);
         currentProfile = updated;
         populate(updated);
-        showStatus('success', (data && (data.message || data.title)) || 'Avatar updated successfully.');
+        showStatus('success', sdkRes.message || 'Avatar updated successfully.');
         setTimeout(hideStatus, 3500);
       } else {
-        showStatus('error', (data && (data.message || data.error)) || 'Something went wrong. Please try again.');
+        showStatus('error', sdkRes.message || 'Something went wrong. Please try again.');
       }
     } catch (e) {
       showStatus('error', 'Network error — could not reach the API.');
@@ -336,6 +338,9 @@
 
   async function loadPortrait(username, imgEl) {
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.avatar.getAvatarPortraitByUsername({ username: username });
+      /* OLD fetch:
       var avatar = readAvatar();
       var token = avatar && (avatar.jwtToken || avatar.token || '');
       var res = await fetch(API_BASE + '/api/Avatar/get-avatar-portrait-by-username/' + encodeURIComponent(username), {
@@ -343,7 +348,9 @@
       });
       if (!res.ok) throw new Error('no portrait');
       var data = await res.json();
-      var portrait = (data && data.result) ? data.result : data;
+      */
+      if (sdkRes.isError) throw new Error('no portrait');
+      var portrait = sdkRes.result || {};
 
       // Try imageUrl first (direct URL)
       var imageUrl = portrait && (portrait.imageUrl || portrait.ImageUrl);
@@ -364,26 +371,27 @@
     var avatar = readAvatar();
     var token = avatar && (avatar.jwtToken || avatar.token || '');
     if (!token) { showStatus('error', 'Not signed in.'); return false; }
-    var body = {
-      avatarId: avatar.id || avatar.Id || avatar.avatarId,
-      username: avatar.username || avatar.userName,
-      email:    avatar.email || avatar.Email,
-      imageBase64: base64Data
-    };
     showStatus('loading', 'Uploading photo…');
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.avatar.uploadAvatarPortrait({
+        avatarId: avatar.id || avatar.Id || avatar.avatarId,
+        username: avatar.username || avatar.userName,
+        email:    avatar.email || avatar.Email,
+        imageBase64: base64Data
+      });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Avatar/upload-avatar-portrait', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
         body: JSON.stringify(body)
       });
-      var data = await res.json();
-      if (res.ok && data && data.result !== false) {
+      */
+      if (!sdkRes.isError) {
         showStatus('success', 'Photo updated successfully!');
         setTimeout(hideStatus, 3000);
         return true;
       }
-      showStatus('error', (data && data.message) || 'Upload failed. Please try again.');
+      showStatus('error', sdkRes.message || 'Upload failed. Please try again.');
     } catch (e) {
       showStatus('error', 'Network error — could not upload photo.');
     }

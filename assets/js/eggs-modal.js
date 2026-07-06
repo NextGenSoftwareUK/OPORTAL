@@ -66,15 +66,20 @@
     if (!token) { el.innerHTML = '<div class="eggs-empty"><p>Please log in to view your eggs.</p></div>'; return; }
     el.innerHTML = '<div class="eggs-loading">Loading your eggs…</div>';
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.eggs.getMyEggs();
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/eggs/my-eggs', { headers: { 'Authorization': 'Bearer ' + token } });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       if (!list.length) {
         el.innerHTML = '<div class="eggs-empty"><div class="eggs-empty-icon">&#129424;</div><p>You haven\'t collected any eggs yet.<br>Explore the map to discover hidden eggs!</p></div>';
       } else {
         el.innerHTML = list.map(function(e){ return renderEgg(e, true); }).join('');
         el.querySelectorAll('.egg-hatch-btn').forEach(function(btn) {
-          btn.addEventListener('click', function(){ hatchEgg(btn.dataset.eggId, token); });
+          btn.addEventListener('click', function(){ hatchEgg(btn.dataset.eggId); });
         });
       }
     } catch (e) {
@@ -83,15 +88,19 @@
   }
 
   async function loadAllEggs() {
-    var p = getProfile(); var token = getToken(p);
     var el = document.getElementById('eggs-all-grid');
     if (!el) return;
     el.innerHTML = '<div class="eggs-loading">Loading all eggs…</div>';
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.eggs.getAllEggs();
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/eggs/get-all-eggs', { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(function(e){ return renderEgg(e, false); }).join('') : '<div class="eggs-empty"><div class="eggs-empty-icon">&#129424;</div><p>No eggs found in the OASIS yet.</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="eggs-empty"><p>Could not load eggs.</p></div>';
@@ -99,15 +108,19 @@
   }
 
   async function loadEggQuests() {
-    var p = getProfile(); var token = getToken(p);
     var el = document.getElementById('eggs-quests-list');
     if (!el) return;
     el.innerHTML = '<div class="eggs-loading">Loading egg quests…</div>';
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.eggs.getCurrentEggQuests();
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/eggs/get-current-egg-quests', { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderEggQuest).join('') : '<div class="eggs-empty"><p>No active egg quests right now.</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="eggs-empty"><p>Could not load egg quests.</p></div>';
@@ -115,31 +128,39 @@
   }
 
   async function loadLeaderboard() {
-    var p = getProfile(); var token = getToken(p);
     var el = document.getElementById('eggs-leaderboard-list');
     if (!el) return;
     el.innerHTML = '<div class="eggs-loading">Loading leaderboard…</div>';
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.eggs.getCurrentEggQuestLeaderBoard();
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/eggs/get-current-egg-quest-leader-board', { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = renderLeaderboard(list);
     } catch (e) {
       el.innerHTML = '<div class="eggs-empty"><p>Could not load leaderboard.</p></div>';
     }
   }
 
-  async function hatchEgg(eggId, token) {
+  async function hatchEgg(eggId) {
     var statusEl = document.getElementById('eggs-status');
     if (statusEl) { statusEl.textContent = 'Hatching egg…'; statusEl.className = 'eggs-status eggs-status--loading'; statusEl.hidden = false; }
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.eggs.hatchEgg({ eggId: eggId });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/eggs/hatch/' + encodeURIComponent(eggId), { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } });
-      if (res.ok) {
+      */
+      if (!sdkRes.isError) {
         if (statusEl) { statusEl.textContent = '&#129424; Egg hatched successfully!'; statusEl.className = 'eggs-status eggs-status--success'; setTimeout(function(){ statusEl.hidden = true; }, 4000); }
         loadMyEggs();
       } else {
-        if (statusEl) { statusEl.textContent = 'Failed to hatch egg.'; statusEl.className = 'eggs-status eggs-status--error'; setTimeout(function(){ statusEl.hidden = true; }, 4000); }
+        if (statusEl) { statusEl.textContent = sdkRes.message || 'Failed to hatch egg.'; statusEl.className = 'eggs-status eggs-status--error'; setTimeout(function(){ statusEl.hidden = true; }, 4000); }
       }
     } catch (e) {
       if (statusEl) { statusEl.textContent = 'Error hatching egg.'; statusEl.className = 'eggs-status eggs-status--error'; setTimeout(function(){ statusEl.hidden = true; }, 4000); }

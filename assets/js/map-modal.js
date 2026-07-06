@@ -38,29 +38,12 @@
     setTimeout(hideStatus, 3000);
   }
 
-  // ── API helpers ───────────────────────────────────────────────────────────────
+  // ── API helpers (SDK: @oasisomniverse/web4-api) ───────────────────────────────
 
-  async function apiFetch(path) {
-    try {
-      var res = await fetch(API_BASE + path);
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
-  }
-
-  async function apiPost(path) {
-    var profile = readAvatar();
-    var token = getToken(profile);
-    try {
-      var res = await fetch(API_BASE + path, {
-        method: 'POST',
-        headers: token ? { 'Authorization': 'Bearer ' + token } : {}
-      });
-      if (!res.ok) return { ok: false, status: res.status };
-      var data = await res.json().catch(function () { return {}; });
-      return { ok: true, data: data };
-    } catch (e) { return { ok: false, error: String(e) }; }
-  }
+  /* OLD helpers:
+  async function apiFetch(path) { try { var res = await fetch(API_BASE + path); if (!res.ok) return null; return await res.json(); } catch (e) { return null; } }
+  async function apiPost(path) { ... }
+  */
 
   function extractList(data) {
     if (!data) return [];
@@ -107,8 +90,10 @@
   async function loadNearby() {
     var grid = getById('map-nearby-grid');
     if (grid) grid.innerHTML = '<div class="map-empty"><p>Loading…</p></div>';
-    var data = await apiFetch('/api/map/nearby');
-    var locs = extractList(data);
+    // SDK: @oasisomniverse/web4-api
+    var sdkRes = await window.oasisClient.map.getNearbyLocations().catch(function () { return { isError: true }; });
+    /* OLD fetch: var data = await apiFetch('/api/map/nearby'); */
+    var locs = sdkRes.isError ? [] : extractList(sdkRes.result);
     setText('map-stat-nearby', locs.length || '0');
     if (!grid) return;
     if (!locs.length) {
@@ -131,8 +116,10 @@
     var profile = readAvatar();
     var token = getToken(profile);
     if (!token) { showStatusBrief('warn', 'Please log in to record a visit.'); return; }
-    var result = await apiPost('/api/map/visit/' + encodeURIComponent(id));
-    if (result.ok) {
+    // SDK: @oasisomniverse/web4-api
+    var sdkRes = await window.oasisClient.map.visitLocation({ locationId: id }).catch(function () { return { isError: true }; });
+    /* OLD fetch: var result = await apiPost('/api/map/visit/' + encodeURIComponent(id)); */
+    if (!sdkRes.isError) {
       showStatusBrief('success', 'Visit recorded!');
       loadHistory();
     } else {
@@ -146,8 +133,10 @@
     if (!query) return;
     var results = getById('map-search-results');
     if (results) results.innerHTML = '<div class="map-empty"><p>Searching…</p></div>';
-    var data = await apiFetch('/api/map/search-locations?query=' + encodeURIComponent(query));
-    var locs = extractList(data);
+    // SDK: @oasisomniverse/web4-api (POST)
+    var sdkRes = await window.oasisClient.map.search({ query: query }).catch(function () { return { isError: true }; });
+    /* OLD fetch: var data = await apiFetch('/api/map/search-locations?query=' + encodeURIComponent(query)); */
+    var locs = sdkRes.isError ? [] : extractList(sdkRes.result);
     if (!results) return;
     if (!locs.length) {
       results.innerHTML = '<div class="map-empty"><p>No results for "' + escapeHtml(query) + '".</p></div>';
@@ -181,8 +170,10 @@
   async function loadHistory() {
     var list = getById('map-history-list');
     if (list) list.innerHTML = '<div class="map-empty"><p>Loading…</p></div>';
-    var data = await apiFetch('/api/map/visit-history');
-    var visits = extractList(data);
+    // SDK: @oasisomniverse/web4-api
+    var sdkRes = await window.oasisClient.map.getVisitHistory().catch(function () { return { isError: true }; });
+    /* OLD fetch: var data = await apiFetch('/api/map/visit-history'); */
+    var visits = sdkRes.isError ? [] : extractList(sdkRes.result);
     setText('map-stat-visits', visits.length || '0');
     if (!list) return;
     if (!visits.length) {
@@ -196,7 +187,10 @@
 
   async function loadStats() {
     var grid = getById('map-stats-grid');
-    var data = await apiFetch('/api/map/stats');
+    // SDK: @oasisomniverse/web4-api
+    var sdkRes = await window.oasisClient.map.getMapStats().catch(function () { return { isError: true }; });
+    /* OLD fetch: var data = await apiFetch('/api/map/stats'); */
+    var data = sdkRes.isError ? null : sdkRes.result;
     var s = data && (data.result || data);
     if (s && typeof s === 'object') {
       var holons = s.holonsOnMap || s.HolonsOnMap || s.totalHolons || null;
@@ -220,13 +214,14 @@
 
   // ── Map controls ──────────────────────────────────────────────────────────────
 
-  async function mapControl(endpoint) {
-    var result = await apiFetch('/api/map/' + endpoint);
-    if (result != null) {
-      showStatusBrief('success', 'Map control applied.');
-    } else {
-      showStatusBrief('error', 'Map control failed.');
-    }
+  async function mapControl(sdkCall) {
+    // SDK call passed as a promise
+    try {
+      var sdkRes = await sdkCall;
+      /* OLD: var result = await apiFetch('/api/map/' + endpoint); */
+      if (!sdkRes.isError) { showStatusBrief('success', 'Map control applied.'); }
+      else { showStatusBrief('error', 'Map control failed.'); }
+    } catch (e) { showStatusBrief('error', 'Map control failed.'); }
   }
 
   function getZoomVal() { var el = getById('map-zoom-value'); return el ? (parseInt(el.value, 10) || 1) : 1; }
@@ -311,45 +306,45 @@
       if (e.key === 'Enter') doSearch(searchInput.value.trim());
     });
 
-    // Zoom controls
+    // Zoom controls — SDK: @oasisomniverse/web4-api
     var zoomIn = getById('map-zoom-in-btn');
-    if (zoomIn) zoomIn.addEventListener('click', function () { mapControl('ZoomMapIn/' + getZoomVal()); });
+    if (zoomIn) zoomIn.addEventListener('click', function () { mapControl(window.oasisClient.map.zoomMapIn({ value: getZoomVal() })); });
 
     var zoomOut = getById('map-zoom-out-btn');
-    if (zoomOut) zoomOut.addEventListener('click', function () { mapControl('ZoomMapOut/' + getZoomVal()); });
+    if (zoomOut) zoomOut.addEventListener('click', function () { mapControl(window.oasisClient.map.zoomMapOut({ value: getZoomVal() })); });
 
-    // Pan controls
+    // Pan controls (SDK uses pamMapUp/Down/Left/Right)
     var panUp = getById('map-pan-up-btn');
-    if (panUp) panUp.addEventListener('click', function () { mapControl('PanMapUp/' + getPanVal()); });
+    if (panUp) panUp.addEventListener('click', function () { mapControl(window.oasisClient.map.pamMapUp({ value: getPanVal() })); });
 
     var panDown = getById('map-pan-down-btn');
-    if (panDown) panDown.addEventListener('click', function () { mapControl('PanMapDown/' + getPanVal()); });
+    if (panDown) panDown.addEventListener('click', function () { mapControl(window.oasisClient.map.pamMapDown({ value: getPanVal() })); });
 
     var panLeft = getById('map-pan-left-btn');
-    if (panLeft) panLeft.addEventListener('click', function () { mapControl('PanMapLeft/' + getPanVal()); });
+    if (panLeft) panLeft.addEventListener('click', function () { mapControl(window.oasisClient.map.pamMapLeft({ value: getPanVal() })); });
 
     var panRight = getById('map-pan-right-btn');
-    if (panRight) panRight.addEventListener('click', function () { mapControl('PanMapRight/' + getPanVal()); });
+    if (panRight) panRight.addEventListener('click', function () { mapControl(window.oasisClient.map.pamMapRight({ value: getPanVal() })); });
 
     // Select holon
     var selectHolonBtn = getById('map-select-holon-btn');
     if (selectHolonBtn) selectHolonBtn.addEventListener('click', function () {
       var inp = getById('map-select-holon');
-      if (inp && inp.value.trim()) mapControl('SelectHolonOnMap/' + encodeURIComponent(inp.value.trim()));
+      if (inp && inp.value.trim()) mapControl(window.oasisClient.map.selectHolonOnMap({ holon: inp.value.trim() }));
     });
 
     // Zoom to holon
     var zoomHolonBtn = getById('map-zoom-holon-btn');
     if (zoomHolonBtn) zoomHolonBtn.addEventListener('click', function () {
       var inp = getById('map-zoom-holon');
-      if (inp && inp.value.trim()) mapControl('ZoomToHolonOnMap/' + encodeURIComponent(inp.value.trim()));
+      if (inp && inp.value.trim()) mapControl(window.oasisClient.map.zoomToHolonOnMap({ holon: inp.value.trim() }));
     });
 
     // Highlight building
     var highlightBtn = getById('map-highlight-building-btn');
     if (highlightBtn) highlightBtn.addEventListener('click', function () {
       var inp = getById('map-highlight-building');
-      if (inp && inp.value.trim()) mapControl('HighlightBuildingOnMap/' + encodeURIComponent(inp.value.trim()));
+      if (inp && inp.value.trim()) mapControl(window.oasisClient.map.highlightBuildingOnMap({ building: inp.value.trim() }));
     });
 
     block.dataset.mapBound = 'true';

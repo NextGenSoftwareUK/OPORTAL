@@ -154,55 +154,58 @@
 
   async function fetchNfts(profile) {
     var avatarId = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!avatarId || !token) return null;
-
-    var url = API_BASE + '/api/Nft/load-all-nfts-for-avatar/' + encodeURIComponent(avatarId) + '/' + encodeURIComponent(currentProvider);
+    if (!avatarId) return null;
     try {
-      var res = await fetch(url, {
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      var data = await res.json();
-      return extractList(data);
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.nft.loadAllWeb4NFTsForAvatarAsync({ avatarId: avatarId });
+      /* OLD fetch:
+      var url = API_BASE + '/api/Nft/load-all-nfts-for-avatar/' + encodeURIComponent(avatarId) + '/' + encodeURIComponent(currentProvider);
+      var res = await fetch(url, { headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken(profile) } });
+      if (!res.ok) return null; var data = await res.json(); return extractList(data);
+      */
+      return sdkRes.isError ? null : extractList(sdkRes.result);
     } catch (e) { return null; }
   }
 
   async function fetchGeoNfts(profile) {
     var avatarId = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!avatarId || !token) return null;
-
-    var url = API_BASE + '/api/Nft/load-all-geo-nfts-for-avatar/' + encodeURIComponent(avatarId) + '/' + encodeURIComponent(currentProvider);
+    if (!avatarId) return null;
     try {
-      var res = await fetch(url, {
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      var data = await res.json();
-      return extractList(data);
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.nft.loadAllWeb4GeoNFTsForAvatarAsync({ avatarId: avatarId });
+      /* OLD fetch:
+      var url = API_BASE + '/api/Nft/load-all-geo-nfts-for-avatar/' + encodeURIComponent(avatarId) + '/' + encodeURIComponent(currentProvider);
+      var res = await fetch(url, { headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken(profile) } });
+      if (!res.ok) return null; var data = await res.json(); return extractList(data);
+      */
+      return sdkRes.isError ? null : extractList(sdkRes.result);
     } catch (e) { return null; }
   }
 
   async function fetchOlandPrice(token) {
     try {
-      var res = await fetch(API_BASE + '/api/OLand/get-oland-price', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      var data = await res.json();
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.oLand.getOlandPrice();
+      /* OLD fetch:
+      var res = await fetch(API_BASE + '/api/OLand/get-oland-price', { headers: { 'Authorization': 'Bearer ' + token } });
+      if (!res.ok) return null; var data = await res.json();
       return data && (data.price || data.Price || data.result || data.data || data);
+      */
+      if (sdkRes.isError) return null;
+      var d = sdkRes.result;
+      return d && (d.price || d.Price || d) != null ? (d.price || d.Price || d) : null;
     } catch (e) { return null; }
   }
 
   async function fetchOland(token) {
     try {
-      var res = await fetch(API_BASE + '/api/OLand/load-all-olands', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res.ok) return null;
-      var data = await res.json();
-      return extractList(data);
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.oLand.loadAllOlands();
+      /* OLD fetch:
+      var res = await fetch(API_BASE + '/api/OLand/load-all-olands', { headers: { 'Authorization': 'Bearer ' + token } });
+      if (!res.ok) return null; var data = await res.json(); return extractList(data);
+      */
+      return sdkRes.isError ? null : extractList(sdkRes.result);
     } catch (e) { return null; }
   }
 
@@ -335,19 +338,19 @@
     showStatus('loading', 'Minting NFT…');
 
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.nft.mintNftAsync(body);
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Nft/mint-nft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(body)
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(body)
       });
-      var data = await res.json().catch(function () { return {}; });
-      if (res.ok) {
+      */
+      if (!sdkRes.isError) {
         showStatus('success', 'NFT minted successfully!');
         closeActionPanel();
         loadAll(profile);
       } else {
-        var msg = (data && (data.message || data.Message || data.error || data.Error)) || ('Error ' + res.status);
-        showStatus('error', 'Mint failed: ' + msg);
+        showStatus('error', 'Mint failed: ' + (sdkRes.message || 'Unknown error'));
       }
     } catch (e) {
       showStatus('error', 'Network error — could not reach the API.');
@@ -384,19 +387,19 @@
     showStatus('loading', 'Sending NFT…');
 
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.nft.sendNFTAsync(body);
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Nft/send-nft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(body)
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(body)
       });
-      var data = await res.json().catch(function () { return {}; });
-      if (res.ok) {
+      */
+      if (!sdkRes.isError) {
         showStatus('success', 'NFT sent successfully!');
         closeActionPanel();
         loadAll(profile);
       } else {
-        var msg = (data && (data.message || data.Message || data.error || data.Error)) || ('Error ' + res.status);
-        showStatus('error', 'Send failed: ' + msg);
+        showStatus('error', 'Send failed: ' + (sdkRes.message || 'Unknown error'));
       }
     } catch (e) {
       showStatus('error', 'Network error — could not reach the API.');
@@ -435,19 +438,19 @@
     showStatus('loading', 'Placing Geo-NFT on the map…');
 
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.nft.placeGeoNFTAsync(body);
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Nft/place-geo-nft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(body)
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(body)
       });
-      var data = await res.json().catch(function () { return {}; });
-      if (res.ok) {
+      */
+      if (!sdkRes.isError) {
         showStatus('success', 'Geo-NFT placed on the map successfully!');
         closeActionPanel();
         loadAll(profile);
       } else {
-        var msg = (data && (data.message || data.Message || data.error || data.Error)) || ('Error ' + res.status);
-        showStatus('error', 'Place failed: ' + msg);
+        showStatus('error', 'Place failed: ' + (sdkRes.message || 'Unknown error'));
       }
     } catch (e) {
       showStatus('error', 'Network error — could not reach the API.');

@@ -125,69 +125,85 @@
     '</div>';
   }
 
-  // ── API calls ────────────────────────────────────────────────────────────────
+  // ── API calls (SDK: @oasisomniverse/web4-api) ────────────────────────────────
 
+  /* OLD apiFetch helper:
   async function apiFetch(url, options) {
-    try {
-      var res = await fetch(url, options);
-      if (!res.ok) return null;
-      return await res.json();
-    } catch (e) { return null; }
+    try { var res = await fetch(url, options); if (!res.ok) return null; return await res.json(); }
+    catch (e) { return null; }
   }
+  */
 
   async function fetchWallets(profile) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token) return null;
-    var data = await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/wallets', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    return extractList(data);
+    if (!id) return null;
+    try {
+      var sdkRes = await window.oasisClient.wallet.loadProviderWalletsForAvatarByIdAsync({ id: id, showOnlyDefault: false, decryptPrivateKeys: false });
+      /* OLD fetch:
+      var data = await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/wallets', { headers: { 'Authorization': 'Bearer ' + getToken(profile) } });
+      return extractList(data);
+      */
+      return sdkRes.isError ? null : extractList(sdkRes.result);
+    } catch (e) { return null; }
   }
 
   async function fetchDefaultWallet(profile) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token) return null;
-    return await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/default-wallet', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    if (!id) return null;
+    try {
+      var sdkRes = await window.oasisClient.wallet.getAvatarDefaultWalletByIdAsync({ id: id });
+      /* OLD fetch:
+      return await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/default-wallet', { headers: { 'Authorization': 'Bearer ' + getToken(profile) } });
+      */
+      return sdkRes.isError ? null : (sdkRes.result || null);
+    } catch (e) { return null; }
   }
 
   async function fetchPortfolioValue(profile) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token) return null;
-    return await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/portfolio/value', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    if (!id) return null;
+    try {
+      var sdkRes = await window.oasisClient.wallet.getPortfolioValueAsync({ avatarId: id });
+      /* OLD fetch:
+      return await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/portfolio/value', { headers: { 'Authorization': 'Bearer ' + getToken(profile) } });
+      */
+      return sdkRes.isError ? null : (sdkRes.result != null ? sdkRes.result : null);
+    } catch (e) { return null; }
   }
 
   async function fetchSupportedChains(token) {
-    return await apiFetch(API_BASE + '/api/Wallet/supported-chains', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    try {
+      var sdkRes = await window.oasisClient.wallet.getSupportedChains();
+      /* OLD fetch:
+      return await apiFetch(API_BASE + '/api/Wallet/supported-chains', { headers: { 'Authorization': 'Bearer ' + token } });
+      */
+      return sdkRes.isError ? null : (sdkRes.result || null);
+    } catch (e) { return null; }
   }
 
   async function fetchTokens(profile, walletId) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token || !walletId) return null;
-    var data = await apiFetch(
-      API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/wallet/' + encodeURIComponent(walletId) + '/tokens',
-      { headers: { 'Authorization': 'Bearer ' + token } }
-    );
-    return extractList(data);
+    if (!id || !walletId) return null;
+    try {
+      var sdkRes = await window.oasisClient.wallet.getWalletTokensAsync({ avatarId: id, walletId: walletId });
+      /* OLD fetch:
+      var data = await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/wallet/' + encodeURIComponent(walletId) + '/tokens', { headers: { 'Authorization': 'Bearer ' + getToken(profile) } });
+      return extractList(data);
+      */
+      return sdkRes.isError ? null : extractList(sdkRes.result);
+    } catch (e) { return null; }
   }
 
   async function fetchAnalytics(profile, walletId) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token || !walletId) return null;
-    return await apiFetch(
-      API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/wallet/' + encodeURIComponent(walletId) + '/analytics',
-      { headers: { 'Authorization': 'Bearer ' + token } }
-    );
+    if (!id || !walletId) return null;
+    try {
+      var sdkRes = await window.oasisClient.wallet.getWalletAnalyticsAsync({ avatarId: id, walletId: walletId });
+      /* OLD fetch:
+      return await apiFetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/wallet/' + encodeURIComponent(walletId) + '/analytics', { headers: { 'Authorization': 'Bearer ' + getToken(profile) } });
+      */
+      return sdkRes.isError ? null : (sdkRes.result || null);
+    } catch (e) { return null; }
   }
 
   // ── Populate stat bar ────────────────────────────────────────────────────────
@@ -344,16 +360,23 @@
 
     renderStatus('loading', 'Sending transfer…');
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.wallet.transferBetweenWalletsAsync({ fromWalletAddress: fromAddr, toAddress: toAddr, amount: amount, chain: chain, memo: memo });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Wallet/transfer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ fromWalletAddress: fromAddr, toAddress: toAddr, amount: amount, chain: chain, memo: memo })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      renderStatus('success', 'Transfer sent successfully.');
-      var form = getById('wallet-transfer-form');
-      if (form) form.reset();
-      setTimeout(hideStatus, 4000);
+      */
+      if (!sdkRes.isError) {
+        renderStatus('success', 'Transfer sent successfully.');
+        var form = getById('wallet-transfer-form');
+        if (form) form.reset();
+        setTimeout(hideStatus, 4000);
+      } else {
+        renderStatus('error', sdkRes.message || 'Transfer failed.');
+      }
     } catch (e) {
       renderStatus('error', 'Transfer failed: ' + e.message);
     }
@@ -369,14 +392,20 @@
 
     renderStatus('loading', 'Creating wallet…');
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.wallet.createWalletForAvatarByIdAsync({ avatarId: id });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Wallet/avatar/' + encodeURIComponent(id) + '/create-wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({})
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify({})
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      renderStatus('success', 'Wallet created!');
-      setTimeout(function () { hideStatus(); loadAll(); }, 1500);
+      */
+      if (!sdkRes.isError) {
+        renderStatus('success', 'Wallet created!');
+        setTimeout(function () { hideStatus(); loadAll(); }, 1500);
+      } else {
+        renderStatus('error', sdkRes.message || 'Could not create wallet.');
+      }
     } catch (e) {
       renderStatus('error', 'Could not create wallet: ' + e.message);
     }

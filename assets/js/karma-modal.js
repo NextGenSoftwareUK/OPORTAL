@@ -143,15 +143,19 @@
     if (!token) { showStatus('warn', 'Please log in to vote on karma weightings.'); return; }
     showStatus('loading', 'Submitting vote…');
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.karma.voteForPositiveKarmaWeighting({ karmaType: karmaType, weighting: weighting });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/karma/vote-for-positive-karma-weighting/' +
         encodeURIComponent(karmaType) + '/' + encodeURIComponent(weighting), {
         headers: { 'Authorization': 'Bearer ' + token }
       });
-      if (res.ok) {
+      */
+      if (!sdkRes.isError) {
         showStatus('success', 'Vote submitted for "' + karmaType + '"!');
         setTimeout(hideStatus, 3000);
       } else {
-        showStatus('error', 'Vote failed (HTTP ' + res.status + ').');
+        showStatus('error', sdkRes.message || 'Vote failed.');
       }
     } catch (e) {
       showStatus('error', 'Vote failed: ' + String(e));
@@ -162,58 +166,68 @@
 
   async function fetchKarmaScore(profile) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token) return null;
+    if (!id) return null;
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.karma.getKarmaForAvatar({ avatarId: id });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/karma/get-karma-for-avatar/' + encodeURIComponent(id), {
         headers: { 'Authorization': 'Bearer ' + token }
       });
       if (!res.ok) return null;
       var data = await res.json();
       return data && (data.result != null ? data.result : data.karma != null ? data.karma : data.Karma != null ? data.Karma : data);
+      */
+      if (sdkRes.isError) return null;
+      return sdkRes.result;
     } catch (e) { return null; }
   }
 
   async function fetchAkashicRecords(profile) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token) return null;
+    if (!id) return null;
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.karma.getKarmaAkashicRecordsForAvatar({ avatarId: id });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/karma/get-karma-akashic-records-for-avatar/' + encodeURIComponent(id), {
         headers: { 'Authorization': 'Bearer ' + token }
       });
-      if (res.ok) {
-        var data = await res.json();
-        if (Array.isArray(data)) return data;
-        if (Array.isArray(data.result)) return data.result;
-        if (data.result && Array.isArray(data.result.result)) return data.result.result;
-        if (Array.isArray(data.data)) return data.data;
+      if (res.ok) { ... }
+      */
+      if (!sdkRes.isError && sdkRes.result != null) {
+        if (Array.isArray(sdkRes.result)) return sdkRes.result;
+        return null;
       }
     } catch (e) { /* fall through to history fallback */ }
     // Fallback: try karma history endpoint
     try {
-      var res2 = await fetch(API_BASE + '/api/karma/get-karma-history/' + encodeURIComponent(id), {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (!res2.ok) return null;
-      var data2 = await res2.json();
-      if (Array.isArray(data2)) return data2;
-      if (Array.isArray(data2.result)) return data2.result;
-      if (Array.isArray(data2.data)) return data2.data;
+      // SDK fallback
+      var sdkRes2 = await window.oasisClient.karma.getKarmaHistory({ avatarId: id });
+      /* OLD fetch:
+      var res2 = await fetch(API_BASE + '/api/karma/get-karma-history/' + encodeURIComponent(id), {...});
+      */
+      if (!sdkRes2.isError && sdkRes2.result != null) {
+        if (Array.isArray(sdkRes2.result)) return sdkRes2.result;
+      }
       return null;
     } catch (e2) { return null; }
   }
 
   async function fetchKarmaStats(profile) {
     var id = getAvatarId(profile);
-    var token = getToken(profile);
-    if (!id || !token) return null;
+    if (!id) return null;
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.karma.getKarmaStats({ avatarId: id });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/karma/get-karma-stats/' + encodeURIComponent(id), {
         headers: { 'Authorization': 'Bearer ' + token }
       });
       if (!res.ok) return null;
       return await res.json();
+      */
+      return sdkRes.isError ? null : { result: sdkRes.result };
     } catch (e) { return null; }
   }
 

@@ -5,6 +5,30 @@ window.apiUrl = 'https://api.web4.oasisomniverse.one';
 window.API_BASE = window.apiUrl;
 window.web5ApiUrl = 'https://api.web5.oasisomniverse.one';
 
+// ── OASIS SDK clients (@oasisomniverse/web4-api + web5-api) ──────────────────
+// OASISClient and STARClient are loaded by the SDK bundle scripts that appear
+// before config.js in portal.html. We instantiate them here and expose them as
+// window.oasisClient / window.starClient so every modal can use them directly.
+(function initSdkClients() {
+  if (typeof OASISClient !== 'undefined') {
+    window.oasisClient = new OASISClient({ baseUrl: window.apiUrl });
+  }
+  if (typeof STARClient !== 'undefined') {
+    window.starClient = new STARClient({ baseUrl: window.web5ApiUrl });
+  }
+
+  // If the user is already logged in (page refresh / revisit), inject their
+  // stored JWT so the SDK sends authenticated requests immediately.
+  try {
+    var _av = JSON.parse(localStorage.getItem('avatar') || 'null');
+    var _tok = _av && (_av.jwtToken || _av.JwtToken || _av.token || _av.Token || '');
+    if (_tok) {
+      if (window.oasisClient) window.oasisClient.setToken(_tok);
+      if (window.starClient)  window.starClient.setToken(_tok);
+    }
+  } catch (e) {}
+})();
+
 // ── Nav preferences (defaults — overridden by localStorage if user has saved a preference) ──
 // OLD_SIDE_MENU   : true = old flat menu, false = new grouped sections
 // NAV_CHEVRONS    : true = show chevrons, false = hide

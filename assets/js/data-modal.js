@@ -91,17 +91,18 @@
     var token = getToken(profile);
     if (!token) { showStatus('error', 'Please sign in to load holons.'); isFetching = false; return; }
 
-    var path = currentProvider === 'all'
-      ? '/api/data/load-all-holons/all'
-      : '/api/data/load-all-holons/all/true/true/0/true/0/' + encodeURIComponent(currentProvider) + '/false';
-
     try {
-      var res = await fetch(API_BASE + path, {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
+      // SDK: @oasisomniverse/web4-api
+      var body = currentProvider === 'all' ? {} : { providerType: currentProvider };
+      var sdkRes = await window.oasisClient.data.loadAllHolons(body);
+      /* OLD fetch:
+      var path = currentProvider === 'all' ? '/api/data/load-all-holons/all'
+        : '/api/data/load-all-holons/all/true/true/0/true/0/' + encodeURIComponent(currentProvider) + '/false';
+      var res = await fetch(API_BASE + path, { headers: { 'Authorization': 'Bearer ' + token } });
       var data = res.ok ? await res.json() : null;
+      */
       hideStatus();
-      var list = extractList(data);
+      var list = sdkRes.isError ? null : extractList(sdkRes.result);
       renderBrowseGrid(list);
       if (!list) showStatus('warn', 'No holons returned from the API.');
     } catch (e) {
@@ -135,21 +136,21 @@
     var token = getToken(profile);
     if (!token) { showStatus('error', 'Please sign in first.'); return; }
 
-    var path = provider
-      ? '/api/data/load-holon/' + encodeURIComponent(id) + '/true/true/0/true/0/' + encodeURIComponent(provider) + '/false'
-      : '/api/data/load-holon/' + encodeURIComponent(id);
-
     showStatus('loading', 'Loading holon…');
     var btn = getById('data-load-btn');
     if (btn) btn.disabled = true;
 
     try {
-      var res = await fetch(API_BASE + path, {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
+      // SDK: @oasisomniverse/web4-api
+      var body = provider ? { id: id, providerType: provider } : { id: id };
+      var sdkRes = await window.oasisClient.data.loadHolon(body);
+      /* OLD fetch:
+      var path = provider ? '/api/data/load-holon/' + encodeURIComponent(id) + '/true/true/0/true/0/' + encodeURIComponent(provider) + '/false' : '/api/data/load-holon/' + encodeURIComponent(id);
+      var res = await fetch(API_BASE + path, { headers: { 'Authorization': 'Bearer ' + token } });
       var data = res.ok ? await res.json() : null;
+      */
       hideStatus();
-      var list = extractList(data);
+      var list = sdkRes.isError ? null : extractList(sdkRes.result);
       var resultEl = getById('data-load-result');
       if (resultEl) {
         if (list && list.length) {
@@ -158,7 +159,7 @@
           resultEl.innerHTML = '<div class="data-empty"><div class="data-empty-icon">🔍</div><p>No holon found with that ID.</p></div>';
         }
       }
-      if (!res.ok) showStatus('error', (data && (data.message || data.error)) || 'Load failed.');
+      if (sdkRes.isError) showStatus('error', sdkRes.message || 'Load failed.');
     } catch (e) {
       showStatus('error', 'Network error loading holon.');
     } finally {
@@ -173,9 +174,11 @@
     var token = getToken(profile);
     if (!token) { showStatus('error', 'Please sign in first.'); return; }
 
-    var payload = { name: name, description: desc, holonType: Number(type) };
+    var payload = { name: name, description: desc, holonType: Number(type), providerType: provider || '' };
+    /* OLD path logic:
     var path = offchain ? '/api/data/save-holon-offchain' : '/api/data/save-holon';
     if (provider && !offchain) path += '/' + encodeURIComponent(provider);
+    */
 
     showStatus('loading', 'Saving holon…');
     var btnId = offchain ? 'data-offchain-btn' : 'data-save-btn';
@@ -183,21 +186,21 @@
     if (btn) btn.disabled = true;
 
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = offchain
+        ? await window.oasisClient.data.saveHolonOffChain(payload)
+        : await window.oasisClient.data.saveHolon(payload);
+      /* OLD fetch:
       var res = await fetch(API_BASE + path, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(payload)
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload)
       });
-      var data = {};
-      try { data = await res.json(); } catch (e) {}
-
-      if (res.ok) {
-        showStatus('success', (data && (data.message || data.title)) || 'Holon saved successfully.');
+      */
+      if (!sdkRes.isError) {
+        showStatus('success', sdkRes.message || 'Holon saved successfully.');
         setTimeout(hideStatus, 3500);
-        // Refresh browse list
         loadAllHolons();
       } else {
-        showStatus('error', (data && (data.message || data.error)) || 'Save failed.');
+        showStatus('error', sdkRes.message || 'Save failed.');
       }
     } catch (e) {
       showStatus('error', 'Network error saving holon.');
@@ -216,15 +219,18 @@
 
     showStatus('loading', 'Deleting holon…');
     try {
+      // SDK: @oasisomniverse/web4-api
+      var sdkRes = await window.oasisClient.data.deleteHolon({ id: id });
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/data/delete-holon/' + encodeURIComponent(id), {
-        method: 'DELETE',
-        headers: { 'Authorization': 'Bearer ' + token }
+        method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }
       });
-      if (res.ok) {
+      */
+      if (!sdkRes.isError) {
         showStatus('success', 'Holon deleted.');
         setTimeout(function () { hideStatus(); loadAllHolons(); }, 1500);
       } else {
-        showStatus('error', 'Delete failed.');
+        showStatus('error', sdkRes.message || 'Delete failed.');
       }
     } catch (e) {
       showStatus('error', 'Network error deleting holon.');

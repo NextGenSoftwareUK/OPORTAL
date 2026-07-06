@@ -673,6 +673,12 @@ function addAuthPopup(login, msg, e) {
       localStorage.setItem('loggedIn', true)
       user = avatarProfile;
       window.user = avatarProfile;
+      // Inject JWT into SDK clients so authenticated calls work immediately
+      var _loginTok = avatarProfile && (avatarProfile.jwtToken || avatarProfile.token || '');
+      if (_loginTok) {
+        if (window.oasisClient) window.oasisClient.setToken(_loginTok);
+        if (window.starClient)  window.starClient.setToken(_loginTok);
+      }
       if (typeof window.startJWTRefresh === 'function') window.startJWTRefresh();
       if (typeof setup === 'function') {
         setup();

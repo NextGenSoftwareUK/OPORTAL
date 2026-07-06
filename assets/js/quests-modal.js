@@ -54,9 +54,14 @@
     if (!token) { el.innerHTML = '<div class="quests-empty"><p>Please log in to view your quests.</p></div>'; return; }
     el.innerHTML = '<div class="quests-loading">Loading your quests…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.quests.getAllQuestsForAvatar();
+      /* OLD fetch:
       var res = await fetch(API_BASE + '/api/Quests/all-for-avatar', { headers: { 'Authorization': 'Bearer ' + token } });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderQuest).join('') : '<div class="quests-empty"><div class="quests-empty-icon">&#127918;</div><p>No quests found.<br>Explore the OASIS to discover quests.</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="quests-empty"><p>Could not load quests.</p></div>';
@@ -64,15 +69,19 @@
   }
 
   async function loadAllQuests() {
-    var p = getProfile(); var token = getToken(p);
     var el = document.getElementById('quests-all-list');
     if (!el) return;
     el.innerHTML = '<div class="quests-loading">Loading quests…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.quests.getAllIQuests();
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/Quests', { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderQuest).join('') : '<div class="quests-empty"><div class="quests-empty-icon">&#127918;</div><p>No quests available yet.</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="quests-empty"><p>Could not load quests.</p></div>';
@@ -83,13 +92,17 @@
     var q = (document.getElementById('quests-search-input') || {}).value || '';
     var el = document.getElementById('quests-search-results');
     if (!el || !q.trim()) return;
-    var p = getProfile(); var token = getToken(p);
     el.innerHTML = '<div class="quests-loading">Searching…</div>';
     try {
+      // SDK: @oasisomniverse/web5-api
+      var sdkRes = await window.starClient.quests.searchQuests({ query: q });
+      /* OLD fetch:
       var headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       var res = await fetch(API_BASE + '/api/Quests/search?query=' + encodeURIComponent(q), { headers: headers });
       var data = res.ok ? await res.json() : null;
       var list = extractList(data);
+      */
+      var list = sdkRes.isError ? [] : (Array.isArray(sdkRes.result) ? sdkRes.result : extractList(sdkRes.result));
       el.innerHTML = list.length ? list.map(renderQuest).join('') : '<div class="quests-empty"><p>No quests found for "' + escHtml(q) + '".</p></div>';
     } catch (e) {
       el.innerHTML = '<div class="quests-empty"><p>Search failed.</p></div>';
