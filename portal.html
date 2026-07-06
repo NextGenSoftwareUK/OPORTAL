@@ -34,6 +34,15 @@
   </head>
 
   <body data-theme="default">
+    <!-- BETA BANNER -->
+    <div class="beta-banner" id="beta-banner">
+      <div class="beta-banner__inner">
+        <span class="beta-banner__badge">&#9679; BETA</span>
+        <span class="beta-banner__text">OPORTAL is actively being developed &mdash; bugs and missing features are expected. Check back often for updates!</span>
+        <a class="beta-banner__cta" href="https://tally.so/r/WOZjNa" target="_blank" rel="noopener">Report a bug or request a feature &rarr;</a>
+        <button class="beta-banner__close" onclick="document.getElementById('beta-banner').style.display='none'" aria-label="Dismiss">&times;</button>
+      </div>
+    </div>
     <header class="main-header js-main-header">
       <div class="logo-wrapper js-logo-wrapper">
         <a href="/" class="logo" style="font-family:'Titillium Web',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.15em;color:#a8bfd8;text-decoration:none;opacity:.75;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.75">OPORTAL HOME</a>
