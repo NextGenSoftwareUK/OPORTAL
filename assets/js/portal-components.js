@@ -26,6 +26,7 @@
     'assets/components/modals/quests.html',
     'assets/components/modals/missions.html',
     'assets/components/modals/eggs.html',
+    'assets/components/modals/ai.html',
   ];
 
   function getRoot() {

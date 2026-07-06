@@ -1,0 +1,100 @@
+<div class="modal__block js-modal-block ai-modal-block" data-type="ai" id="ai-modal-block">
+  <section class="ai-modal-shell" aria-label="AI">
+    <div class="ai-modal-card">
+
+      <div class="ai-modal-top">
+        <div>
+          <h1 class="ai-modal-title">OASIS AI</h1>
+          <p class="ai-modal-lead">Chat with AI, generate images and explore the Holonic Memory layer — powered by the Web6 AI Layer.</p>
+        </div>
+        <button id="ai-modal-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div id="ai-modal-status" class="ai-modal-status" hidden></div>
+
+      <!-- Tabs -->
+      <div class="ai-tabs" role="tablist">
+        <button class="ai-tab is-active" data-tab="chat" role="tab" aria-selected="true">Chat</button>
+        <button class="ai-tab" data-tab="images" role="tab" aria-selected="false">Image Generation</button>
+        <button class="ai-tab" data-tab="memory" role="tab" aria-selected="false">Holonic Memory</button>
+      </div>
+
+      <!-- ── Chat tab ─────────────────────────────────────────────────── -->
+      <div class="ai-tab-panel" id="ai-tab-chat" role="tabpanel">
+        <div class="ai-chat-messages" id="ai-chat-messages">
+          <div class="ai-chat-welcome">
+            <div class="ai-chat-welcome-icon">🤖</div>
+            <p>Hello! I'm the OASIS AI assistant. Ask me anything about the OASIS metaverse, your avatar, quests, or anything else!</p>
+          </div>
+        </div>
+        <div class="ai-chat-models-bar">
+          <select id="ai-chat-model" class="ai-select">
+            <option value="">Loading models…</option>
+          </select>
+        </div>
+        <div class="ai-chat-input-row">
+          <textarea id="ai-chat-input" class="ai-chat-input" placeholder="Type a message…" rows="2"></textarea>
+          <button id="ai-chat-send-btn" class="button button--primary ai-send-btn" type="button">Send</button>
+        </div>
+      </div>
+
+      <!-- ── Image generation tab ────────────────────────────────────── -->
+      <div class="ai-tab-panel" id="ai-tab-images" role="tabpanel" hidden>
+        <div class="ai-form-group">
+          <label class="ai-label" for="ai-img-prompt">Prompt</label>
+          <textarea id="ai-img-prompt" class="ai-input ai-textarea" rows="3" placeholder="Describe the image you want to generate…"></textarea>
+        </div>
+        <div class="ai-form-row">
+          <div class="ai-form-group ai-form-group--half">
+            <label class="ai-label" for="ai-img-model">Model</label>
+            <select id="ai-img-model" class="ai-select">
+              <option value="dall-e-3">DALL·E 3</option>
+              <option value="dall-e-2">DALL·E 2</option>
+              <option value="stable-diffusion">Stable Diffusion</option>
+            </select>
+          </div>
+          <div class="ai-form-group ai-form-group--half">
+            <label class="ai-label" for="ai-img-size">Size</label>
+            <select id="ai-img-size" class="ai-select">
+              <option value="1024x1024">1024×1024</option>
+              <option value="512x512">512×512</option>
+              <option value="256x256">256×256</option>
+            </select>
+          </div>
+        </div>
+        <div class="ai-form-group">
+          <button id="ai-img-generate-btn" class="button button--primary" type="button">Generate Image</button>
+        </div>
+        <div id="ai-img-result" class="ai-img-result" hidden></div>
+      </div>
+
+      <!-- ── Holonic Memory tab ──────────────────────────────────────── -->
+      <div class="ai-tab-panel" id="ai-tab-memory" role="tabpanel" hidden>
+        <div class="ai-memory-earth" id="ai-memory-earth">
+          <div class="ai-empty"><p>Loading Earth Holon…</p></div>
+        </div>
+        <div class="ai-memory-actions">
+          <div class="ai-form-group">
+            <label class="ai-label" for="ai-memory-input">Record a memory or insight</label>
+            <textarea id="ai-memory-input" class="ai-input ai-textarea" rows="2" placeholder="Enter a memory or insight to record in the Holonic layer…"></textarea>
+          </div>
+          <div class="ai-form-row">
+            <div class="ai-form-group ai-form-group--half">
+              <label class="ai-label" for="ai-memory-type">Type</label>
+              <select id="ai-memory-type" class="ai-select">
+                <option value="Insight">Insight</option>
+                <option value="Experience">Experience</option>
+                <option value="Knowledge">Knowledge</option>
+                <option value="Wisdom">Wisdom</option>
+              </select>
+            </div>
+            <div class="ai-form-group ai-form-group--half ai-form-group--end">
+              <button id="ai-memory-record-btn" class="button button--primary" type="button">Record Memory</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

@@ -4,6 +4,7 @@
 window.apiUrl = 'https://api.web4.oasisomniverse.one';
 window.API_BASE = window.apiUrl;
 window.web5ApiUrl = 'https://api.web5.oasisomniverse.one';
+window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
 
 // ── OASIS SDK clients (@oasisomniverse/web4-api + web5-api) ──────────────────
 // OASISClient and STARClient are loaded by the SDK bundle scripts that appear
@@ -16,6 +17,9 @@ window.web5ApiUrl = 'https://api.web5.oasisomniverse.one';
   if (typeof STARClient !== 'undefined') {
     window.starClient = new STARClient({ baseUrl: window.web5ApiUrl });
   }
+  if (typeof Web6Client !== 'undefined') {
+    window.aiClient = new Web6Client({ baseUrl: window.web6ApiUrl });
+  }
 
   // If the user is already logged in (page refresh / revisit), inject their
   // stored JWT so the SDK sends authenticated requests immediately.
@@ -25,6 +29,7 @@ window.web5ApiUrl = 'https://api.web5.oasisomniverse.one';
     if (_tok) {
       if (window.oasisClient) window.oasisClient.setToken(_tok);
       if (window.starClient)  window.starClient.setToken(_tok);
+      if (window.aiClient)    window.aiClient.setToken(_tok);
     }
   } catch (e) {}
 })();

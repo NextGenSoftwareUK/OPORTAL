@@ -678,6 +678,7 @@ function addAuthPopup(login, msg, e) {
       if (_loginTok) {
         if (window.oasisClient) window.oasisClient.setToken(_loginTok);
         if (window.starClient)  window.starClient.setToken(_loginTok);
+        if (window.aiClient)    window.aiClient.setToken(_loginTok);
       }
       if (typeof window.startJWTRefresh === 'function') window.startJWTRefresh();
       if (typeof setup === 'function') {
