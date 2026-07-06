@@ -1,0 +1,217 @@
+<section id="dashboard" class="dashboard" hidden>
+
+  <!-- Hero Banner -->
+  <div class="dash-hero">
+    <div class="dash-hero-avatar">
+      <img id="dash-avatar-img" src="assets/img/loggedin.png" alt="Avatar">
+      <div class="dash-avatar-glow"></div>
+    </div>
+    <div class="dash-hero-info">
+      <div class="dash-welcome">Welcome back</div>
+      <h1 class="dash-name" id="dash-name">—</h1>
+      <div class="dash-badges">
+        <span class="dash-badge dash-badge--type" id="dash-avatar-type">—</span>
+        <span class="dash-badge dash-badge--level">Level <span id="dash-level">—</span></span>
+      </div>
+    </div>
+    <div class="dash-hero-stats">
+      <div class="dash-hero-stat">
+        <span class="dash-hero-stat-value" id="dash-karma-hero">—</span>
+        <span class="dash-hero-stat-label">Total Karma</span>
+      </div>
+      <div class="dash-hero-stat">
+        <span class="dash-hero-stat-value" id="dash-xp-hero">—</span>
+        <span class="dash-hero-stat-label">XP</span>
+      </div>
+      <div class="dash-hero-stat">
+        <span class="dash-hero-stat-value" id="dash-nfts-hero">—</span>
+        <span class="dash-hero-stat-label">NFTs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="dash-cards">
+    <div class="dash-card dash-card--cyan" onclick="if(typeof openKarmaModal==='function')openKarmaModal()">
+      <div class="dash-card-icon">&#9670;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-karma">—</div>
+        <div class="dash-card-label">Karma Points</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--green" onclick="if(typeof openDataModal==='function')openDataModal()">
+      <div class="dash-card-icon">&#9707;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-holons">—</div>
+        <div class="dash-card-label">Holons / Data</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--amber" onclick="if(typeof openNftModal==='function')openNftModal()">
+      <div class="dash-card-icon">&#9670;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-nfts">—</div>
+        <div class="dash-card-label">NFTs</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--purple" onclick="if(typeof openNftModal==='function')openNftModal()">
+      <div class="dash-card-icon">&#127759;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-geonfts">—</div>
+        <div class="dash-card-label">Geo NFTs</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--coral" onclick="showComingSoonMessage()">
+      <div class="dash-card-icon">&#127918;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-quests">—</div>
+        <div class="dash-card-label">Quests</div>
+      </div>
+    </div>
+    <div class="dash-card dash-card--teal" onclick="showComingSoonMessage()">
+      <div class="dash-card-icon">&#9876;</div>
+      <div class="dash-card-body">
+        <div class="dash-card-value" id="dash-card-missions">—</div>
+        <div class="dash-card-label">Missions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts + Akashic Records -->
+  <div class="dash-grid">
+    <!-- Karma Breakdown Chart -->
+    <div class="dash-panel">
+      <div class="dash-panel-header">
+        <h3 class="dash-panel-title">&#9670; Karma Breakdown</h3>
+        <button class="dash-panel-link" onclick="if(typeof openKarmaModal==='function')openKarmaModal()">View All</button>
+      </div>
+      <div id="dash-karma-chart-wrap">
+        <svg id="dash-karma-chart" class="dash-chart" viewBox="0 0 420 200" preserveAspectRatio="xMidYMid meet"></svg>
+        <div id="dash-karma-chart-empty" class="dash-empty" hidden>No karma records yet</div>
+      </div>
+      <div class="dash-karma-totals">
+        <div class="dash-karma-total">
+          <span class="dash-kt-dot" style="background:#48dc82"></span>
+          <span class="dash-kt-label">Positive</span>
+          <span class="dash-kt-val" id="dash-karma-pos">—</span>
+        </div>
+        <div class="dash-karma-total">
+          <span class="dash-kt-dot" style="background:#ff7070"></span>
+          <span class="dash-kt-label">Negative</span>
+          <span class="dash-kt-val" id="dash-karma-neg">—</span>
+        </div>
+        <div class="dash-karma-total">
+          <span class="dash-kt-dot" style="background:#00e5ff"></span>
+          <span class="dash-kt-label">Net</span>
+          <span class="dash-kt-val" id="dash-karma-net">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Akashic Records -->
+    <div class="dash-panel">
+      <div class="dash-panel-header">
+        <h3 class="dash-panel-title">&#9998; Akashic Records</h3>
+        <button class="dash-panel-link" onclick="if(typeof openKarmaModal==='function')openKarmaModal()">View All</button>
+      </div>
+      <ul id="dash-akashic-list" class="dash-akashic-list">
+        <li class="dash-akashic-loading">Loading…</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Map Stats + OAPPs + Wallet -->
+  <div class="dash-grid dash-grid--3">
+    <div class="dash-panel">
+      <div class="dash-panel-header">
+        <h3 class="dash-panel-title">&#127757; Map Activity</h3>
+        <button class="dash-panel-link" onclick="if(typeof openMapModal==='function')openMapModal()">View Map</button>
+      </div>
+      <div class="dash-map-stats">
+        <div class="dash-map-stat"><span class="dash-map-val" id="dash-map-visited">—</span><span class="dash-map-lbl">Locations Visited</span></div>
+        <div class="dash-map-stat"><span class="dash-map-val" id="dash-map-total">—</span><span class="dash-map-lbl">Total Locations</span></div>
+        <div class="dash-map-stat"><span class="dash-map-val" id="dash-map-geo">—</span><span class="dash-map-lbl">Geo NFTs Placed</span></div>
+      </div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="dash-panel-header">
+        <h3 class="dash-panel-title">&#128421; OAPPs</h3>
+        <button class="dash-panel-link" onclick="showComingSoonMessage()">Browse</button>
+      </div>
+      <div class="dash-oapps-empty">
+        <div class="dash-empty-icon">&#128421;</div>
+        <div id="dash-oapps-msg">Loading OAPPs…</div>
+      </div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="dash-panel-header">
+        <h3 class="dash-panel-title">&#128179; Wallet</h3>
+        <button class="dash-panel-link" onclick="if(typeof openWalletModal==='function')openWalletModal()">Open</button>
+      </div>
+      <div class="dash-wallet-info">
+        <div class="dash-wallet-row"><span class="dash-wallet-lbl">Provider</span><span class="dash-wallet-val" id="dash-wallet-provider">—</span></div>
+        <div class="dash-wallet-row"><span class="dash-wallet-lbl">Balance</span><span class="dash-wallet-val" id="dash-wallet-balance">—</span></div>
+        <div class="dash-wallet-row"><span class="dash-wallet-lbl">NFTs Held</span><span class="dash-wallet-val" id="dash-wallet-nfts">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="dash-panel">
+    <div class="dash-panel-header">
+      <h3 class="dash-panel-title">&#9889; Quick Access</h3>
+    </div>
+    <div class="dash-quick-actions">
+      <button class="dash-qa-btn" onclick="if(typeof openAvatarModal==='function')openAvatarModal()">
+        <span class="dash-qa-icon">&#128100;</span>
+        <span class="dash-qa-label">My Avatar</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openWalletModal==='function')openWalletModal()">
+        <span class="dash-qa-icon">&#128179;</span>
+        <span class="dash-qa-label">Wallet</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openNftModal==='function')openNftModal()">
+        <span class="dash-qa-icon">&#127991;</span>
+        <span class="dash-qa-label">NFT Wallet</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openKarmaModal==='function')openKarmaModal()">
+        <span class="dash-qa-icon">&#9670;</span>
+        <span class="dash-qa-label">Karma</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openDataModal==='function')openDataModal()">
+        <span class="dash-qa-icon">&#9707;</span>
+        <span class="dash-qa-label">My Data</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openMapModal==='function')openMapModal()">
+        <span class="dash-qa-icon">&#127757;</span>
+        <span class="dash-qa-label">Map</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openMessagingModal==='function')openMessagingModal()">
+        <span class="dash-qa-icon">&#128172;</span>
+        <span class="dash-qa-label">Messages</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openSearchModal==='function')openSearchModal()">
+        <span class="dash-qa-icon">&#128269;</span>
+        <span class="dash-qa-label">Search</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openSettingsModal==='function')openSettingsModal()">
+        <span class="dash-qa-icon">&#9881;</span>
+        <span class="dash-qa-label">Settings</span>
+      </button>
+      <button class="dash-qa-btn" onclick="if(typeof openHyperDriveModal==='function')openHyperDriveModal()">
+        <span class="dash-qa-icon">&#128301;</span>
+        <span class="dash-qa-label">HyperDrive</span>
+      </button>
+      <button class="dash-qa-btn" onclick="showComingSoonMessage()">
+        <span class="dash-qa-icon">&#127918;</span>
+        <span class="dash-qa-label">Quests</span>
+      </button>
+      <button class="dash-qa-btn" onclick="showComingSoonMessage()">
+        <span class="dash-qa-icon">&#9876;</span>
+        <span class="dash-qa-label">Missions</span>
+      </button>
+    </div>
+  </div>
+
+</section>

@@ -39,6 +39,18 @@
   async function loadComponents() {
     var root = getRoot();
 
+    // Load dashboard HTML into .content-wrapper
+    fetchFragment('assets/components/dashboard.html').then(function (html) {
+      var wrapper = document.querySelector('.content-wrapper');
+      if (wrapper && html) {
+        wrapper.innerHTML = html;
+        // Show immediately if already logged in
+        if (localStorage.getItem('loggedIn') === 'true') {
+          if (typeof window.showDashboard === 'function') window.showDashboard();
+        }
+      }
+    }).catch(function (e) { console.error('dashboard load failed', e); });
+
     // Fetch shell and modals in parallel
     var shellPromises = shellPaths.map(function (p) {
       return fetchFragment(p).catch(function (e) { console.error(e); return null; });

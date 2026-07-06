@@ -624,11 +624,13 @@ if (avatarRaw && avatarRaw !== 'undefined') {
     var username = document.getElementById("username")
     guest_links.style.display = "none"
     avatarDiv.classList.add('loggedin')
-    
-    if (username) 
+
+    if (username)
       username.innerHTML = user.username;//username
 
     icon.src='assets/img/loggedin.png'
+
+    if (typeof window.showDashboard === 'function') window.showDashboard();
   }
 
   /* Do not show drop down*/
@@ -637,7 +639,8 @@ if (avatarRaw && avatarRaw !== 'undefined') {
     if (avatarDiv.classList.contains('loggedin')) {
       avatarDiv.classList.remove('loggedin')
     }
-   icon.src='assets/img/loggedout.png' 
+    icon.src='assets/img/loggedout.png'
+    if (typeof window.hideDashboard === 'function') window.hideDashboard();
   }
 }
 
@@ -865,6 +868,7 @@ async function onLogout() {
   }
   
   if (typeof window.stopJWTRefresh === 'function') window.stopJWTRefresh();
+  if (typeof window.hideDashboard === 'function') window.hideDashboard();
 	localStorage.removeItem('avatar')
 	localStorage.setItem('loggedIn', false)
 	window.location.reload()
