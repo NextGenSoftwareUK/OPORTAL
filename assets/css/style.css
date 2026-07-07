@@ -4234,6 +4234,10 @@ select option {
 .data-status--success { background: rgba(72,220,130,0.07); border: 1px solid rgba(72,220,130,0.25); color: #48dc82; }
 .data-status--warn    { background: rgba(255,180,60,0.07); border: 1px solid rgba(255,180,60,0.25); color: #ffb43c; }
 .data-status--error   { background: rgba(255,80,80,0.07);  border: 1px solid rgba(255,80,80,0.25);  color: #ff7070; }
+.data-status--info    { background: rgba(0,229,255,0.06);  border: 1px solid rgba(0,229,255,0.2);   color: #00e5ff; }
+/* Reserve strip space so appearance/disappearance doesn't resize the modal */
+#data-modal-status { min-height: 44px; }
+#data-modal-status[hidden] { display: block !important; visibility: hidden; opacity: 0; pointer-events: none; }
 
 /* Tabs */
 .data-tabs {
@@ -4252,6 +4256,10 @@ select option {
   transition: color 0.15s, border-color 0.15s;
 }
 .data-tab.is-active, .data-tab:hover { color: var(--color-white); border-bottom-color: var(--color-2); }
+
+/* Fixed tab panel height so switching tabs never resizes the modal */
+.data-tab-panel { display: block; min-height: 320px; }
+.data-tab-panel[hidden] { display: none; }
 
 /* Browse bar */
 .data-browse-bar {

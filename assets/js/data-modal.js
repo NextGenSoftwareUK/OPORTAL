@@ -174,27 +174,24 @@
     var token = getToken(profile);
     if (!token) { showStatus('error', 'Please sign in first.'); return; }
 
-    var payload = { name: name, description: desc, holonType: Number(type), providerType: provider || '' };
-    /* OLD path logic:
-    var path = offchain ? '/api/data/save-holon-offchain' : '/api/data/save-holon';
-    if (provider && !offchain) path += '/' + encodeURIComponent(provider);
-    */
+    if (offchain) {
+      showStatus('info', 'Off-chain holon storage is coming soon — this feature is not yet live.');
+      return;
+    }
+
+    // API expects { holon: { ... }, onChainProvider: "..." }
+    var payload = {
+      holon: { name: name, description: desc, holonType: Number(type) },
+      saveChildren: true
+    };
+    if (provider) payload.onChainProvider = provider;
 
     showStatus('loading', 'Saving holon…');
-    var btnId = offchain ? 'data-offchain-btn' : 'data-save-btn';
-    var btn = getById(btnId);
+    var btn = getById('data-save-btn');
     if (btn) btn.disabled = true;
 
     try {
-      // SDK: @oasisomniverse/web4-api
-      var sdkRes = offchain
-        ? await window.oasisClient.data.saveHolonOffChain(payload)
-        : await window.oasisClient.data.saveHolon(payload);
-      /* OLD fetch:
-      var res = await fetch(API_BASE + path, {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload)
-      });
-      */
+      var sdkRes = await window.oasisClient.data.saveHolon(payload);
       if (!sdkRes.isError) {
         showStatus('success', sdkRes.message || 'Holon saved successfully.');
         setTimeout(hideStatus, 3500);
