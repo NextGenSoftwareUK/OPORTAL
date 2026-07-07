@@ -28,7 +28,7 @@ var _OASIS_WEB6_UNUSED_ = (() => {
           }
           this.baseUrl = baseUrl.replace(/\/+$/, "");
           this.tokenStore = tokenStore;
-          this.fetchImpl = fetchImpl;
+          this.fetchImpl = fetchImpl.bind(globalThis);
         }
         setBaseUrl(baseUrl) {
           this.baseUrl = baseUrl.replace(/\/+$/, "");
