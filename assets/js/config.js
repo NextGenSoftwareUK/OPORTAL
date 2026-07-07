@@ -11,14 +11,17 @@ window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
 // before config.js in portal.html. We instantiate them here and expose them as
 // window.oasisClient / window.starClient so every modal can use them directly.
 (function initSdkClients() {
+  // Bind fetch to window here, outside any module wrapper, so the SDK always
+  // has a correctly-bound fetch regardless of how esbuild wraps the CommonJS code.
+  var boundFetch = window.fetch.bind(window);
   if (typeof OASISClient !== 'undefined') {
-    window.oasisClient = new OASISClient({ baseUrl: window.apiUrl });
+    window.oasisClient = new OASISClient({ baseUrl: window.apiUrl, fetchImpl: boundFetch });
   }
   if (typeof STARClient !== 'undefined') {
-    window.starClient = new STARClient({ baseUrl: window.web5ApiUrl });
+    window.starClient = new STARClient({ baseUrl: window.web5ApiUrl, fetchImpl: boundFetch });
   }
   if (typeof Web6Client !== 'undefined') {
-    window.aiClient = new Web6Client({ baseUrl: window.web6ApiUrl });
+    window.aiClient = new Web6Client({ baseUrl: window.web6ApiUrl, fetchImpl: boundFetch });
   }
 
   // If the user is already logged in (page refresh / revisit), inject their
