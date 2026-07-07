@@ -273,6 +273,7 @@
         populate(updated);
         showStatus('success', sdkRes.message || 'Avatar updated successfully.');
         setTimeout(hideStatus, 3500);
+        window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: updated }));
       } else {
         showStatus('error', sdkRes.message || 'Something went wrong. Please try again.');
       }

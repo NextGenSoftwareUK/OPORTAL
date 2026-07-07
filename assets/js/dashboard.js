@@ -350,4 +350,13 @@
     if (localStorage.getItem('loggedIn') === 'true') window.showDashboard();
   });
 
+  // Refresh displayed name (and other basic fields) when avatar is saved in the modal
+  window.addEventListener('avatarUpdated', function (e) {
+    var p = e.detail;
+    if (!p) return;
+    set('dash-name', getName(p));
+    set('dash-avatar-type', getType(p));
+    set('dash-level', getLevel(p));
+  });
+
 })();
