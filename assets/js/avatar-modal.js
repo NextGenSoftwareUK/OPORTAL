@@ -257,10 +257,18 @@
     if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
 
     try {
+      // Preserve server-managed flags so a full-replace endpoint doesn't wipe them
+      var preserved = {
+        isVerified:   profile.isVerified   ?? profile.IsVerified   ?? false,
+        verified:     profile.verified     ?? profile.Verified     ?? false,
+        avatarId:     profile.avatarId     || profile.AvatarId     || profile.id || profile.Id || '',
+        createdDate:  profile.createdDate  || profile.CreatedDate  || '',
+        modifiedDate: profile.modifiedDate || profile.ModifiedDate || '',
+      };
       // SDK: @oasisomniverse/web4-api
       var sdkRes = email
-        ? await window.oasisClient.avatar.updateAvatarDetailByEmail(Object.assign({}, payload, { email: email }))
-        : await window.oasisClient.avatar.updateAvatarDetailByUsername(Object.assign({}, payload, { username: username }));
+        ? await window.oasisClient.avatar.updateAvatarDetailByEmail(Object.assign({}, preserved, payload, { email: email }))
+        : await window.oasisClient.avatar.updateAvatarDetailByUsername(Object.assign({}, preserved, payload, { username: username }));
       /* OLD fetch:
       var url = getUpdateUrl(profile);
       var res = await fetch(url, { method: 'POST', headers: {...}, body: JSON.stringify(payload) });
