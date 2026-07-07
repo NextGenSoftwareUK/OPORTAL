@@ -12,7 +12,22 @@
   function getKarma(p) { return p && (p.karma || p.Karma || p.karmaPoints || p.KarmaPoints || p.karmaWeighting || p.KarmaWeighting || 0); }
   function getXP(p) { return p && (p.xp || p.XP || p.experiencePoints || p.ExperiencePoints || 0); }
   function getLevel(p) { return p && (p.level || p.Level || 1); }
-  function getType(p) { return p && (p.avatarType || p.AvatarType || p.type || p.Type || 'Human'); }
+  function unwrapEnum(v) {
+    if (v == null) return null;
+    if (typeof v === 'string' || typeof v === 'number') return String(v);
+    if (typeof v === 'object') {
+      for (var k of ['name', 'Name', 'title', 'Title', 'label', 'Label', 'value', 'Value']) {
+        if (v[k] != null && v[k] !== '') return String(v[k]);
+      }
+    }
+    return null;
+  }
+  function getType(p) {
+    var raw = p && (p.avatarType || p.AvatarType || p.type || p.Type);
+    var v = unwrapEnum(raw);
+    if (!v || /^\d+$/.test(v)) return 'Human';
+    return v;
+  }
   function getName(p) {
     if (!p) return 'Avatar';
     return p.username || p.UserName || p.userName ||
