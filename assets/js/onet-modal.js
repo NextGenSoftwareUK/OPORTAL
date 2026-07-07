@@ -216,7 +216,7 @@
 
   async function loadAll() {
     showStatus('loading', 'Loading ONET data…');
-    var client = window.oasisClient && window.oasisClient.onet;
+    var client = window.oasisClient && window.oasisClient.oNET;
     if (!client) { showStatus('warn', 'ONET SDK not available.'); return; }
 
     var [statusRes, nodesRes, statsRes] = await Promise.all([
@@ -240,7 +240,7 @@
   async function loadTopology() {
     var el = getById('onet-topology');
     if (el) el.textContent = 'Loading…';
-    var client = window.oasisClient && window.oasisClient.onet;
+    var client = window.oasisClient && window.oasisClient.oNET;
     if (!client) { renderTopology(null); return; }
     var sdkRes = await client.getNetworkTopology().catch(function () { return { isError: true }; });
     renderTopology(sdkRes.isError ? null : sdkRes.result);
@@ -249,7 +249,7 @@
   // ── Action buttons ────────────────────────────────────────────────────────────
 
   async function doAction(btnId, method, label) {
-    var client = window.oasisClient && window.oasisClient.onet;
+    var client = window.oasisClient && window.oasisClient.oNET;
     if (!client || !client[method]) { showStatus('error', 'Action not available.'); return; }
     setBtn(btnId, label + '…', true);
     var sdkRes = await client[method]().catch(function () { return { isError: true }; });
@@ -266,7 +266,7 @@
     var textarea = getById('onet-broadcast-msg');
     var msg = textarea ? textarea.value.trim() : '';
     if (!msg) { showStatus('warn', 'Please enter a message to broadcast.'); return; }
-    var client = window.oasisClient && window.oasisClient.onet;
+    var client = window.oasisClient && window.oasisClient.oNET;
     if (!client) { showStatus('error', 'ONET SDK not available.'); return; }
     setBtn('onet-broadcast-btn', 'Sending…', true);
     var sdkRes = await client.broadcastMessage({ message: msg }).catch(function () { return { isError: true }; });

@@ -189,7 +189,7 @@
 
   async function renderLogs() {
     if (!logsTabActive) return;
-    var client = window.oasisClient && window.oasisClient.onode;
+    var client = window.oasisClient && window.oasisClient.oNODE;
     var sdkRes = client ? await client.getNodeLogs().catch(function () { return { isError: true }; }) : { isError: true };
     var data = sdkRes.isError ? null : sdkRes.result;
     var el = getById('onode-logs');
@@ -259,7 +259,7 @@
 
   async function loadAll() {
     showStatus('loading', 'Loading node data…');
-    var client = window.oasisClient && window.oasisClient.onode;
+    var client = window.oasisClient && window.oasisClient.oNODE;
     if (!client) { showStatus('warn', 'ONODE SDK not available.'); return; }
 
     var [statusRes, infoRes, metricsRes] = await Promise.all([
@@ -282,7 +282,7 @@
   // ── Controls ──────────────────────────────────────────────────────────────────
 
   async function doControl(btnId, method, label, confirmMsg) {
-    var client = window.oasisClient && window.oasisClient.onode;
+    var client = window.oasisClient && window.oasisClient.oNODE;
     if (!client || !client[method]) { showStatus('error', 'Action not available.'); return; }
     if (confirmMsg && !confirm(confirmMsg)) return;
     setBtn(btnId, label + '…', true);
@@ -313,11 +313,11 @@
 
     if (tab === 'logs') startLogsAutoRefresh();
     if (tab === 'peers') {
-      var pc = window.oasisClient && window.oasisClient.onode;
+      var pc = window.oasisClient && window.oasisClient.oNODE;
       if (pc) pc.getConnectedPeers().then(function (r) { renderPeers(r.isError ? null : r.result); }).catch(function () { renderPeers(null); });
     }
     if (tab === 'config') {
-      var cc = window.oasisClient && window.oasisClient.onode;
+      var cc = window.oasisClient && window.oasisClient.oNODE;
       if (cc) cc.getNodeConfig().then(function (r) { renderPreformatted('onode-config', r.isError ? null : r.result); }).catch(function () { renderPreformatted('onode-config', null); });
     }
     if (tab === 'oasisdna') initDNATab();
@@ -386,7 +386,7 @@
       if (gate)    gate.hidden    = true;
       if (content) content.hidden = false;
       if (errEl)   errEl.hidden   = true;
-      var dc = window.oasisClient && window.oasisClient.onode;
+      var dc = window.oasisClient && window.oasisClient.oNODE;
       if (dc) dc.getOASISDNA().then(function (r) { renderPreformatted('onode-oasisdna', r.isError ? null : r.result); }).catch(function () {});
     });
 
