@@ -31,12 +31,22 @@
     catch (e) { return null; }
   }
 
+  function unwrapValue(v) {
+    if (v == null || v === '') return '';
+    if (typeof v === 'string' || typeof v === 'number') return String(v);
+    if (typeof v === 'object') {
+      // EnumValue<T> or nested result — check common value-carrying keys
+      for (var k of ['score', 'Score', 'value', 'Value', 'name', 'Name', 'title', 'Title']) {
+        if (v[k] != null && v[k] !== '' && (typeof v[k] === 'string' || typeof v[k] === 'number')) return String(v[k]);
+      }
+    }
+    return '';
+  }
   function pickValue(src, keys) {
     if (!src) return '';
     for (var i = 0; i < keys.length; i++) {
-      var v = src[keys[i]];
-      if (v == null || v === '') continue;
-      if (typeof v === 'string' || typeof v === 'number') return String(v);
+      var v = unwrapValue(src[keys[i]]);
+      if (v !== '') return v;
     }
     return '';
   }
@@ -65,16 +75,16 @@
     var p = profile || {};
 
     // Prefer fresh API karma data, fall back to stored profile
-    var karma = karmaData != null ? karmaData
+    var karma = karmaData != null ? unwrapValue(karmaData)
       : pickValue(p, ['karma', 'Karma', 'karmaPoints', 'KarmaPoints', 'karmaWeighting', 'KarmaWeighting']);
     var xp = pickValue(p, ['xp', 'XP', 'experiencePoints', 'ExperiencePoints', 'experience', 'Experience']);
     var level = pickValue(p, ['level', 'Level', 'rank', 'Rank', 'avatarLevel', 'AvatarLevel']);
     var type = pickValue(p, ['avatarType', 'AvatarType', 'avatarTypeName', 'AvatarTypeName']);
     if (!type || /^\d+$/.test(type)) type = 'User';
 
-    setText('karma-score-value', karma || '—');
-    setText('karma-xp-value', xp || '—');
-    setText('karma-level-value', level || '—');
+    setText('karma-score-value', karma !== '' && karma != null ? karma : '—');
+    setText('karma-xp-value', xp !== '' && xp != null ? xp : '—');
+    setText('karma-level-value', level !== '' && level != null ? level : '—');
     setText('karma-type-value', type);
   }
 
