@@ -350,13 +350,18 @@
     if (localStorage.getItem('loggedIn') === 'true') window.showDashboard();
   });
 
-  // Refresh displayed name (and other basic fields) when avatar is saved in the modal
+  // Refresh hero fields whenever avatar data is saved or hydrated
   window.addEventListener('avatarUpdated', function (e) {
     var p = e.detail;
     if (!p) return;
     set('dash-name', getName(p));
     set('dash-avatar-type', getType(p));
     set('dash-level', getLevel(p));
+    var karma = getKarma(p);
+    set('dash-karma-hero', fmtNum(karma));
+    set('dash-card-karma', fmtNum(karma));
+    set('dash-karma-net', fmtNum(karma));
+    set('dash-xp-hero', fmtNum(getXP(p)));
   });
 
 })();

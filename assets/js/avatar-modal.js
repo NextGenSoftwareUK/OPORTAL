@@ -220,6 +220,7 @@
     if (!sdkRes || sdkRes.isError || !sdkRes.result) return profile;
     var merged = Object.assign({}, profile, sdkRes.result);
     saveAvatar(merged);
+    window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: merged }));
     return merged;
   }
 
