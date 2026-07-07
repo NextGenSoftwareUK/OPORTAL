@@ -5447,11 +5447,34 @@ select option {
 .onet-tab-panel[hidden], .onode-tab-panel[hidden], .map-tab-panel[hidden] {
   display: none;
 }
-/* Fixed-height tab content area so switching tabs / showing status never resizes the modal */
-.onet-tab-panel, .onode-tab-panel { min-height: 320px; }
-/* Status strip reserves its space so it doesn't push content when it appears */
-#onode-modal-status, #onet-modal-status { min-height: 44px; transition: opacity 0.15s; }
-#onode-modal-status[hidden], #onet-modal-status[hidden] { display: block !important; visibility: hidden; opacity: 0; pointer-events: none; }
+/* ── Fixed-height modal rule (applies to every popup) ──────────────────────────
+   Tab panels keep their minimum height so switching tabs never resizes the modal.
+   Status strips reserve their space invisibly so appearing/hiding doesn't shift layout. */
+
+.onet-tab-panel, .onode-tab-panel,
+.ai-tab-panel, .eggs-tab-panel, .hd-tab-panel,
+.karma-tab-panel, .map-tab-panel, .messaging-tab-panel,
+.missions-tab-panel, .nft-tab-panel, .oapps-tab-panel,
+.quests-tab-panel, .wallet-tab-panel { min-height: 320px; }
+
+#onode-modal-status, #onet-modal-status,
+#ai-modal-status, #clan-status, #competition-status,
+#eggs-status, #files-status, #games-status, #gifts-status,
+#inventory-status, #karma-modal-status, #map-modal-status,
+#messaging-modal-status, #missions-status, #nft-modal-status,
+#oapps-status, #quests-status, #search-modal-status,
+#settings-modal-status, #subscription-status, #wallet-modal-status {
+  min-height: 44px; transition: opacity 0.15s;
+}
+#onode-modal-status[hidden], #onet-modal-status[hidden],
+#ai-modal-status[hidden], #clan-status[hidden], #competition-status[hidden],
+#eggs-status[hidden], #files-status[hidden], #games-status[hidden], #gifts-status[hidden],
+#inventory-status[hidden], #karma-modal-status[hidden], #map-modal-status[hidden],
+#messaging-modal-status[hidden], #missions-status[hidden], #nft-modal-status[hidden],
+#oapps-status[hidden], #quests-status[hidden], #search-modal-status[hidden],
+#settings-modal-status[hidden], #subscription-status[hidden], #wallet-modal-status[hidden] {
+  display: block !important; visibility: hidden; opacity: 0; pointer-events: none;
+}
 
 /* Panel action bars */
 .wallet-panel-actions, .messaging-panel-actions {
