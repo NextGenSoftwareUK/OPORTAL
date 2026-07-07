@@ -74,9 +74,10 @@
   function populateBanner(profile, karmaData) {
     var p = profile || {};
 
-    // Prefer fresh API karma data, fall back to stored profile
-    var karma = karmaData != null ? unwrapValue(karmaData)
-      : pickValue(p, ['karma', 'Karma', 'karmaPoints', 'KarmaPoints', 'karmaWeighting', 'KarmaWeighting']);
+    // Prefer fresh API karma data only if non-zero; fall back to stored profile value
+    var apiKarma = karmaData != null ? unwrapValue(karmaData) : '';
+    var profileKarma = pickValue(p, ['karma', 'Karma', 'karmaPoints', 'KarmaPoints', 'karmaWeighting', 'KarmaWeighting']);
+    var karma = (apiKarma !== '' && apiKarma !== '0' && Number(apiKarma) > 0) ? apiKarma : profileKarma;
     var xp = pickValue(p, ['xp', 'XP', 'experiencePoints', 'ExperiencePoints', 'experience', 'Experience']);
     var level = pickValue(p, ['level', 'Level', 'rank', 'Rank', 'avatarLevel', 'AvatarLevel']);
     var type = pickValue(p, ['avatarType', 'AvatarType', 'avatarTypeName', 'AvatarTypeName']);
