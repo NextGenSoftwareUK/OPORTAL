@@ -30,11 +30,11 @@
   }
   function getName(p) {
     if (!p) return 'Avatar';
+    var uname = p.username || p.UserName || p.userName || '';
+    if (uname) return uname;
     var fullName = ((p.firstName || p.FirstName || '') + ' ' + (p.lastName || p.LastName || '')).trim();
     if (fullName) return fullName;
-    var uname = p.username || p.UserName || p.userName || '';
-    if (uname && uname.indexOf('@') === -1) return uname;
-    return 'Avatar';
+    return p.email || p.Email || 'Avatar';
   }
   function fmtNum(n) {
     if (n === null || n === undefined || n === '' || n === '—') return '—';
