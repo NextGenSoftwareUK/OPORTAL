@@ -93,7 +93,7 @@
     setText('onet-stat-nodes', nodeCount);
     setText('onet-stat-connections', s ? (s.activeConnections || s.connections || '—') : '—');
     setText('onet-stat-load', s ? (s.networkLoad != null ? s.networkLoad + '%' : (s.load != null ? s.load + '%' : '—')) : '—');
-    setText('onet-stat-uptime', s ? (s.uptime || s.networkUptime || '—') : '—');
+    setText('onet-stat-uptime', fmtVal(s ? (s.uptime != null ? s.uptime : (s.networkUptime != null ? s.networkUptime : null)) : null));
   }
 
   // ── Formatting helpers ────────────────────────────────────────────────────────

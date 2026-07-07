@@ -20,7 +20,14 @@
 
   // ── Status ───────────────────────────────────────────────────────────────────
 
+  function isUnauthorized(msg) {
+    return msg && /unauthorized|401|authenticate/i.test(msg);
+  }
+
   function showStatus(type, msg) {
+    if (type === 'error' && isUnauthorized(msg)) {
+      if (typeof window.handleUnauthorized === 'function') { window.handleUnauthorized(); return; }
+    }
     var el = getById('data-modal-status');
     if (!el) return;
     el.className = 'data-status data-status--' + type;

@@ -897,6 +897,15 @@ async function onLogout() {
 	window.location.reload()
 }
 
+// Called by any modal that receives a 401 / Unauthorized response.
+// Clears the stale session and returns the user to the Beam In screen.
+window.handleUnauthorized = function () {
+  if (typeof window.stopJWTRefresh === 'function') window.stopJWTRefresh();
+  localStorage.removeItem('avatar');
+  localStorage.setItem('loggedIn', 'false');
+  window.location.reload();
+};
+
 function setSignupError(message) {
   var signUpError = document.getElementById("signup-error");
   if (signUpError == null) {

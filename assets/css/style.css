@@ -5450,8 +5450,8 @@ select option {
 /* Fixed-height tab content area so switching tabs / showing status never resizes the modal */
 .onet-tab-panel, .onode-tab-panel { min-height: 320px; }
 /* Status strip reserves its space so it doesn't push content when it appears */
-#onode-modal-status { min-height: 44px; transition: opacity 0.15s; }
-#onode-modal-status[hidden] { display: block !important; visibility: hidden; opacity: 0; pointer-events: none; }
+#onode-modal-status, #onet-modal-status { min-height: 44px; transition: opacity 0.15s; }
+#onode-modal-status[hidden], #onet-modal-status[hidden] { display: block !important; visibility: hidden; opacity: 0; pointer-events: none; }
 
 /* Panel action bars */
 .wallet-panel-actions, .messaging-panel-actions {
