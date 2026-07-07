@@ -228,12 +228,17 @@
     showStatus('loading', 'Loading your NFTs from ' + currentProvider + '…');
 
     var token = getToken(profile);
+    var hadError = false;
+
+    async function safeFetch(fn) {
+      try { return await fn(); } catch (e) { hadError = true; return null; }
+    }
 
     var [nfts, geoNfts, olandList, olandPrice] = await Promise.all([
-      fetchNfts(profile),
-      fetchGeoNfts(profile),
-      fetchOland(token),
-      fetchOlandPrice(token),
+      safeFetch(function () { return fetchNfts(profile); }),
+      safeFetch(function () { return fetchGeoNfts(profile); }),
+      safeFetch(function () { return fetchOland(token); }),
+      safeFetch(function () { return fetchOlandPrice(token); }),
     ]);
 
     hideStatus();
@@ -262,7 +267,7 @@
       priceEl.hidden = false;
     }
 
-    if (!nfts && !geoNfts && !olandList) {
+    if (hadError && !nfts && !geoNfts && !olandList) {
       showStatus('warn', 'Could not load NFT data — API may be unavailable or your session may have expired.');
     }
   }
