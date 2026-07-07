@@ -189,7 +189,9 @@
 
   async function renderLogs() {
     if (!logsTabActive) return;
-    var data = await apiFetch('/api/v1/onode/logs');
+    var client = window.oasisClient && window.oasisClient.onode;
+    var sdkRes = client ? await client.getNodeLogs().catch(function () { return { isError: true }; }) : { isError: true };
+    var data = sdkRes.isError ? null : sdkRes.result;
     var el = getById('onode-logs');
     if (!el) return;
     var d = extractResult(data);
@@ -257,23 +259,21 @@
 
   async function loadAll() {
     showStatus('loading', 'Loading node data…');
+    var client = window.oasisClient && window.oasisClient.onode;
+    if (!client) { showStatus('warn', 'ONODE SDK not available.'); return; }
 
-    // TODO: replace with live API once ONODE endpoints are stable
-    var status  = { isRunning: true, status: 'Running' };
-    var info    = {
-      name:      'ONODE-Primary',
-      nodeId:    'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-      version:   '3.2.1',
-      address:   '185.220.101.47:4101',
-      publicKey: 'Ed25519:7f4e2a9b…c381',
-      startTime: new Date(Date.now() - 14 * 86400000 - 7 * 3600000 - 1380000).toISOString(),
-      uptime:    '14d 7h 23m',
-      peers:     12,
-    };
-    var metrics = { cpuUsage: 14, memoryUsage: 29, bandwidth: 38, requestCount: 842 };
+    var [statusRes, infoRes, metricsRes] = await Promise.all([
+      client.getNodeStatus().catch(function () { return { isError: true }; }),
+      client.getNodeInfo().catch(function () { return { isError: true }; }),
+      client.getNodeMetrics().catch(function () { return { isError: true }; }),
+    ]);
+
+    var status  = statusRes.isError  ? null : (statusRes.result  || statusRes);
+    var info    = infoRes.isError    ? null : (infoRes.result    || infoRes);
+    var metrics = metricsRes.isError ? null : (metricsRes.result || metricsRes);
 
     hideStatus();
-    updateBanner(status);
+    updateBanner(status || {});
     updateStatBar(status, info);
     buildInfoGrid(info);
     buildMetricsGrid(metrics);
@@ -281,11 +281,13 @@
 
   // ── Controls ──────────────────────────────────────────────────────────────────
 
-  async function doControl(btnId, endpoint, label, confirmMsg) {
+  async function doControl(btnId, method, label, confirmMsg) {
+    var client = window.oasisClient && window.oasisClient.onode;
+    if (!client || !client[method]) { showStatus('error', 'Action not available.'); return; }
     if (confirmMsg && !confirm(confirmMsg)) return;
     setBtn(btnId, label + '…', true);
-    var result = await apiPost('/api/v1/onode/' + endpoint);
-    if (result.ok) {
+    var sdkRes = await client[method]().catch(function () { return { isError: true }; });
+    if (!sdkRes.isError) {
       showStatus('success', label + ' command sent successfully.');
       setTimeout(function () { hideStatus(); loadAll(); }, 2500);
     } else {
@@ -310,8 +312,14 @@
     });
 
     if (tab === 'logs') startLogsAutoRefresh();
-    if (tab === 'peers') apiFetch('/api/v1/onode/peers').then(renderPeers);
-    if (tab === 'config') apiFetch('/api/v1/onode/config').then(function (d) { renderPreformatted('onode-config', d); });
+    if (tab === 'peers') {
+      var pc = window.oasisClient && window.oasisClient.onode;
+      if (pc) pc.getConnectedPeers().then(function (r) { renderPeers(r.isError ? null : r.result); }).catch(function () { renderPeers(null); });
+    }
+    if (tab === 'config') {
+      var cc = window.oasisClient && window.oasisClient.onode;
+      if (cc) cc.getNodeConfig().then(function (r) { renderPreformatted('onode-config', r.isError ? null : r.result); }).catch(function () { renderPreformatted('onode-config', null); });
+    }
     if (tab === 'oasisdna') initDNATab();
   }
 
@@ -358,17 +366,13 @@
       var pw = pwInput ? pwInput.value.trim() : '';
       if (!pw) { if (errEl) { errEl.textContent = 'Please enter your password.'; errEl.hidden = false; } return; }
 
-      // Verify password via avatar login endpoint
+      // Verify password via SDK
+      var ok = false;
       try {
         var avatar = JSON.parse(localStorage.getItem('avatar') || 'null');
         var username = avatar && (avatar.username || avatar.userName || avatar.UserName || avatar.email || avatar.Email);
-        var res = await fetch((window.apiUrl || '') + '/api/Avatar/authenticate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: username, password: pw })
-        });
-        var ok = res.ok;
-        if (!ok) throw new Error('bad');
+        var authRes = await window.oasisClient.avatar.authenticate({ username: username, password: pw });
+        ok = authRes && !authRes.isError;
       } catch (e) { ok = false; }
 
       if (!ok) {
@@ -382,7 +386,8 @@
       if (gate)    gate.hidden    = true;
       if (content) content.hidden = false;
       if (errEl)   errEl.hidden   = true;
-      apiFetch('/api/v1/onode/oasisdna').then(function (d) { renderPreformatted('onode-oasisdna', d); });
+      var dc = window.oasisClient && window.oasisClient.onode;
+      if (dc) dc.getOASISDNA().then(function (r) { renderPreformatted('onode-oasisdna', r.isError ? null : r.result); }).catch(function () {});
     });
 
     if (lockBtn) lockBtn.addEventListener('click', function () {
@@ -457,13 +462,13 @@
     });
 
     var startBtn = getById('onode-start-btn');
-    if (startBtn) startBtn.addEventListener('click', function () { doControl('onode-start-btn', 'start', 'Start', null); });
+    if (startBtn) startBtn.addEventListener('click', function () { doControl('onode-start-btn', 'startNode', 'Start', null); });
 
     var stopBtn = getById('onode-stop-btn');
-    if (stopBtn) stopBtn.addEventListener('click', function () { doControl('onode-stop-btn', 'stop', 'Stop', 'Stop your ONODE? It will disconnect from the ONET.'); });
+    if (stopBtn) stopBtn.addEventListener('click', function () { doControl('onode-stop-btn', 'stopNode', 'Stop', 'Stop your ONODE? It will disconnect from the ONET.'); });
 
     var restartBtn = getById('onode-restart-btn');
-    if (restartBtn) restartBtn.addEventListener('click', function () { doControl('onode-restart-btn', 'restart', 'Restart', 'Restart your ONODE? It will briefly disconnect from the ONET.'); });
+    if (restartBtn) restartBtn.addEventListener('click', function () { doControl('onode-restart-btn', 'restartNode', 'Restart', 'Restart your ONODE? It will briefly disconnect from the ONET.'); });
 
     bindDNAGate(block);
     block.dataset.onodeBound = 'true';

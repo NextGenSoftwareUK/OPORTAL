@@ -216,24 +216,21 @@
 
   async function loadAll() {
     showStatus('loading', 'Loading ONET data…');
+    var client = window.oasisClient && window.oasisClient.onet;
+    if (!client) { showStatus('warn', 'ONET SDK not available.'); return; }
 
-    // TODO: replace with live API once ONET endpoints are stable
-    var status = { isRunning: true, statusMessage: 'ONET is running — global ONODE network active.' };
-    var nodes = [
-      { nodeId: 'a1b2c3d4e5f6a1b2', address: '185.220.101.47:4101', status: 'Online', latency: '12ms' },
-      { nodeId: 'b2c3d4e5f6a1b2c3', address: '95.217.8.239:4101',  status: 'Online', latency: '28ms' },
-      { nodeId: 'c3d4e5f6a1b2c3d4', address: '51.158.68.173:4101', status: 'Online', latency: '41ms' },
-      { nodeId: 'd4e5f6a1b2c3d4e5', address: '37.120.205.83:4101', status: 'Online', latency: '67ms' },
-      { nodeId: 'e5f6a1b2c3d4e5f6', address: '162.55.32.17:4101',  status: 'Online', latency: '93ms' },
-    ];
-    var stats = {
-      activeConnections: 247, networkLoad: 23, uptime: '14d 7h 22m',
-      cpuUsage: 18, memoryUsage: 34, bandwidth: 41,
-      totalNodes: 5, messagesRouted: 18472, avgLatency: '48ms',
-    };
+    var [statusRes, nodesRes, statsRes] = await Promise.all([
+      client.getNetworkStatus().catch(function () { return { isError: true }; }),
+      client.getConnectedNodes().catch(function () { return { isError: true }; }),
+      client.getNetworkStats().catch(function () { return { isError: true }; }),
+    ]);
+
+    var status = statusRes.isError ? null : (statusRes.result || statusRes);
+    var nodes  = nodesRes.isError  ? null : nodesRes.result;
+    var stats  = statsRes.isError  ? null : (statsRes.result || statsRes);
 
     hideStatus();
-    updateBanner(status);
+    updateBanner(status || {});
     updateStatBar(nodes, stats);
     renderStatsGrid(stats);
     renderHealthBars(stats);
@@ -243,16 +240,20 @@
   async function loadTopology() {
     var el = getById('onet-topology');
     if (el) el.textContent = 'Loading…';
-    var data = await apiFetch('/api/v1/onet/network/topology');
-    renderTopology(data);
+    var client = window.oasisClient && window.oasisClient.onet;
+    if (!client) { renderTopology(null); return; }
+    var sdkRes = await client.getNetworkTopology().catch(function () { return { isError: true }; });
+    renderTopology(sdkRes.isError ? null : sdkRes.result);
   }
 
   // ── Action buttons ────────────────────────────────────────────────────────────
 
-  async function doAction(btnId, endpoint, label) {
+  async function doAction(btnId, method, label) {
+    var client = window.oasisClient && window.oasisClient.onet;
+    if (!client || !client[method]) { showStatus('error', 'Action not available.'); return; }
     setBtn(btnId, label + '…', true);
-    var result = await apiPost('/api/v1/onet/network/' + endpoint);
-    if (result.ok) {
+    var sdkRes = await client[method]().catch(function () { return { isError: true }; });
+    if (!sdkRes.isError) {
       showStatus('success', label + ' successful.');
       setTimeout(function () { hideStatus(); loadAll(); }, 2000);
     } else {
@@ -265,9 +266,11 @@
     var textarea = getById('onet-broadcast-msg');
     var msg = textarea ? textarea.value.trim() : '';
     if (!msg) { showStatus('warn', 'Please enter a message to broadcast.'); return; }
+    var client = window.oasisClient && window.oasisClient.onet;
+    if (!client) { showStatus('error', 'ONET SDK not available.'); return; }
     setBtn('onet-broadcast-btn', 'Sending…', true);
-    var result = await apiPost('/api/v1/onet/network/broadcast', { message: msg });
-    if (result.ok) {
+    var sdkRes = await client.broadcastMessage({ message: msg }).catch(function () { return { isError: true }; });
+    if (!sdkRes.isError) {
       showStatus('success', 'Message broadcast to ONET.');
       if (textarea) textarea.value = '';
       setTimeout(hideStatus, 3000);
@@ -341,16 +344,16 @@
     }
 
     var connectBtn = getById('onet-connect-btn');
-    if (connectBtn) connectBtn.addEventListener('click', function () { doAction('onet-connect-btn', 'connect', 'Connect'); });
+    if (connectBtn) connectBtn.addEventListener('click', function () { doAction('onet-connect-btn', 'connectToNode', 'Connect'); });
 
     var disconnectBtn = getById('onet-disconnect-btn');
-    if (disconnectBtn) disconnectBtn.addEventListener('click', function () { doAction('onet-disconnect-btn', 'disconnect', 'Disconnect'); });
+    if (disconnectBtn) disconnectBtn.addEventListener('click', function () { doAction('onet-disconnect-btn', 'disconnectFromNode', 'Disconnect'); });
 
     var startBtn = getById('onet-start-btn');
-    if (startBtn) startBtn.addEventListener('click', function () { doAction('onet-start-btn', 'start', 'Start'); });
+    if (startBtn) startBtn.addEventListener('click', function () { doAction('onet-start-btn', 'startNetwork', 'Start'); });
 
     var stopBtn = getById('onet-stop-btn');
-    if (stopBtn) stopBtn.addEventListener('click', function () { doAction('onet-stop-btn', 'stop', 'Stop'); });
+    if (stopBtn) stopBtn.addEventListener('click', function () { doAction('onet-stop-btn', 'stopNetwork', 'Stop'); });
 
     var broadcastBtn = getById('onet-broadcast-btn');
     if (broadcastBtn) broadcastBtn.addEventListener('click', doBroadcast);
