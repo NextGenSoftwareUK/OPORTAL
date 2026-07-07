@@ -579,10 +579,17 @@ function toggleClass(el, className, bool) {
         avatar.token    = newToken;
         if (newRefresh) avatar.refreshToken = newRefresh;
         localStorage.setItem('avatar', JSON.stringify(avatar));
+        // Push new token into all SDK clients immediately
+        if (window.oasisClient)  window.oasisClient.setToken(newToken);
+        if (window.starClient)   window.starClient.setToken(newToken);
+        if (window.aiClient)     window.aiClient.setToken(newToken);
         console.log('[OPORTAL] JWT refreshed successfully.');
+        return true;
       }
+      return false;
     } catch (e) {
       console.warn('[OPORTAL] JWT refresh failed:', e);
+      return false;
     }
   }
 
@@ -898,8 +905,17 @@ async function onLogout() {
 }
 
 // Called by any modal that receives a 401 / Unauthorized response.
-// Clears the stale session and returns the user to the Beam In screen.
-window.handleUnauthorized = function () {
+// Tries to silently refresh the JWT first; only clears the session if that fails.
+window.handleUnauthorized = async function () {
+  try {
+    var refreshed = await refreshJWT();
+    if (refreshed) {
+      // Token renewed — caller can retry; no page reload needed
+      console.log('[OPORTAL] Token silently renewed after 401.');
+      return;
+    }
+  } catch (e) {}
+  // Refresh failed — session is truly dead, return to Beam In
   if (typeof window.stopJWTRefresh === 'function') window.stopJWTRefresh();
   localStorage.removeItem('avatar');
   localStorage.setItem('loggedIn', 'false');
