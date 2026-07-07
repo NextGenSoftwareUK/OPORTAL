@@ -328,7 +328,7 @@
     if (!Array.isArray(items)) { renderLBBars(providerList); return; }
 
     container.innerHTML = items.slice(0, 6).map(function (m) {
-      var name = m.providerType || m.ProviderType || m.name || m.Name || '';
+      var name = resolveProviderName(m);
       var meta = getMeta(name);
       var latency = m.averageResponseTime || m.latency || m.Latency || fakeLatency();
       var pct = m.loadPercentage || m.requestCount || fakeLoad();
