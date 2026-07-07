@@ -28,7 +28,7 @@ var _OASIS_WEB5_UNUSED_ = (() => {
           }
           this.baseUrl = baseUrl.replace(/\/+$/, "");
           this.tokenStore = tokenStore;
-          this.fetchImpl = fetchImpl.bind(globalThis);
+          this._customFetch = fetchImpl !== globalThis.fetch ? fetchImpl : null;
         }
         setBaseUrl(baseUrl) {
           this.baseUrl = baseUrl.replace(/\/+$/, "");
@@ -55,7 +55,7 @@ var _OASIS_WEB5_UNUSED_ = (() => {
           if (body !== void 0 && verb !== "GET") init.body = JSON.stringify(body);
           let res;
           try {
-            res = await this.fetchImpl(url, init);
+            res = await (this._customFetch ? this._customFetch(url, init) : globalThis.fetch(url, init));
           } catch (err) {
             return { isError: true, message: `Network error calling ${url}: ${err.message}`, exception: err };
           }
