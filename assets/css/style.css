@@ -2665,9 +2665,9 @@ select option {
 }
 
 .dev-portal-badge--vue {
-  background: rgba(66, 184, 131, 0.15);
-  color: #42d992;
-  border: 1px solid rgba(66, 184, 131, 0.35);
+  background: rgba(60, 140, 255, 0.15);
+  color: #5ba8ff;
+  border: 1px solid rgba(60, 140, 255, 0.35);
 }
 
 .dev-portal-badge--svelte {
