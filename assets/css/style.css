@@ -2658,6 +2658,24 @@ select option {
   border: 1px solid rgba(255, 180, 60, 0.28);
 }
 
+.dev-portal-badge--angular {
+  background: rgba(221, 0, 49, 0.15);
+  color: #f55;
+  border: 1px solid rgba(221, 0, 49, 0.35);
+}
+
+.dev-portal-badge--vue {
+  background: rgba(66, 184, 131, 0.15);
+  color: #42d992;
+  border: 1px solid rgba(66, 184, 131, 0.35);
+}
+
+.dev-portal-badge--svelte {
+  background: rgba(255, 62, 0, 0.15);
+  color: #ff6b35;
+  border: 1px solid rgba(255, 62, 0, 0.35);
+}
+
 /* SDK grid */
 .dev-portal-sdk-grid {
   display: grid;
