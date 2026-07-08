@@ -2671,9 +2671,9 @@ select option {
 }
 
 .dev-portal-badge--svelte {
-  background: rgba(255, 62, 0, 0.15);
-  color: #ff6b35;
-  border: 1px solid rgba(255, 62, 0, 0.35);
+  background: rgba(160, 80, 255, 0.15);
+  color: #b87fff;
+  border: 1px solid rgba(160, 80, 255, 0.35);
 }
 
 /* SDK grid */
