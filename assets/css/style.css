@@ -5720,6 +5720,21 @@ select option {
   width: min(820px, calc(100vw - 24px));
 }
 
+.modal__block.subscription-modal-block {
+  max-height: calc(100vh - 24px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79,163,224,.55) rgba(79,163,224,.08);
+}
+.modal__block.subscription-modal-block::-webkit-scrollbar { width: 8px; }
+.modal__block.subscription-modal-block::-webkit-scrollbar-track { background: rgba(79,163,224,.06); border-radius: 4px; }
+.modal__block.subscription-modal-block::-webkit-scrollbar-thumb { background: rgba(79,163,224,.5); border-radius: 4px; }
+.modal__block.subscription-modal-block::-webkit-scrollbar-thumb:hover { background: rgba(79,163,224,.8); }
+
 /* ── Shared modal content utilities ─────────────────────── */
 .modal-item-row {
   display: flex; align-items: flex-start; gap: 12px;
