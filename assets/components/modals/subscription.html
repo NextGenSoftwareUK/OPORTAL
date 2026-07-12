@@ -5,7 +5,7 @@
       <div class="map-modal-top">
         <div>
           <h1 class="map-modal-title">Subscription</h1>
-          <p class="map-modal-lead">Manage your OASIS subscription plans, orders and HyperDrive usage.</p>
+          <p class="map-modal-lead">Manage your OASIS subscription plans, orders, HyperDrive usage, and MCP Server access.</p>
         </div>
         <button id="subscription-close-btn" class="modal-close-btn" type="button" aria-label="Close">&#x2715;</button>
       </div>
@@ -29,7 +29,8 @@
 
       <div class="map-tabs">
         <button class="map-tab is-active" data-tab="plans">Plans</button>
-        <button class="map-tab" data-tab="mysubs">My Subscriptions</button>
+        <button class="map-tab" data-tab="mysubs">My Subscription</button>
+        <button class="map-tab" data-tab="mcp">MCP Server</button>
         <button class="map-tab" data-tab="usage">Usage</button>
         <button class="map-tab" data-tab="orders">Orders</button>
       </div>
@@ -43,6 +44,42 @@
       <div id="sub-tab-mysubs" class="map-tab-panel" hidden>
         <div id="sub-mysubs-list" class="modal-item-list">
           <div class="map-empty"><p>Loading subscriptions…</p></div>
+        </div>
+      </div>
+
+      <div id="sub-tab-mcp" class="map-tab-panel" hidden>
+        <div class="sub-mcp-panel">
+          <p class="sub-mcp-intro">Your MCP Server license key is your OASIS bearer token. Add it to your IDE's MCP config file to authenticate the MCP Server against the OASIS API.</p>
+
+          <div class="sub-mcp-key-block">
+            <div class="sub-mcp-key-label">Your MCP License Key (Bearer Token)</div>
+            <div class="sub-mcp-key-row">
+              <code class="sub-mcp-key" id="sub-mcp-key-value">—</code>
+              <button class="sub-mcp-copy-btn" id="sub-mcp-copy-btn" type="button" title="Copy to clipboard">Copy</button>
+            </div>
+            <p class="sub-mcp-key-hint" id="sub-mcp-key-hint">Sign in to your avatar to see your license key.</p>
+          </div>
+
+          <div class="sub-mcp-config-block">
+            <div class="sub-mcp-config-label">Cursor / VS Code — MCP config</div>
+            <pre class="sub-mcp-config-pre" id="sub-mcp-config-pre">{
+  "mcpServers": {
+    "oasis": {
+      "command": "oasis-mcp",
+      "env": {
+        "OASIS_API_URL": "https://api.web4.oasisomniverse.one",
+        "OASIS_MCP_LICENSE_KEY": "&lt;your-key-above&gt;"
+      }
+    }
+  }
+}</pre>
+          </div>
+
+          <div class="sub-mcp-links">
+            <a class="sub-mcp-link" href="https://www.oasisweb4.com/products/mcp" target="_blank" rel="noopener">MCP Server overview</a>
+            <a class="sub-mcp-link" href="https://github.com/NextGenSoftwareUK/OASIS/tree/master/WEB6/NextGenSoftware.OASIS.MCP.Server" target="_blank" rel="noopener">GitHub source</a>
+            <a class="sub-mcp-link" href="https://github.com/NextGenSoftwareUK/OASIS/blob/master/Docs/Devs/API%20Documentation/WEB6/WEB6_MCP_Tool_Reference.md" target="_blank" rel="noopener">250 Tool Reference</a>
+          </div>
         </div>
       </div>
 

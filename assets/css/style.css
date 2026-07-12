@@ -5863,3 +5863,134 @@ select option {
   padding-top: 18px; margin-top: 18px;
   border-top: 1px solid rgba(255,255,255,0.07);
 }
+
+/* ── Subscription modal — plan cards ─────────────────────────────────────── */
+#sub-plans-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  padding: 4px 0;
+}
+.sub-plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 16px 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  transition: border-color .2s, background .2s;
+}
+.sub-plan-card:hover { border-color: rgba(168,191,216,0.4); background: rgba(255,255,255,0.05); }
+.sub-plan-badge {
+  position: absolute;
+  top: -10px; right: 12px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  background: #4fa3e0;
+  color: #0a1628;
+}
+.sub-plan-icon { font-size: 1.5rem; }
+.sub-plan-name { font-size: .95rem; font-weight: 700; color: #e8f4ff; }
+.sub-plan-desc { font-size: .78rem; color: #a8bfd8; line-height: 1.4; }
+.sub-plan-price { font-size: 1.2rem; font-weight: 700; color: #4fa3e0; margin: 4px 0; }
+.sub-plan-features {
+  list-style: none;
+  padding: 0; margin: 0;
+  flex: 1;
+}
+.sub-plan-features li {
+  font-size: .78rem;
+  color: #a8bfd8;
+  padding: 3px 0;
+  display: flex; align-items: flex-start; gap: 5px;
+}
+.sub-plan-features li::before { content: '✓'; color: #48dc82; font-weight: 700; flex-shrink: 0; }
+.sub-plan-btn {
+  margin-top: 10px;
+  padding: 8px 0;
+  width: 100%;
+  border: 1px solid rgba(79,163,224,0.5);
+  border-radius: 8px;
+  background: rgba(79,163,224,0.12);
+  color: #4fa3e0;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.sub-plan-btn:hover { background: rgba(79,163,224,0.25); border-color: #4fa3e0; }
+
+/* ── Subscription modal — MCP Server tab ─────────────────────────────────── */
+.sub-mcp-panel { display: flex; flex-direction: column; gap: 18px; padding: 4px 0; }
+.sub-mcp-intro { font-size: .85rem; color: #a8bfd8; line-height: 1.6; margin: 0; }
+.sub-mcp-key-block {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+}
+.sub-mcp-key-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #a8bfd8; }
+.sub-mcp-key-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sub-mcp-key {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Share Tech Mono','Courier New',monospace;
+  font-size: .78rem;
+  color: #48dc82;
+  word-break: break-all;
+  white-space: pre-wrap;
+  display: block;
+}
+.sub-mcp-copy-btn {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border: 1px solid rgba(79,163,224,0.4);
+  border-radius: 6px;
+  background: rgba(79,163,224,0.12);
+  color: #4fa3e0;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+.sub-mcp-copy-btn:hover { background: rgba(79,163,224,0.25); }
+.sub-mcp-key-hint { font-size: .78rem; color: #6a80a8; margin: 0; }
+.sub-mcp-config-block {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.sub-mcp-config-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #a8bfd8; }
+.sub-mcp-config-pre {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 14px;
+  font-family: 'Share Tech Mono','Courier New',monospace;
+  font-size: .78rem;
+  color: #a8bfd8;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0;
+}
+.sub-mcp-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.sub-mcp-link {
+  font-size: .8rem;
+  color: #4fa3e0;
+  text-decoration: none;
+  padding: 5px 12px;
+  border: 1px solid rgba(79,163,224,0.3);
+  border-radius: 6px;
+  transition: background .2s;
+}
+.sub-mcp-link:hover { background: rgba(79,163,224,0.12); }

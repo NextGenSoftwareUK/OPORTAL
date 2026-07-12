@@ -34,7 +34,9 @@
     hyperdrive: 'openHyperdriveModal',
     onet:       'openONETModal',
     onode:      'openONODEModal',
-    developer:  'openDevPortalModal'
+    developer:    'openDevPortalModal',
+    devportal:    'openDevPortalModal',
+    subscription: 'openSubscriptionModal'
   };
 
   // routes that open the sign-in modal (data-type on the .js-modal-block)
