@@ -488,15 +488,20 @@ function toggleClass(el, className, bool) {
     (makeVisible) ? this.password.setAttribute('type', 'text'): this.password.setAttribute('type', 'password');
   };
 
-  //initialize the Password objects
-  var passwords = document.getElementsByClassName('js-password');
-  if (passwords.length > 0) {
+  function initPasswordToggles() {
+    var passwords = document.getElementsByClassName('js-password');
     for (var i = 0; i < passwords.length; i++) {
-      (function (i) {
-        new Password(passwords[i]);
-      })(i);
+      (function (el) {
+        if (!el.dataset.pwInit) {
+          el.dataset.pwInit = '1';
+          new Password(el);
+        }
+      })(passwords[i]);
     }
-  };
+  }
+
+  initPasswordToggles();
+  window.addEventListener('portal-components-ready', initPasswordToggles);
 }());
 // File#: _2_menu
 
