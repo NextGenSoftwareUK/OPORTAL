@@ -3739,7 +3739,8 @@ select option {
   color: #a8bfd8;
   font-weight: 600;
   flex-shrink: 0;
-  min-width: 110px;
+  width: 152px;
+  min-width: 152px;
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
