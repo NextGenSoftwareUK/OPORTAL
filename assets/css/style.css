@@ -3659,6 +3659,7 @@ select option {
   justify-content: center;
   font-size: 3.5rem;
 }
+.nft-detail-img-placeholder[hidden] { display: none; }
 
 .nft-detail-badges {
   display: flex;
