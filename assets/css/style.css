@@ -3681,6 +3681,7 @@ select option {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  justify-content: center;
 }
 
 .nft-detail-badge {
