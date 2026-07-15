@@ -3133,13 +3133,13 @@ select option {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+  transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s;
 }
 
 .nft-card:hover {
-  border-color: rgba(0, 229, 255, 0.5);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.18);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(0, 229, 255, 0.25);
+  filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.3));
 }
 
 .nft-card-img {
