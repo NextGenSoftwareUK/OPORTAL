@@ -571,6 +571,18 @@
     isFetching = true;
     showStatus('loading', 'Loading your NFTs…');
 
+    // Wait for JWT to be refreshed if it was expired on page load
+    if (window.jwtReadyPromise) {
+      var ok = await window.jwtReadyPromise;
+      if (!ok) {
+        showStatus('error', 'Session expired. Please sign in again.');
+        isFetching = false;
+        return;
+      }
+      // Re-read profile after refresh so we have the updated token
+      profile = readAvatar();
+    }
+
     var token = getToken(profile);
     if (token && window.oasisClient) window.oasisClient.setToken(token);
     var hadError = false;

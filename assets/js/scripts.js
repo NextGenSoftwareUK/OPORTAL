@@ -613,14 +613,19 @@ function toggleClass(el, className, bool) {
   // is replaced before any API calls are made (JWT expires in 15 min).
   document.addEventListener('DOMContentLoaded', function () {
     if (localStorage.getItem('loggedIn') === 'true') {
-      // If JWT is expired, refresh it first then re-run setup so the UI
-      // shows the avatar menu, dashboard and NFTs correctly after refresh.
       if (!isJwtValid()) {
-        refreshJWT().then(function (ok) {
+        // Expose a promise other modules (e.g. nft-modal) can await before
+        // making API calls, so they don't fire with an expired token.
+        window.jwtReadyPromise = refreshJWT().then(function (ok) {
           if (ok && typeof setup === 'function') setup();
+          return ok;
         });
+      } else {
+        window.jwtReadyPromise = Promise.resolve(true);
       }
       startRefresh();
+    } else {
+      window.jwtReadyPromise = Promise.resolve(false);
     }
   });
   window.addEventListener('oasis-login',  startRefresh);
