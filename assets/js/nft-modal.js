@@ -329,7 +329,8 @@
       rows += '<div class="nft-detail-row">' +
         '<span class="nft-detail-row-label">Collection</span>' +
         '<span class="nft-detail-row-value">' +
-          '<span class="nft-detail-mono" title="' + escapeHtml(collKey) + '">' + escapeHtml(shortAddr(collKey, 8)) + '</span>' +
+          '<a class="nft-detail-link" href="' + escapeHtml(solanaExplorerUrl('address', collKey)) + '" target="_blank" rel="noopener">' +
+            escapeHtml(shortAddr(collKey, 8)) + ' <span class="nft-detail-ext-icon">↗</span></a>' +
           '<button class="nft-copy-btn" data-copy="' + escapeHtml(collKey) + '">Copy</button>' +
         '</span>' +
       '</div>';
@@ -338,7 +339,8 @@
       rows += '<div class="nft-detail-row">' +
         '<span class="nft-detail-row-label">Owner Wallet</span>' +
         '<span class="nft-detail-row-value">' +
-          '<span class="nft-detail-mono" title="' + escapeHtml(walletAddr) + '">' + escapeHtml(shortAddr(walletAddr, 8)) + '</span>' +
+          '<a class="nft-detail-link" href="' + escapeHtml(solanaExplorerUrl('address', walletAddr)) + '" target="_blank" rel="noopener">' +
+            escapeHtml(shortAddr(walletAddr, 8)) + ' <span class="nft-detail-ext-icon">↗</span></a>' +
           '<button class="nft-copy-btn" data-copy="' + escapeHtml(walletAddr) + '">Copy</button>' +
         '</span>' +
       '</div>';
