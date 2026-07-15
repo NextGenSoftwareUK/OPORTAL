@@ -571,15 +571,11 @@
     isFetching = true;
     showStatus('loading', 'Loading your NFTs…');
 
-    // Wait for JWT to be refreshed if it was expired on page load
+    // Wait for JWT refresh to complete (if it was triggered on page load)
+    // before making API calls, so we don't fire with a stale token.
     if (window.jwtReadyPromise) {
-      var ok = await window.jwtReadyPromise;
-      if (!ok) {
-        showStatus('error', 'Session expired. Please sign in again.');
-        isFetching = false;
-        return;
-      }
-      // Re-read profile after refresh so we have the updated token
+      await window.jwtReadyPromise;
+      // Re-read profile so we pick up any updated token
       profile = readAvatar();
     }
 

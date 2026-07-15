@@ -663,7 +663,7 @@ if (avatarRaw && avatarRaw !== 'undefined') {
   var icon = document.getElementsByClassName('avatar')[0]
 
   /*if logged in, hide guest links*/
-  if (localStorage.getItem('loggedIn') === "true" && isJwtValid()){
+  if (localStorage.getItem('loggedIn') === "true"){
     var guest_links = document.getElementById('guest-links')
     var username = document.getElementById("username")
     guest_links.style.display = "none"
