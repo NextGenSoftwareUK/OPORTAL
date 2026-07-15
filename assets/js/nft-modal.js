@@ -1,6 +1,6 @@
 (function () {
   var API_BASE = window.apiUrl || window.API_BASE;
-  var currentProvider = 'Solana';
+  var currentProvider = 'SolanaOASIS';
   var currentTab = 'standard';
   var isFetching = false;
   var loadedNfts = [];
@@ -666,15 +666,26 @@
     var priceEl = getById('nft-mint-price');
     var price = priceEl ? parseFloat(priceEl.value) : 0;
     if (isNaN(price) || price < 0) price = 0;
+    var discountEl = getById('nft-mint-discount');
+    var discount = discountEl ? parseFloat(discountEl.value) : 0;
+    if (isNaN(discount) || discount < 0) discount = 0;
+    var storeOnChainEl = getById('nft-mint-store-onchain');
     var body = {
       title: title,
       description: (getById('nft-mint-desc') || {}).value || '',
       imageUrl: (getById('nft-mint-image-url') || {}).value || '',
+      thumbnailUrl: (getById('nft-mint-thumbnail-url') || {}).value || '',
+      jSONMetaDataURL: (getById('nft-mint-json-url') || {}).value || '',
+      collectionPublicKey: (getById('nft-mint-collection-key') || {}).value || '',
       price: price,
+      discount: discount,
       symbol: (getById('nft-mint-symbol') || {}).value || '',
       numberToMint: parseInt((getById('nft-mint-quantity') || {}).value) || 1,
       memoText: (getById('nft-mint-memo') || {}).value || '',
-      storeNFTMetaDataOnChain: false,
+      sendToAddressAfterMinting: (getById('nft-mint-send-to-address') || {}).value || '',
+      sendToAvatarAfterMintingUsername: (getById('nft-mint-send-to-username') || {}).value || '',
+      sendToAvatarAfterMintingEmail: (getById('nft-mint-send-to-email') || {}).value || '',
+      storeNFTMetaDataOnChain: storeOnChainEl ? storeOnChainEl.checked : false,
       onChainProvider: currentProvider,
       offChainProvider: 'MongoDBOASIS',
       nftStandardType: nftStandardType,
@@ -968,6 +979,7 @@
 
     var providerSelect = getById('nft-provider-select');
     if (providerSelect) {
+      if (providerSelect.value) currentProvider = providerSelect.value;
       providerSelect.addEventListener('change', function () {
         currentProvider = providerSelect.value;
         loadAll(readAvatar());

@@ -3378,6 +3378,20 @@ select option {
   color: var(--color-contrast-medium);
 }
 
+.nft-form-label--checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.nft-form-label--checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 .nft-form-required {
   color: #ff7070;
 }

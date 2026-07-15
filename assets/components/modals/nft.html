@@ -190,7 +190,7 @@
             </div>
             <div class="nft-form-field">
               <label class="nft-form-label" for="nft-mint-symbol">Symbol</label>
-              <input class="nft-form-input" id="nft-mint-symbol" type="text" placeholder="e.g. SOL">
+              <input class="nft-form-input" id="nft-mint-symbol" type="text" placeholder="e.g. OASISFNDR">
             </div>
             <div class="nft-form-field nft-form-field--full">
               <label class="nft-form-label" for="nft-mint-desc">Description</label>
@@ -200,17 +200,50 @@
               <label class="nft-form-label" for="nft-mint-image-url">Image URL</label>
               <input class="nft-form-input" id="nft-mint-image-url" type="url" placeholder="https://...">
             </div>
+            <div class="nft-form-field nft-form-field--full">
+              <label class="nft-form-label" for="nft-mint-thumbnail-url">Thumbnail URL</label>
+              <input class="nft-form-input" id="nft-mint-thumbnail-url" type="url" placeholder="https://...">
+            </div>
+            <div class="nft-form-field nft-form-field--full">
+              <label class="nft-form-label" for="nft-mint-json-url">JSON Metadata URL</label>
+              <input class="nft-form-input" id="nft-mint-json-url" type="url" placeholder="https://...">
+            </div>
+            <div class="nft-form-field nft-form-field--full">
+              <label class="nft-form-label" for="nft-mint-collection-key">Collection Public Key</label>
+              <input class="nft-form-input" id="nft-mint-collection-key" type="text" placeholder="Collection wallet/public key">
+            </div>
             <div class="nft-form-field">
               <label class="nft-form-label" for="nft-mint-price">Price</label>
               <input class="nft-form-input" id="nft-mint-price" type="number" step="0.01" min="0" placeholder="0.00">
             </div>
             <div class="nft-form-field">
+              <label class="nft-form-label" for="nft-mint-discount">Discount</label>
+              <input class="nft-form-input" id="nft-mint-discount" type="number" step="0.01" min="0" placeholder="0.00">
+            </div>
+            <div class="nft-form-field">
               <label class="nft-form-label" for="nft-mint-quantity">Quantity</label>
               <input class="nft-form-input" id="nft-mint-quantity" type="number" min="1" value="1">
             </div>
-            <div class="nft-form-field nft-form-field--full">
+            <div class="nft-form-field">
               <label class="nft-form-label" for="nft-mint-memo">Memo</label>
               <input class="nft-form-input" id="nft-mint-memo" type="text" placeholder="Optional memo text">
+            </div>
+            <div class="nft-form-field nft-form-field--full">
+              <label class="nft-form-label" for="nft-mint-send-to-address">Send To Wallet Address After Minting</label>
+              <input class="nft-form-input" id="nft-mint-send-to-address" type="text" placeholder="Optional — wallet address">
+            </div>
+            <div class="nft-form-field">
+              <label class="nft-form-label" for="nft-mint-send-to-username">Send To Avatar Username After Minting</label>
+              <input class="nft-form-input" id="nft-mint-send-to-username" type="text" placeholder="Optional — avatar username">
+            </div>
+            <div class="nft-form-field">
+              <label class="nft-form-label" for="nft-mint-send-to-email">Send To Avatar Email After Minting</label>
+              <input class="nft-form-input" id="nft-mint-send-to-email" type="email" placeholder="Optional — avatar email">
+            </div>
+            <div class="nft-form-field nft-form-field--full">
+              <label class="nft-form-label nft-form-label--checkbox">
+                <input type="checkbox" id="nft-mint-store-onchain"> Store NFT Metadata On-Chain
+              </label>
             </div>
           </div>
           <div class="nft-form-status nft-status" hidden></div>
