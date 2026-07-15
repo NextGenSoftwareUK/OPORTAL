@@ -3348,6 +3348,7 @@ select option {
   flex-direction: column;
   gap: 6px;
 }
+.nft-form-field[hidden] { display: none; }
 
 .nft-form-field--full {
   grid-column: 1 / -1;
