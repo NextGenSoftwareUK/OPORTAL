@@ -351,7 +351,29 @@
     rows += makeRow('Off-Chain Provider', nft.offChainProvider && nft.offChainProvider.name);
     rows += makeRow('On-Chain Provider', nft.onChainProvider && nft.onChainProvider.name);
     rows += makeRow('Royalty', nft.royaltyPercentage != null ? (nft.royaltyPercentage + '%') : '');
-    rows += makeRow('Price', nft.price != null ? (nft.price + ' SOL') : '');
+    var listingPrice = nft.price || nft.Price;
+    var lastSalePrice = nft.lastSalePrice || nft.LastSalePrice || nft.lastSaleAmount || nft.LastSaleAmount;
+    if (listingPrice) rows += makeRow('Listing Price', listingPrice + ' SOL');
+    if (lastSalePrice) rows += makeRow('Last Sale Price', lastSalePrice + ' SOL');
+    var lastSaleTax = nft.lastSaleTax || nft.LastSaleTax;
+    var lastSaleDiscount = nft.lastSaleDiscount || nft.LastSaleDiscount;
+    if (lastSaleTax) rows += makeRow('Last Sale Tax', lastSaleTax + ' SOL');
+    if (lastSaleDiscount) rows += makeRow('Last Sale Discount', lastSaleDiscount + ' SOL');
+    var lastSaleDate = nft.lastSaleDate || nft.LastSaleDate;
+    if (lastSaleDate && lastSaleDate !== '0001-01-01T00:00:00') rows += makeRow('Last Sale Date', formatDate(lastSaleDate));
+    var lastSaleTxHash = nft.lastSaleTransactionHash || nft.LastSaleTransactionHash;
+    if (lastSaleTxHash) {
+      rows += '<div class="nft-detail-row">' +
+        '<span class="nft-detail-row-label">Last Sale Tx</span>' +
+        '<span class="nft-detail-row-value">' +
+          '<a class="nft-detail-link nft-detail-link--hash" href="' + escapeHtml(solanaExplorerUrl('tx', lastSaleTxHash)) + '" target="_blank" rel="noopener">' +
+            escapeHtml(lastSaleTxHash) + ' <span class="nft-detail-ext-icon">↗</span></a>' +
+          '<button class="nft-copy-btn" data-copy="' + escapeHtml(lastSaleTxHash) + '">Copy</button>' +
+        '</span>' +
+      '</div>';
+    }
+    var totalSales = nft.totalNumberOfSales || nft.TotalNumberOfSales;
+    if (totalSales) rows += makeRow('Total Sales', totalSales);
     rows += makeRow('Minted', nft.mintedOn && formatDate(nft.mintedOn));
     rows += makeRow('Modified', nft.modifiedOn && formatDate(nft.modifiedOn));
 
