@@ -545,25 +545,40 @@
 
   // ── Load all data ────────────────────────────────────────────────────────────
 
+  function withTimeout(promise, ms) {
+    return Promise.race([
+      promise,
+      new Promise(function (_, reject) { setTimeout(function () { reject(new Error('timeout')); }, ms); })
+    ]);
+  }
+
   async function loadAll(profile) {
     if (isFetching) return;
     isFetching = true;
-    showStatus('loading', 'Loading your NFTs from ' + currentProvider + '…');
+    showStatus('loading', 'Loading your NFTs…');
 
     var token = getToken(profile);
     if (token && window.oasisClient) window.oasisClient.setToken(token);
     var hadError = false;
 
     async function safeFetch(fn) {
-      try { return await fn(); } catch (e) { hadError = true; return null; }
+      try { return await withTimeout(fn(), 20000); } catch (e) { hadError = true; return null; }
     }
 
-    var results = await Promise.all([
-      safeFetch(function () { return fetchNfts(profile); }),
-      safeFetch(function () { return fetchGeoNfts(profile); }),
-      safeFetch(function () { return fetchOland(token); }),
-      safeFetch(function () { return fetchOlandPrice(token); }),
-    ]);
+    var results;
+    try {
+      results = await withTimeout(Promise.all([
+        safeFetch(function () { return fetchNfts(profile); }),
+        safeFetch(function () { return fetchGeoNfts(profile); }),
+        safeFetch(function () { return fetchOland(token); }),
+        safeFetch(function () { return fetchOlandPrice(token); }),
+      ]), 25000);
+    } catch (e) {
+      hideStatus();
+      isFetching = false;
+      showStatus('warn', 'Loading timed out — please try refreshing.');
+      return;
+    }
 
     var nfts = results[0], geoNfts = results[1], olandList = results[2], olandPrice = results[3];
 
