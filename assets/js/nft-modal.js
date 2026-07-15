@@ -629,11 +629,14 @@
     if (!token) { showStatus('error', 'You must be logged in to mint an NFT.'); return; }
 
     var nftStandardType = currentProvider === 'SolanaOASIS' ? 'SPL' : 'ERC1155';
+    var priceEl = getById('nft-mint-price');
+    var price = priceEl ? parseFloat(priceEl.value) : 0;
+    if (isNaN(price) || price < 0) price = 0;
     var body = {
       title: title,
       description: (getById('nft-mint-desc') || {}).value || '',
       imageUrl: (getById('nft-mint-image-url') || {}).value || '',
-      price: parseFloat((getById('nft-mint-price') || {}).value) || 0,
+      price: price,
       symbol: (getById('nft-mint-symbol') || {}).value || '',
       numberToMint: parseInt((getById('nft-mint-quantity') || {}).value) || 1,
       memoText: (getById('nft-mint-memo') || {}).value || '',
