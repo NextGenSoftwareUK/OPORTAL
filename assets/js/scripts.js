@@ -608,9 +608,14 @@ function toggleClass(el, className, bool) {
     refreshTimer = null;
   }
 
-  // Start when logged in, stop on logout
+  // Start when logged in, stop on logout.
+  // Also refresh immediately on page load so a stale JWT from a previous session
+  // is replaced before any API calls are made (JWT expires in 15 min).
   document.addEventListener('DOMContentLoaded', function () {
-    if (localStorage.getItem('loggedIn') === 'true') startRefresh();
+    if (localStorage.getItem('loggedIn') === 'true') {
+      refreshJWT();
+      startRefresh();
+    }
   });
   window.addEventListener('oasis-login',  startRefresh);
   window.addEventListener('oasis-logout', stopRefresh);
