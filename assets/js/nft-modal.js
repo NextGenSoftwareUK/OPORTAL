@@ -142,11 +142,11 @@
     existing.forEach(function (el) { el.parentNode.removeChild(el); });
 
     if (!cards || !cards.length) {
-      if (empty) empty.hidden = false;
+      if (empty) { empty.hidden = false; empty.style.display = ''; }
       return;
     }
 
-    if (empty) empty.hidden = true;
+    if (empty) { empty.hidden = true; empty.style.display = 'none'; }
     grid.insertAdjacentHTML('beforeend', cards.join(''));
   }
 
