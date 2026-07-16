@@ -3378,6 +3378,16 @@ select option {
   color: var(--color-contrast-medium);
 }
 
+.nft-form-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(0, 229, 255, 0.5);
+  padding-top: 8px;
+  border-top: 1px solid rgba(107, 208, 255, 0.1);
+}
+
 .nft-form-label--checkbox {
   display: flex;
   align-items: center;

@@ -679,14 +679,14 @@
     var token = getToken(profile);
     if (!token) { showStatus('error', 'You must be logged in to mint an NFT.'); return; }
 
-    var nftStandardType = currentProvider === 'SolanaOASIS' ? 'SPL' : 'ERC1155';
     var priceEl = getById('nft-mint-price');
     var price = priceEl ? parseFloat(priceEl.value) : 0;
     if (isNaN(price) || price < 0) price = 0;
     var discountEl = getById('nft-mint-discount');
     var discount = discountEl ? parseFloat(discountEl.value) : 0;
     if (isNaN(discount) || discount < 0) discount = 0;
-    var storeOnChainEl = getById('nft-mint-store-onchain');
+    var onChainProviderEl = getById('nft-mint-on-chain-provider');
+    var onChainProvider = onChainProviderEl ? onChainProviderEl.value : currentProvider;
     var body = {
       title: title,
       description: (getById('nft-mint-desc') || {}).value || '',
@@ -700,16 +700,23 @@
       numberToMint: parseInt((getById('nft-mint-quantity') || {}).value) || 1,
       memoText: (getById('nft-mint-memo') || {}).value || '',
       sendToAddressAfterMinting: (getById('nft-mint-send-to-address') || {}).value || '',
+      sendToAvatarAfterMintingId: (getById('nft-mint-send-to-avatar-id') || {}).value || '',
       sendToAvatarAfterMintingUsername: (getById('nft-mint-send-to-username') || {}).value || '',
       sendToAvatarAfterMintingEmail: (getById('nft-mint-send-to-email') || {}).value || '',
-      storeNFTMetaDataOnChain: storeOnChainEl ? storeOnChainEl.checked : false,
-      onChainProvider: currentProvider,
-      offChainProvider: 'MongoDBOASIS',
-      nftStandardType: nftStandardType,
-      nftOffChainMetaType: 'OASIS',
-      waitTillNFTMinted: true,
-      waitForNFTToMintInSeconds: 180,
-      attemptToMintEveryXSeconds: 1
+      storeNFTMetaDataOnChain: ((getById('nft-mint-store-onchain') || {}).checked) || false,
+      onChainProvider: onChainProvider,
+      offChainProvider: (getById('nft-mint-off-chain-provider') || {}).value || 'MongoDBOASIS',
+      nftStandardType: (getById('nft-mint-nft-standard-type') || {}).value || 'SPL',
+      nftOffChainMetaType: (getById('nft-mint-off-chain-meta-type') || {}).value || 'OASIS',
+      waitTillNFTMinted: ((getById('nft-mint-wait-till-minted') || {}).checked !== false),
+      waitForNFTToMintInSeconds: parseInt((getById('nft-mint-wait-mint-seconds') || {}).value) || 180,
+      attemptToMintEveryXSeconds: parseInt((getById('nft-mint-attempt-mint-every') || {}).value) || 1,
+      waitTillNFTVerified: ((getById('nft-mint-wait-till-verified') || {}).checked !== false),
+      waitForNFTToVerifyInSeconds: parseInt((getById('nft-mint-wait-verify-seconds') || {}).value) || 180,
+      attemptToVerifyEveryXSeconds: parseInt((getById('nft-mint-attempt-verify-every') || {}).value) || 1,
+      waitTillNFTSent: ((getById('nft-mint-wait-till-sent') || {}).checked !== false),
+      waitForNFTToSendInSeconds: parseInt((getById('nft-mint-wait-send-seconds') || {}).value) || 180,
+      attemptToSendEveryXSeconds: parseInt((getById('nft-mint-attempt-send-every') || {}).value) || 1
     };
 
     var btn = getById('nft-mint-submit-btn');
@@ -1010,6 +1017,19 @@
         currentProvider = providerSelect.value;
         loadAll(readAvatar());
       });
+    }
+
+    // Mint form: sync on-chain provider → auto-suggest NFT standard type
+    var mintProviderSel = getById('nft-mint-on-chain-provider');
+    var mintStandardSel = getById('nft-mint-nft-standard-type');
+    if (mintProviderSel && mintStandardSel) {
+      if (currentProvider) mintProviderSel.value = currentProvider;
+      function syncMintStandard() {
+        var p = mintProviderSel.value;
+        mintStandardSel.value = (p === 'SolanaOASIS') ? 'SPL' : 'ERC721';
+      }
+      syncMintStandard();
+      mintProviderSel.addEventListener('change', syncMintStandard);
     }
 
     var groupCheck = getById('nft-group-by-collection');
