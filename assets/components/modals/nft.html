@@ -301,17 +301,31 @@
               <input class="nft-form-input" id="nft-mint-memo" type="text" placeholder="Optional memo text">
             </div>
             <!-- Send after minting -->
-            <div class="nft-form-field nft-form-field--full">
-              <label class="nft-form-label" for="nft-mint-send-to-address">Send To Wallet Address After Minting</label>
-              <input class="nft-form-input" id="nft-mint-send-to-address" type="text" placeholder="Optional — wallet address">
-            </div>
             <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-send-to-username">Send To Avatar Username After Minting</label>
-              <input class="nft-form-input" id="nft-mint-send-to-username" type="text" placeholder="Optional — avatar username">
+              <label class="nft-form-label" for="nft-mint-send-to-method">Send To After Minting</label>
+              <select class="nft-form-input nft-form-select" id="nft-mint-send-to-method">
+                <option value="none">Don't send</option>
+                <option value="address">Wallet Address</option>
+                <option value="username">Avatar Username</option>
+                <option value="email">Avatar Email</option>
+                <option value="id">Avatar ID</option>
+              </select>
             </div>
-            <div class="nft-form-field nft-form-field--full">
-              <label class="nft-form-label" for="nft-mint-send-to-email">Send To Avatar Email After Minting</label>
-              <input class="nft-form-input" id="nft-mint-send-to-email" type="email" placeholder="Optional — avatar email">
+            <div class="nft-form-field" id="nft-mint-send-to-address-field" hidden>
+              <label class="nft-form-label" for="nft-mint-send-to-address">Wallet Address</label>
+              <input class="nft-form-input" id="nft-mint-send-to-address" type="text" placeholder="Recipient wallet address">
+            </div>
+            <div class="nft-form-field" id="nft-mint-send-to-username-field" hidden>
+              <label class="nft-form-label" for="nft-mint-send-to-username">Avatar Username</label>
+              <input class="nft-form-input" id="nft-mint-send-to-username" type="text" placeholder="Recipient avatar username">
+            </div>
+            <div class="nft-form-field" id="nft-mint-send-to-email-field" hidden>
+              <label class="nft-form-label" for="nft-mint-send-to-email">Avatar Email</label>
+              <input class="nft-form-input" id="nft-mint-send-to-email" type="email" placeholder="Recipient avatar email">
+            </div>
+            <div class="nft-form-field" id="nft-mint-send-to-avatar-id-field" hidden>
+              <label class="nft-form-label" for="nft-mint-send-to-avatar-id">Avatar ID</label>
+              <input class="nft-form-input" id="nft-mint-send-to-avatar-id" type="text" placeholder="Recipient avatar ID">
             </div>
             <!-- Other -->
             <div class="nft-form-field nft-form-field--full">
@@ -327,11 +341,6 @@
           </button>
           <div class="nft-advanced-panel" id="nft-mint-advanced-panel" hidden>
             <div class="nft-form-grid">
-              <div class="nft-form-field">
-                <label class="nft-form-label" for="nft-mint-send-to-avatar-id">Send To Avatar ID After Minting</label>
-                <input class="nft-form-input" id="nft-mint-send-to-avatar-id" type="text" placeholder="Optional — avatar ID">
-              </div>
-              <div class="nft-form-field"></div>
               <!-- Minting Timing -->
               <div class="nft-form-field nft-form-field--full nft-form-section-label">MINTING TIMING</div>
               <div class="nft-form-field nft-form-field--full">

@@ -1023,6 +1023,28 @@
       });
     }
 
+    // Mint form: Send-to method dropdown
+    var sendToMethod = getById('nft-mint-send-to-method');
+    if (sendToMethod) {
+      var sendToFields = {
+        address:  getById('nft-mint-send-to-address-field'),
+        username: getById('nft-mint-send-to-username-field'),
+        email:    getById('nft-mint-send-to-email-field'),
+        id:       getById('nft-mint-send-to-avatar-id-field')
+      };
+      function syncSendToMethod() {
+        var val = sendToMethod.value;
+        Object.keys(sendToFields).forEach(function (k) {
+          if (sendToFields[k]) {
+            sendToFields[k].hidden = (k !== val);
+            if (k !== val) (sendToFields[k].querySelector('input') || {}).value = '';
+          }
+        });
+      }
+      syncSendToMethod();
+      sendToMethod.addEventListener('change', syncSendToMethod);
+    }
+
     // Mint form: Advanced Settings toggle
     var advToggle = getById('nft-mint-advanced-toggle');
     var advPanel  = getById('nft-mint-advanced-panel');
