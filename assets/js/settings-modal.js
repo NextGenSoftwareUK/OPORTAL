@@ -184,6 +184,33 @@
     window.closeSettingsModal = closeSettingsModal;
   }
 
+  // ── Password reset ────────────────────────────────────────────────────────────
+
+  window.sendPasswordResetEmail = async function () {
+    var btn = document.getElementById('settings-reset-btn');
+    var profile = readAvatar();
+    var email = profile && (profile.email || profile.Email);
+    if (!email) { alert('No email address found. Please beam in first.'); return; }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+    try {
+      var returnUrl = 'https://oportal.oasisomniverse.one/reset-password.html';
+      var res = await fetch('https://api.web4.oasisomniverse.one/api/avatar/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, returnUrl: returnUrl })
+      });
+      var data = await res.json();
+      var isError = data?.result?.isError ?? !res.ok;
+      if (isError) throw new Error(data?.result?.message || data?.message || 'Request failed.');
+      if (btn) { btn.textContent = 'Email Sent ✓'; btn.style.borderColor = 'rgba(0,229,255,.5)'; btn.style.color = '#00e5ff'; }
+    } catch (e) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Send Password Reset Email'; }
+      alert('Could not send reset email: ' + (e.message || 'Unknown error'));
+    }
+  };
+
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', bind); }
   else { bind(); }
   window.addEventListener('portal-components-ready', bind);
