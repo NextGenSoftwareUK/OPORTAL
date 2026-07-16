@@ -83,7 +83,7 @@
   async function fetchNodeStateHolon(avatarId) {
     if (!avatarId) return null;
     try {
-      var res = await fetch(API_BASE + '/api/v1/onode/holons/node-state/' + encodeURIComponent(avatarId));
+      var res = await fetch(API_BASE + '/api/v1/onode/node-state/' + encodeURIComponent(avatarId));
       if (!res.ok) return null;
       return await res.json();
     } catch (e) { return null; }
@@ -104,7 +104,7 @@
       issuedAt: new Date().toISOString()
     };
     try {
-      var res = await fetch(API_BASE + '/api/v1/onode/holons/commands', {
+      var res = await fetch(API_BASE + '/api/v1/onode/commands', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cmd)
@@ -120,7 +120,7 @@
     while (Date.now() - start < timeoutMs) {
       await new Promise(function(r) { setTimeout(r, 1500); });
       try {
-        var res = await fetch(API_BASE + '/api/v1/onode/holons/commands/' + encodeURIComponent(commandId));
+        var res = await fetch(API_BASE + '/api/v1/onode/commands/' + encodeURIComponent(commandId));
         if (!res.ok) continue;
         var cmd = await res.json();
         if (cmd.status === 'Done' || cmd.status === 'Error') return cmd;
