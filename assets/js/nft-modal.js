@@ -759,7 +759,9 @@
       toProvider: currentProvider,
       amount: parseFloat((getById('nft-send-amount') || {}).value) || 0,
       memoText: (getById('nft-send-memo') || {}).value || '',
-      waitTillNFTSent: false
+      waitTillNFTSent: true,
+      waitForNFTToSendInSeconds: 60,
+      attemptToSendEveryXSeconds: 1
     };
 
     var btn = getById('nft-send-submit-btn');
@@ -807,7 +809,9 @@
       toProvider: (getById('nft-detail-send-to-provider') || {}).value || currentProvider,
       amount: parseFloat((getById('nft-detail-send-amount') || {}).value) || 0,
       memoText: (getById('nft-detail-send-memo') || {}).value || '',
-      waitTillNFTSent: false
+      waitTillNFTSent: true,
+      waitForNFTToSendInSeconds: 60,
+      attemptToSendEveryXSeconds: 1
     };
     if (toUsername) {
       body.sendToAvatarUsername = toUsername;
