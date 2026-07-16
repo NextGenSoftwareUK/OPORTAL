@@ -281,8 +281,12 @@
       imgEl.alt = getNftTitle(nft);
       imgEl.hidden = false;
       if (imgPh) imgPh.hidden = true;
+      imgEl.onerror = function () {
+        imgEl.hidden = true;
+        if (imgPh) imgPh.hidden = false;
+      };
     } else {
-      if (imgEl) imgEl.hidden = true;
+      if (imgEl) { imgEl.hidden = true; imgEl.src = ''; }
       if (imgPh) imgPh.hidden = false;
     }
 
