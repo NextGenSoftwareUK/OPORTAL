@@ -518,36 +518,31 @@
 
   async function fetchNfts(profile) {
     var avatarId = getAvatarId(profile);
-    if (!avatarId) return null;
-    try {
-      var sdkRes = await window.oasisClient.nft.loadAllWeb4NFTsForAvatarAsync({ avatarId: avatarId });
-      return sdkRes.isError ? null : extractList(sdkRes.result);
-    } catch (e) { return null; }
+    if (!avatarId) { console.warn('[NFT] fetchNfts: no avatarId in profile', profile); return null; }
+    var sdkRes = await window.oasisClient.nft.loadAllWeb4NFTsForAvatarAsync({ avatarId: avatarId });
+    if (sdkRes.isError) { console.warn('[NFT] fetchNfts error:', sdkRes.message || sdkRes); return null; }
+    return extractList(sdkRes.result);
   }
 
   async function fetchGeoNfts(profile) {
     var avatarId = getAvatarId(profile);
     if (!avatarId) return null;
-    try {
-      var sdkRes = await window.oasisClient.nft.loadAllWeb4GeoNFTsForAvatarAsync({ avatarId: avatarId });
-      return sdkRes.isError ? null : extractList(sdkRes.result);
-    } catch (e) { return null; }
+    var sdkRes = await window.oasisClient.nft.loadAllWeb4GeoNFTsForAvatarAsync({ avatarId: avatarId });
+    if (sdkRes.isError) { console.warn('[NFT] fetchGeoNfts error:', sdkRes.message || sdkRes); return null; }
+    return extractList(sdkRes.result);
   }
 
   async function fetchOlandPrice(token) {
-    try {
-      var sdkRes = await window.oasisClient.oLand.getOlandPrice();
-      if (sdkRes.isError) return null;
-      var d = sdkRes.result;
-      return d && (d.price || d.Price || d) != null ? (d.price || d.Price || d) : null;
-    } catch (e) { return null; }
+    var sdkRes = await window.oasisClient.oLand.getOlandPrice();
+    if (sdkRes.isError) return null;
+    var d = sdkRes.result;
+    return d && (d.price || d.Price || d) != null ? (d.price || d.Price || d) : null;
   }
 
   async function fetchOland(token) {
-    try {
-      var sdkRes = await window.oasisClient.oLand.loadAllOlands();
-      return sdkRes.isError ? null : extractList(sdkRes.result);
-    } catch (e) { return null; }
+    var sdkRes = await window.oasisClient.oLand.loadAllOlands();
+    if (sdkRes.isError) { console.warn('[NFT] fetchOland error:', sdkRes.message || sdkRes); return null; }
+    return extractList(sdkRes.result);
   }
 
   function extractList(data) {
@@ -621,8 +616,10 @@
         priceEl.hidden = false;
       }
 
-      if (hadError && !nfts && !geoNfts && !olandList) {
-        showStatus('warn', 'Could not load NFT data — API may be unavailable or your session may have expired.');
+      if (!nfts && !geoNfts && !olandList) {
+        showStatus('warn', hadError
+          ? 'Could not load NFT data — API may be unavailable or your session may have expired.'
+          : 'No NFT data returned — your session may have expired. Try beaming out and back in.');
       }
     } finally {
       isFetching = false;
