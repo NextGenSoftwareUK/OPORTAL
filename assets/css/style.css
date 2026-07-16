@@ -3378,6 +3378,37 @@ select option {
   color: var(--color-contrast-medium);
 }
 
+.nft-advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: rgba(0, 229, 255, 0.7);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.nft-advanced-toggle:hover { color: #00e5ff; }
+.nft-advanced-toggle__icon {
+  font-size: 9px;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+.nft-advanced-toggle[aria-expanded="true"] .nft-advanced-toggle__icon {
+  transform: rotate(90deg);
+}
+.nft-advanced-panel {
+  margin-top: 10px;
+  border-top: 1px solid rgba(107, 208, 255, 0.1);
+  padding-top: 10px;
+}
+
 .nft-form-section-label {
   font-size: 10px;
   font-weight: 700;

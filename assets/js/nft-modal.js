@@ -1019,6 +1019,17 @@
       });
     }
 
+    // Mint form: Advanced Settings toggle
+    var advToggle = getById('nft-mint-advanced-toggle');
+    var advPanel  = getById('nft-mint-advanced-panel');
+    if (advToggle && advPanel) {
+      advToggle.addEventListener('click', function () {
+        var open = !advPanel.hidden;
+        advPanel.hidden = open;
+        advToggle.setAttribute('aria-expanded', String(!open));
+      });
+    }
+
     // Mint form: JSON Metadata URL only enabled when ExternalJSONURL is selected
     var metaTypeSel = getById('nft-mint-off-chain-meta-type');
     var jsonUrlEl = getById('nft-mint-json-url');

@@ -308,10 +308,6 @@
               <input class="nft-form-input" id="nft-mint-send-to-address" type="text" placeholder="Optional — wallet address">
             </div>
             <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-send-to-avatar-id">Send To Avatar ID After Minting</label>
-              <input class="nft-form-input" id="nft-mint-send-to-avatar-id" type="text" placeholder="Optional — avatar ID">
-            </div>
-            <div class="nft-form-field">
               <label class="nft-form-label" for="nft-mint-send-to-username">Send To Avatar Username After Minting</label>
               <input class="nft-form-input" id="nft-mint-send-to-username" type="text" placeholder="Optional — avatar username">
             </div>
@@ -319,54 +315,70 @@
               <label class="nft-form-label" for="nft-mint-send-to-email">Send To Avatar Email After Minting</label>
               <input class="nft-form-input" id="nft-mint-send-to-email" type="email" placeholder="Optional — avatar email">
             </div>
-            <!-- Timing -->
-            <div class="nft-form-field nft-form-field--full nft-form-section-label">MINTING TIMING</div>
-            <div class="nft-form-field nft-form-field--full">
-              <label class="nft-form-label nft-form-label--checkbox">
-                <input type="checkbox" id="nft-mint-wait-till-minted" checked> Wait Till NFT Minted
-              </label>
-            </div>
-            <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-wait-mint-seconds">Wait For Mint (seconds)</label>
-              <input class="nft-form-input" id="nft-mint-wait-mint-seconds" type="number" min="1" value="180">
-            </div>
-            <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-attempt-mint-every">Retry Every (seconds)</label>
-              <input class="nft-form-input" id="nft-mint-attempt-mint-every" type="number" min="1" value="1">
-            </div>
-            <div class="nft-form-field nft-form-field--full nft-form-section-label">VERIFICATION TIMING</div>
-            <div class="nft-form-field nft-form-field--full">
-              <label class="nft-form-label nft-form-label--checkbox">
-                <input type="checkbox" id="nft-mint-wait-till-verified" checked> Wait Till NFT Verified
-              </label>
-            </div>
-            <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-wait-verify-seconds">Wait For Verify (seconds)</label>
-              <input class="nft-form-input" id="nft-mint-wait-verify-seconds" type="number" min="1" value="180">
-            </div>
-            <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-attempt-verify-every">Retry Every (seconds)</label>
-              <input class="nft-form-input" id="nft-mint-attempt-verify-every" type="number" min="1" value="1">
-            </div>
-            <div class="nft-form-field nft-form-field--full nft-form-section-label">SEND TIMING (if sending after mint)</div>
-            <div class="nft-form-field nft-form-field--full">
-              <label class="nft-form-label nft-form-label--checkbox">
-                <input type="checkbox" id="nft-mint-wait-till-sent" checked> Wait Till NFT Sent
-              </label>
-            </div>
-            <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-wait-send-seconds">Wait For Send (seconds)</label>
-              <input class="nft-form-input" id="nft-mint-wait-send-seconds" type="number" min="1" value="180">
-            </div>
-            <div class="nft-form-field">
-              <label class="nft-form-label" for="nft-mint-attempt-send-every">Retry Every (seconds)</label>
-              <input class="nft-form-input" id="nft-mint-attempt-send-every" type="number" min="1" value="1">
-            </div>
             <!-- Other -->
             <div class="nft-form-field nft-form-field--full">
               <label class="nft-form-label nft-form-label--checkbox">
                 <input type="checkbox" id="nft-mint-store-onchain"> Store NFT Metadata On-Chain
               </label>
+            </div>
+          </div>
+
+          <!-- Advanced Settings -->
+          <button type="button" class="nft-advanced-toggle" id="nft-mint-advanced-toggle" aria-expanded="false">
+            <span class="nft-advanced-toggle__icon">&#9654;</span> Advanced Settings
+          </button>
+          <div class="nft-advanced-panel" id="nft-mint-advanced-panel" hidden>
+            <div class="nft-form-grid">
+              <div class="nft-form-field">
+                <label class="nft-form-label" for="nft-mint-send-to-avatar-id">Send To Avatar ID After Minting</label>
+                <input class="nft-form-input" id="nft-mint-send-to-avatar-id" type="text" placeholder="Optional — avatar ID">
+              </div>
+              <div class="nft-form-field"></div>
+              <!-- Minting Timing -->
+              <div class="nft-form-field nft-form-field--full nft-form-section-label">MINTING TIMING</div>
+              <div class="nft-form-field nft-form-field--full">
+                <label class="nft-form-label nft-form-label--checkbox">
+                  <input type="checkbox" id="nft-mint-wait-till-minted" checked> Wait Till NFT Minted
+                </label>
+              </div>
+              <div class="nft-form-field">
+                <label class="nft-form-label" for="nft-mint-wait-mint-seconds">Wait For Mint (seconds)</label>
+                <input class="nft-form-input" id="nft-mint-wait-mint-seconds" type="number" min="1" value="180">
+              </div>
+              <div class="nft-form-field">
+                <label class="nft-form-label" for="nft-mint-attempt-mint-every">Retry Every (seconds)</label>
+                <input class="nft-form-input" id="nft-mint-attempt-mint-every" type="number" min="1" value="1">
+              </div>
+              <!-- Verification Timing -->
+              <div class="nft-form-field nft-form-field--full nft-form-section-label">VERIFICATION TIMING</div>
+              <div class="nft-form-field nft-form-field--full">
+                <label class="nft-form-label nft-form-label--checkbox">
+                  <input type="checkbox" id="nft-mint-wait-till-verified" checked> Wait Till NFT Verified
+                </label>
+              </div>
+              <div class="nft-form-field">
+                <label class="nft-form-label" for="nft-mint-wait-verify-seconds">Wait For Verify (seconds)</label>
+                <input class="nft-form-input" id="nft-mint-wait-verify-seconds" type="number" min="1" value="180">
+              </div>
+              <div class="nft-form-field">
+                <label class="nft-form-label" for="nft-mint-attempt-verify-every">Retry Every (seconds)</label>
+                <input class="nft-form-input" id="nft-mint-attempt-verify-every" type="number" min="1" value="1">
+              </div>
+              <!-- Send Timing -->
+              <div class="nft-form-field nft-form-field--full nft-form-section-label">SEND TIMING (if sending after mint)</div>
+              <div class="nft-form-field nft-form-field--full">
+                <label class="nft-form-label nft-form-label--checkbox">
+                  <input type="checkbox" id="nft-mint-wait-till-sent" checked> Wait Till NFT Sent
+                </label>
+              </div>
+              <div class="nft-form-field">
+                <label class="nft-form-label" for="nft-mint-wait-send-seconds">Wait For Send (seconds)</label>
+                <input class="nft-form-input" id="nft-mint-wait-send-seconds" type="number" min="1" value="180">
+              </div>
+              <div class="nft-form-field">
+                <label class="nft-form-label" for="nft-mint-attempt-send-every">Retry Every (seconds)</label>
+                <input class="nft-form-input" id="nft-mint-attempt-send-every" type="number" min="1" value="1">
+              </div>
             </div>
           </div>
           <div class="nft-form-status nft-status" hidden></div>
