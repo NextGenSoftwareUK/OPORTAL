@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activate Your OASIS Avatar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #01040f;
+      color: #e0e0e0;
+      font-family: 'Titillium Web', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: #060d1f;
+      border: 1px solid rgba(0, 229, 255, 0.15);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .logo {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      color: #a8bfd8;
+      opacity: .7;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      color: #00e5ff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #6a80a8;
+      font-size: .875rem;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .field { margin-bottom: 18px; }
+
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: #a8bfd8;
+      margin-bottom: 6px;
+    }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      background: #0a1428;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #e0e0e0;
+      font-family: inherit;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    input:focus { border-color: rgba(0, 229, 255, 0.5); }
+
+    .strength-bar {
+      height: 3px;
+      border-radius: 2px;
+      margin-top: 6px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0;
+      transition: width .3s, background .3s;
+    }
+    .strength-label {
+      font-size: .72rem;
+      color: #6a80a8;
+      margin-top: 4px;
+    }
+
+    .requirements {
+      font-size: .75rem;
+      color: #6a80a8;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 8px;
+      color: #00e5ff;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background .2s, border-color .2s;
+    }
+    .btn:hover:not(:disabled) {
+      background: rgba(0, 229, 255, 0.14);
+      border-color: rgba(0, 229, 255, 0.6);
+    }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .status {
+      margin-top: 18px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: .85rem;
+      line-height: 1.5;
+      display: none;
+    }
+    .status--error { background: rgba(255,60,60,.08); border: 1px solid rgba(255,60,60,.25); color: #ff6b6b; }
+    .status--success { background: rgba(0,229,255,.06); border: 1px solid rgba(0,229,255,.25); color: #00e5ff; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,.07);
+      margin: 28px 0 20px;
+    }
+
+    .footer-note {
+      color: #444;
+      font-size: .75rem;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .show-pass {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 8px;
+      cursor: pointer;
+      width: fit-content;
+    }
+    .show-pass input { width: auto; }
+    .show-pass span { font-size: .8rem; color: #6a80a8; user-select: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a class="logo" href="https://oportal.oasisomniverse.one">OPORTAL HOME</a>
+
+    <h1>Set Your Password</h1>
+    <p class="subtitle">Your OASIS Founder NFT has been linked to this account. Choose a password to complete setup and beam in to the portal.</p>
+
+    <div id="form-wrap">
+      <div class="field">
+        <label for="pw1">New Password</label>
+        <input type="password" id="pw1" autocomplete="new-password" placeholder="At least 8 characters">
+        <div class="strength-bar"><div class="strength-fill" id="str-fill"></div></div>
+        <div class="strength-label" id="str-label"></div>
+      </div>
+
+      <div class="field">
+        <label for="pw2">Confirm Password</label>
+        <input type="password" id="pw2" autocomplete="new-password" placeholder="Repeat your password">
+      </div>
+
+      <label class="show-pass">
+        <input type="checkbox" id="show-pw">
+        <span>Show passwords</span>
+      </label>
+
+      <div class="requirements" id="req-list">
+        Minimum 8 characters · Mix of letters &amp; numbers recommended
+      </div>
+
+      <button class="btn" id="submit-btn" onclick="handleSubmit()">Activate &amp; Set Password</button>
+
+      <div class="status" id="status-box"></div>
+    </div>
+
+    <hr class="divider">
+    <p class="footer-note">Questions? Join us on <a href="https://t.me/oasisweb4chat" style="color:#00e5ff88;text-decoration:none">Telegram</a></p>
+  </div>
+
+  <script>
+    var params = new URLSearchParams(location.search);
+    var email  = params.get('email') || '';
+    var key    = params.get('key')   || '';
+
+    if (!email || !key) {
+      showStatus('error', 'Invalid activation link — please check the email and try again.');
+      document.getElementById('submit-btn').disabled = true;
+    }
+
+    // Password strength meter
+    document.getElementById('pw1').addEventListener('input', function () {
+      var v = this.value;
+      var score = 0;
+      if (v.length >= 8) score++;
+      if (v.length >= 12) score++;
+      if (/[A-Z]/.test(v)) score++;
+      if (/[0-9]/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+
+      var fill = document.getElementById('str-fill');
+      var label = document.getElementById('str-label');
+      var pct = Math.round((score / 5) * 100);
+      fill.style.width = pct + '%';
+      if (score <= 1) { fill.style.background = '#ff4444'; label.textContent = 'Weak'; }
+      else if (score <= 2) { fill.style.background = '#f0a500'; label.textContent = 'Fair'; }
+      else if (score <= 3) { fill.style.background = '#6ab04c'; label.textContent = 'Good'; }
+      else { fill.style.background = '#00e5ff'; label.textContent = 'Strong'; }
+    });
+
+    // Toggle show passwords
+    document.getElementById('show-pw').addEventListener('change', function () {
+      var type = this.checked ? 'text' : 'password';
+      document.getElementById('pw1').type = type;
+      document.getElementById('pw2').type = type;
+    });
+
+    function showStatus(type, msg) {
+      var el = document.getElementById('status-box');
+      el.className = 'status status--' + type;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    async function handleSubmit() {
+      var pw1 = document.getElementById('pw1').value;
+      var pw2 = document.getElementById('pw2').value;
+      var btn = document.getElementById('submit-btn');
+
+      if (pw1.length < 8) { showStatus('error', 'Password must be at least 8 characters.'); return; }
+      if (pw1 !== pw2) { showStatus('error', 'Passwords do not match.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Activating…';
+
+      try {
+        var res = await fetch('https://founders.oasisomniverse.one/api/activate-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, key: key, newPassword: pw1 })
+        });
+
+        var data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Activation failed. Please contact support.');
+        }
+
+        // Store avatar in localStorage and auto-login
+        if (data.avatar) {
+          localStorage.setItem('avatar', JSON.stringify(data.avatar));
+          localStorage.setItem('loggedIn', 'true');
+        }
+
+        showStatus('success', 'Password set! Beaming you in to the portal…');
+
+        setTimeout(function () {
+          window.location.href = 'https://oportal.oasisomniverse.one/';
+        }, 1800);
+
+      } catch (e) {
+        showStatus('error', e.message || 'Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Activate & Set Password';
+      }
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') handleSubmit();
+    });
+  </script>
+</body>
+</html>
