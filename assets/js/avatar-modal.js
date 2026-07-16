@@ -431,6 +431,16 @@
     return false;
   }
 
+  function dispatchPortraitUpdate(dataUrl) {
+    var stored = readAvatar();
+    if (stored) {
+      var updated = Object.assign({}, stored, { avatarImage: dataUrl, AvatarImage: dataUrl });
+      saveAvatar(updated);
+      currentProfile = Object.assign({}, currentProfile || {}, { avatarImage: dataUrl, AvatarImage: dataUrl });
+      window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: updated }));
+    }
+  }
+
   function bindPhotoUpload() {
     var wrap  = getById('avatar-img-wrap');
     var input = getById('avatar-photo-input');
@@ -452,7 +462,9 @@
         if (img) { img.src = dataUrl; img.dataset.localPreview = '1'; }
         // Strip the data:image/xxx;base64, prefix for the API
         var base64 = dataUrl.split(',')[1];
-        uploadPortrait(base64);
+        uploadPortrait(base64).then(function (ok) {
+          if (ok) dispatchPortraitUpdate(dataUrl);
+        });
       };
       reader.readAsDataURL(file);
       input.value = ''; // reset so same file can be re-selected

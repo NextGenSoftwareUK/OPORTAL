@@ -138,7 +138,7 @@
     var img = document.getElementById('dash-avatar-img');
     if (img) {
       var photo = p.avatarImage || p.AvatarImage || p.profileImage || p.ProfileImage || p.photo || p.Photo;
-      if (photo && typeof photo === 'string' && photo.startsWith('http')) {
+      if (photo && typeof photo === 'string' && (photo.startsWith('http') || photo.startsWith('data:'))) {
         img.src = photo;
         img.onerror = function () { img.src = 'assets/img/loggedin.png'; };
       }
@@ -325,7 +325,7 @@
     var img = document.getElementById('dash-avatar-img');
     if (img) {
       var photo = p.avatarImage || p.AvatarImage || p.profileImage || p.ProfileImage || p.photo || p.Photo;
-      if (photo && typeof photo === 'string' && photo.startsWith('http')) {
+      if (photo && typeof photo === 'string' && (photo.startsWith('http') || photo.startsWith('data:'))) {
         img.src = photo;
         img.onerror = function () { img.src = 'assets/img/loggedin.png'; };
       }
