@@ -213,9 +213,9 @@
     for (var i = 0; i < urls.length; i++) { ... fetch(urls[i]) ... }
     */
     try {
-      if (email) sdkRes = await window.oasisClient.avatar.getAvatarDetailByEmail({ email: email });
-      if ((!sdkRes || sdkRes.isError) && username) sdkRes = await window.oasisClient.avatar.getAvatarDetailByUsername({ username: username });
+      if (username) sdkRes = await window.oasisClient.avatar.getAvatarDetailByUsername({ username: username });
       if ((!sdkRes || sdkRes.isError) && id) sdkRes = await window.oasisClient.avatar.getAvatarDetail({ 'id:guid': id });
+      if ((!sdkRes || sdkRes.isError) && email) sdkRes = await window.oasisClient.avatar.getAvatarDetailByEmail({ email: email });
     } catch (e) {}
     if (!sdkRes || sdkRes.isError || !sdkRes.result) return profile;
     var merged = Object.assign({}, profile, sdkRes.result);
