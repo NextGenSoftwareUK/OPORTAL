@@ -680,6 +680,10 @@
     var title = titleEl ? titleEl.value.trim() : '';
     if (!title) { showStatus('error', 'Title is required to mint an NFT.'); return; }
 
+    var imageUrlEl = getById('nft-mint-image-url');
+    var imageUrl = imageUrlEl ? imageUrlEl.value.trim() : '';
+    if (!imageUrl) { showStatus('error', 'Image URL is required to mint an NFT.'); return; }
+
     var token = getToken(profile);
     if (!token) { showStatus('error', 'You must be logged in to mint an NFT.'); return; }
 
