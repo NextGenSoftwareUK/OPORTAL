@@ -285,6 +285,21 @@
 
       if (!sdkRes.isError) {
         var updated = Object.assign({}, profile, payload);
+
+        // If username changed, also update the Avatar record (not just AvatarDetail)
+        var oldUsername = profile.username || profile.userName || profile.UserName;
+        var newUsername = payload.username;
+        if (newUsername && newUsername !== oldUsername && window.oasisClient) {
+          try {
+            var avatarUpdatePayload = { username: newUsername };
+            if (email) {
+              await window.oasisClient.avatar.updateByEmail(Object.assign({}, avatarUpdatePayload, { email: email }));
+            } else if (oldUsername) {
+              await window.oasisClient.avatar.updateByUsername(Object.assign({}, avatarUpdatePayload, { username: oldUsername }));
+            }
+          } catch (e) { /* non-fatal — detail already saved */ }
+        }
+
         saveAvatar(updated);
         currentProfile = updated;
         populate(updated);

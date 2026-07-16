@@ -289,8 +289,28 @@
         }
 
         // Store avatar in localStorage and auto-login
-        if (data.avatar) {
-          localStorage.setItem('avatar', JSON.stringify(data.avatar));
+        var avatarData = data.avatar;
+
+        // If backend re-auth failed (no avatar returned), authenticate directly from browser
+        if (!avatarData || !avatarData.jwtToken) {
+          try {
+            var directAuth = await fetch('https://api.web4.oasisomniverse.one/api/avatar/authenticate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: email, password: pw1 })
+            });
+            if (directAuth.ok) {
+              var directData = await directAuth.json();
+              var directAvatar = directData?.result?.result ?? directData?.result ?? null;
+              if (directAvatar && (directAvatar.jwtToken || directAvatar.token)) {
+                avatarData = directAvatar;
+              }
+            }
+          } catch (e2) { /* non-fatal — will redirect unauthenticated */ }
+        }
+
+        if (avatarData && (avatarData.jwtToken || avatarData.token)) {
+          localStorage.setItem('avatar', JSON.stringify(avatarData));
           localStorage.setItem('loggedIn', 'true');
         }
 

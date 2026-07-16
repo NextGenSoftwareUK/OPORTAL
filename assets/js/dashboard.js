@@ -322,6 +322,14 @@
     set('dash-card-karma', fmtNum(karma));
     set('dash-karma-net', fmtNum(karma));
     set('dash-xp-hero', fmtNum(getXP(p)));
+    var img = document.getElementById('dash-avatar-img');
+    if (img) {
+      var photo = p.avatarImage || p.AvatarImage || p.profileImage || p.ProfileImage || p.photo || p.Photo;
+      if (photo && typeof photo === 'string' && photo.startsWith('http')) {
+        img.src = photo;
+        img.onerror = function () { img.src = 'assets/img/loggedin.png'; };
+      }
+    }
   });
 
 })();
