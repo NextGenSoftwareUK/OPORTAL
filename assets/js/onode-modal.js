@@ -45,6 +45,66 @@
   // or must use the Holon bridge (remote, e.g. mobile away from home).
 
   var _isLocal = null; // cached result
+  var _ws = null;      // active WebSocket (local mode only)
+  var _wsNodeId = '';  // nodeId the WS is subscribed to
+
+  function getWsBase() {
+    var base = API_BASE || '';
+    return base.replace(/^https:/, 'wss:').replace(/^http:/, 'ws:');
+  }
+
+  function openWebSocket(nodeId) {
+    if (_ws && _ws.readyState <= 1 && _wsNodeId === nodeId) return; // already open/connecting
+    closeWebSocket();
+    _wsNodeId = nodeId;
+    try {
+      _ws = new WebSocket(getWsBase() + '/ws/onode/' + encodeURIComponent(nodeId));
+      _ws.onmessage = function (evt) {
+        try {
+          var state = JSON.parse(evt.data);
+          onWsStateUpdate(state);
+        } catch (e) { /* ignore parse error */ }
+      };
+      _ws.onclose = function () {
+        _ws = null;
+        // Fall back to polling if WS closes unexpectedly
+        if (!pollInterval) pollInterval = setInterval(loadAll, 5000);
+      };
+      _ws.onerror = function () { _ws = null; };
+      _ws.onopen = function () {
+        // WebSocket open — stop polling (WS replaces it)
+        if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+      };
+    } catch (e) { _ws = null; }
+  }
+
+  function closeWebSocket() {
+    if (_ws) { try { _ws.close(); } catch (e) {} _ws = null; }
+  }
+
+  function onWsStateUpdate(state) {
+    // Called when ONODEService pushes state via WS (no polling lag)
+    lastSyncTime = Date.now();
+    updateSyncLabel();
+    if (state.services) buildServicesPanel(state.services, true);
+    if (state.metrics) {
+      updateStatBar({ status: 'Running' }, {
+        uptime: '—', peers: state.metrics.peersConnected, version: state.version || '—'
+      });
+    }
+    if (state.services) {
+      var providerMap = {};
+      state.services.forEach(function (svc) {
+        (svc.providers || []).forEach(function (p) {
+          var key = p.providerType || p.ProviderType || '';
+          if (key && !providerMap[key]) providerMap[key] = p;
+        });
+      });
+      var providerList = Object.values(providerMap);
+      if (providerList.length && !getById('onode-tab-providers').hidden)
+        buildProvidersPanel(providerList, true);
+    }
+  }
 
   async function canReachLocal() {
     if (_isLocal !== null) return _isLocal;
@@ -331,6 +391,10 @@
     // Pre-load providers if providers tab visible
     if (!getById('onode-tab-providers').hidden) loadProvidersLocal();
     updateRemoteControlPanel(true, status);
+
+    // Upgrade to WebSocket push for real-time state
+    var avatarId = getAvatarId();
+    if (avatarId) openWebSocket(avatarId);
   }
 
   async function loadAllRemote() {
@@ -916,6 +980,7 @@
     if (block) block.classList.remove('is-selected');
     stopLogsAutoRefresh();
     if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+    closeWebSocket();
   }
 
   // ── Bind ──────────────────────────────────────────────────────────────────────
