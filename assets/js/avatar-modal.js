@@ -513,6 +513,7 @@
   window.openAvatarModal = openAvatarModal;
   window.closeAvatarModal = closeAvatarModal;
   window.hydrateAvatarProfile = hydrateAvatar;
+  window.loadAvatarPortrait = loadPortrait;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bind);

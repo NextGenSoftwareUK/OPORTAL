@@ -141,6 +141,12 @@
       if (photo && typeof photo === 'string' && (photo.startsWith('http') || photo.startsWith('data:'))) {
         img.src = photo;
         img.onerror = function () { img.src = 'assets/img/loggedin.png'; };
+      } else {
+        // No portrait in stored profile (e.g. after beam-out/in) — fetch from API
+        var uname = p.username || p.userName || p.UserName;
+        if (uname && typeof window.loadAvatarPortrait === 'function') {
+          window.loadAvatarPortrait(uname, img);
+        }
       }
     }
 
