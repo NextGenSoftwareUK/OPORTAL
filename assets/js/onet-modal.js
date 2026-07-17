@@ -264,6 +264,62 @@
     el.textContent = d ? JSON.stringify(d, null, 2) : 'No OASIS DNA data available.';
   }
 
+  // ── Active ONODEs (Holon bridge) ─────────────────────────────────────────────
+
+  async function loadActiveONODEs() {
+    var API_BASE = window.apiUrl || window.API_BASE;
+    var container = getById('onet-active-onodes');
+    if (!container) return;
+
+    container.innerHTML = '<div class="onet-empty"><p>Loading active ONODEs…</p></div>';
+
+    try {
+      var res = await fetch(API_BASE + '/api/v1/onode/active-nodes', { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) { container.innerHTML = '<div class="onet-empty"><p>No active ONODE data.</p></div>'; return; }
+      var nodes = await res.json();
+      if (!nodes || !nodes.length) {
+        container.innerHTML = '<div class="onet-empty"><div class="onet-empty-icon">📡</div><p>No ONODEs have synced recently. ONODEs push state every 5s when running.</p></div>';
+        return;
+      }
+
+      container.innerHTML = nodes.map(function (n) {
+        var nodeId   = (n.nodeId   || '').slice(0, 8) + '…';
+        var avatarId = (n.avatarId || '').slice(0, 8) + '…';
+        var running  = n.runningCount || 0;
+        var total    = n.totalCount   || 0;
+        var age      = n.secondsAgo   || 0;
+        var fresh    = age < 15;
+        var dot      = fresh ? '#00BFFF' : age < 60 ? '#FFA500' : '#FF4444';
+        var peers    = n.metrics ? (n.metrics.peersConnected || 0) : 0;
+        var bytesIn  = n.metrics ? formatBytesOnet(n.metrics.bytesReadPerSec  || 0) : '0 B/s';
+        var bytesOut = n.metrics ? formatBytesOnet(n.metrics.bytesWrittenPerSec || 0) : '0 B/s';
+
+        return '<div class="onet-onode-card">' +
+          '<div class="onet-onode-card-header">' +
+            '<span class="onet-onode-dot" style="background:' + dot + '"></span>' +
+            '<span class="onet-onode-id" title="' + escapeHtml(n.nodeId || '') + '">' + escapeHtml(nodeId) + '</span>' +
+            '<span class="onet-onode-age">' + (age < 5 ? 'Just now' : age + 's ago') + '</span>' +
+          '</div>' +
+          '<div class="onet-onode-stats">' +
+            '<span>' + running + '/' + total + ' services running</span>' +
+            '<span>Peers: ' + peers + '</span>' +
+            '<span>↓ ' + bytesIn + '</span>' +
+            '<span>↑ ' + bytesOut + '</span>' +
+          '</div>' +
+          '<div class="onet-onode-avatar">Avatar: ' + escapeHtml(avatarId) + '</div>' +
+          '</div>';
+      }).join('');
+    } catch (e) {
+      container.innerHTML = '<div class="onet-empty"><p>Could not reach OASIS API.</p></div>';
+    }
+  }
+
+  function formatBytesOnet(b) {
+    if (b >= 1e6) return (b / 1e6).toFixed(1) + ' MB/s';
+    if (b >= 1e3) return (b / 1e3).toFixed(1) + ' KB/s';
+    return b + ' B/s';
+  }
+
   // ── Load all ──────────────────────────────────────────────────────────────────
 
   async function loadAll() {
@@ -345,6 +401,7 @@
       p.hidden = p.id !== 'onet-tab-' + tab;
     });
     if (tab === 'topology') loadTopology();
+    if (tab === 'nodes') loadActiveONODEs();
   }
 
   // ── Open / close ──────────────────────────────────────────────────────────────

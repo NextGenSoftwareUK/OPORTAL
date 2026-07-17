@@ -6582,3 +6582,13 @@ select option {
   transition: background .2s;
 }
 .sub-mcp-link:hover { background: rgba(79,163,224,0.12); }
+
+/* ── Active ONODEs cards (ONET modal Nodes tab) ─────────────────────────── */
+.onet-active-onodes { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
+.onet-onode-card { background: rgba(0,191,255,0.06); border: 1px solid rgba(0,191,255,0.2); border-radius: 8px; padding: 10px 14px; }
+.onet-onode-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.onet-onode-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.onet-onode-id { font-family: 'Share Tech Mono','Courier New',monospace; font-size: 0.75rem; color: rgba(200,230,255,0.9); flex: 1; }
+.onet-onode-age { font-size: 0.7rem; color: rgba(150,170,200,0.7); }
+.onet-onode-stats { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.72rem; color: rgba(150,200,255,0.8); margin-bottom: 4px; }
+.onet-onode-avatar { font-size: 0.68rem; color: rgba(100,130,160,0.7); font-family: 'Share Tech Mono','Courier New',monospace; }
