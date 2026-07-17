@@ -328,6 +328,8 @@
       return { id: id, status: id === 'web4' ? svcStatus : 'Unknown', installed: true };
     });
     buildServicesPanel(services, true);
+    // Pre-load providers if providers tab visible
+    if (!getById('onode-tab-providers').hidden) loadProvidersLocal();
     updateRemoteControlPanel(true, status);
   }
 
@@ -355,6 +357,20 @@
     });
 
     if (holon.services) buildServicesPanel(holon.services, false);
+    // Providers come embedded in each service's Providers list; extract distinct set
+    if (holon.services) {
+      var providerMap = {};
+      holon.services.forEach(function (svc) {
+        if (svc.providers || svc.Providers) {
+          (svc.providers || svc.Providers).forEach(function (p) {
+            var key = p.providerType || p.ProviderType || '';
+            if (key && !providerMap[key]) providerMap[key] = p;
+          });
+        }
+      });
+      var providerList = Object.values(providerMap);
+      if (providerList.length) buildProvidersPanel(providerList, false);
+    }
 
     if (holon.metrics) buildMetricsGrid({
       peersConnected: holon.metrics.peersConnected,
@@ -599,6 +615,101 @@
     list.innerHTML = arr.map(buildPeerRow).join('');
   }
 
+  // ── Providers panel ───────────────────────────────────────────────────────────
+
+  var _cachedProviders = null;
+
+  function buildProvidersPanel(providers, isLocal) {
+    var container = getById('onode-providers-grid');
+    if (!container) return;
+    _cachedProviders = providers;
+
+    if (!providers || !providers.length) {
+      container.innerHTML = '<div class="onode-empty"><p>No providers configured in OASISDNA.json.</p></div>';
+      return;
+    }
+
+    var sorted = providers.slice().sort(function (a, b) {
+      return (a.priority || a.Priority || 0) - (b.priority || b.Priority || 0);
+    });
+
+    container.innerHTML = sorted.map(function (p) {
+      var type    = p.providerType  || p.ProviderType  || '';
+      var enabled = p.isEnabled     || p.IsEnabled     || false;
+      var prio    = p.priority      || p.Priority      || 0;
+      var label   = type.replace(/OASIS$/i, '');
+      var dot     = enabled ? '#00BFFF' : '#555566';
+      var btnLabel = enabled ? 'Disable' : 'Enable';
+      var btnCls   = enabled ? 'onode-svc-btn onode-svc-btn--danger' : 'onode-svc-btn';
+      var encodedType = escapeHtml(type);
+
+      return '<div class="onode-svc-row" data-provider="' + encodedType + '">' +
+        '<div class="onode-svc-dot" style="background:' + dot + '"></div>' +
+        '<div class="onode-svc-id">' + escapeHtml(label) + '</div>' +
+        '<div class="onode-svc-status" style="color:' + dot + '">' + (enabled ? 'Enabled' : 'Disabled') + '</div>' +
+        '<div class="onode-svc-port">' + prio + '</div>' +
+        '<div class="onode-svc-actions">' +
+          '<button class="' + btnCls + '" onclick="window._onodeProviderToggle(\'' + encodedType + '\',' + (enabled ? 'true' : 'false') + ')">' + btnLabel + '</button>' +
+          (isLocal
+            ? '<button class="onode-svc-btn" onclick="window._onodeProviderPrio(\'' + encodedType + '\',' + (prio - 1) + ')">▲</button>' +
+              '<button class="onode-svc-btn" onclick="window._onodeProviderPrio(\'' + encodedType + '\',' + (prio + 1) + ')">▼</button>'
+            : ''
+          ) +
+        '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  async function loadProvidersLocal() {
+    var data = await apiFetch('/api/v1/onode/providers');
+    buildProvidersPanel(data, true);
+  }
+
+  async function loadProvidersRemote() {
+    var r = await sendCommandHolon('GetProviders', null);
+    if (!r) return;
+    var result = await pollCommandResult(r.commandId, 10000);
+    if (result && result.result) {
+      try { buildProvidersPanel(JSON.parse(result.result), false); }
+      catch (ex) { /* ignore parse error */ }
+    }
+  }
+
+  window._onodeProviderToggle = async function (providerType, currentlyEnabled) {
+    var local = await canReachLocal();
+    if (local) {
+      var path = '/api/v1/onode/providers/' + encodeURIComponent(providerType) + (currentlyEnabled ? '/disable' : '/enable');
+      try {
+        await fetch(API_BASE + path, { method: 'PUT' });
+        showStatus('success', providerType + ' ' + (currentlyEnabled ? 'disabled' : 'enabled') + '.');
+      } catch (e) { showStatus('error', 'Failed to toggle provider.'); }
+      setTimeout(loadProvidersLocal, 1500);
+    } else {
+      var cmd = currentlyEnabled ? 'DisableProvider' : 'EnableProvider';
+      showStatus('loading', 'Sending ' + cmd + ' to ONODE…');
+      var r = await sendCommandHolon(cmd, null, JSON.stringify({ providerType: providerType }));
+      if (!r) { showStatus('error', 'Failed to send command.'); return; }
+      var result = await pollCommandResult(r.commandId);
+      showStatus(result && result.status === 'Done' ? 'success' : 'error',
+        result && result.status === 'Done' ? (providerType + ' toggled.') : (result ? result.result : 'Timed out.'));
+      if (result && result.status === 'Done') setTimeout(loadProvidersRemote, 1500);
+    }
+  };
+
+  window._onodeProviderPrio = async function (providerType, newPriority) {
+    var local = await canReachLocal();
+    if (local) {
+      try {
+        await fetch(API_BASE + '/api/v1/onode/providers/' + encodeURIComponent(providerType) + '/priority', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ priority: newPriority })
+        });
+      } catch (e) { /* ignore */ }
+      setTimeout(loadProvidersLocal, 500);
+    }
+  };
+
   // ── Config / OASISDNA ─────────────────────────────────────────────────────────
 
   function renderPreformatted(id, data) {
@@ -692,6 +803,12 @@
     }
     if (tab === 'config') loadConfig();
     if (tab === 'oasisdna') initDNATab();
+    if (tab === 'providers') {
+      canReachLocal().then(function (local) {
+        if (local) loadProvidersLocal();
+        else loadProvidersRemote();
+      });
+    }
   }
 
   // ── OASIS DNA gate ────────────────────────────────────────────────────────────

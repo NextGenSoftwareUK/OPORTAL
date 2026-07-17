@@ -75,6 +75,7 @@
         <button class="onode-tab" data-tab="peers">Peers</button>
         <button class="onode-tab" data-tab="config">Config</button>
         <button class="onode-tab" data-tab="oasisdna">OASISDNA</button>
+        <button class="onode-tab" data-tab="providers">Providers</button>
       </div>
 
       <!-- Overview -->
@@ -156,6 +157,20 @@
           <button id="onode-dna-lock-btn" class="button button--ghost" type="button" style="margin-top:12px">🔒 Lock</button>
         </div>
 
+      </div>
+
+      <!-- Providers -->
+      <div id="onode-tab-providers" class="onode-tab-panel" hidden>
+        <div class="onode-svc-header">
+          <span class="onode-svc-col onode-svc-col--dot"></span>
+          <span class="onode-svc-col onode-svc-col--id">Provider</span>
+          <span class="onode-svc-col onode-svc-col--status">Status</span>
+          <span class="onode-svc-col onode-svc-col--port">Priority</span>
+          <span class="onode-svc-col onode-svc-col--actions">Actions</span>
+        </div>
+        <div id="onode-providers-grid" class="onode-services-grid">
+          <div class="onode-empty"><p>Loading providers…</p></div>
+        </div>
       </div>
 
     </div>
