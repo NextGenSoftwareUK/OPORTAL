@@ -415,7 +415,7 @@
     try {
       // SDK: @oasisomniverse/web4-api
       var sdkRes = await window.oasisClient.avatar.uploadAvatarPortrait({
-        avatarId: avatar.id || avatar.Id || avatar.avatarId,
+        avatarId: avatar.avatarId || avatar.AvatarId || avatar.id || avatar.Id,
         username: avatar.username || avatar.userName,
         email:    avatar.email || avatar.Email,
         imageBase64: base64Data
