@@ -219,6 +219,13 @@
     } catch (e) {}
     if (!sdkRes || sdkRes.isError || !sdkRes.result) return profile;
     var merged = Object.assign({}, profile, sdkRes.result);
+    // Always preserve auth-critical fields from the original Avatar record —
+    // AvatarDetail may return these as null/empty and must not overwrite them.
+    var authFields = ['email', 'Email', 'jwtToken', 'JwtToken', 'token', 'Token',
+                      'refreshToken', 'RefreshToken', 'id', 'Id', 'avatarId', 'AvatarId'];
+    authFields.forEach(function (f) {
+      if (profile[f] != null && profile[f] !== '') merged[f] = profile[f];
+    });
     // Guard: if the returned detail has a different username than what we stored,
     // the fallback id lookup returned the wrong avatar — keep the original username.
     var origUsername = profile.username || profile.userName || profile.UserName;
