@@ -24,26 +24,21 @@ window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
     window.aiClient = new Web6Client({ baseUrl: window.web6ApiUrl, fetchImpl: boundFetch });
   }
 
-  // Intercept every SDK response — if a call comes back 401/Unauthorized while
-  // a session is active, route the user back to the Beam In popup.
-  // Guards: only fires when loggedIn=true, skips auth paths, debounces so a
-  // burst of parallel failures only triggers one redirect.
+  // Intercept every SDK response — if the server returns HTTP 401 and the
+  // stored JWT is genuinely expired, route the user back to the Beam In popup.
+  // Only fires when: real 401 status, loggedIn=true, JWT invalid, not an auth
+  // path, and debounced so parallel failures only trigger one redirect.
   var _unauthorizedPending = false;
   function attachUnauthorizedInterceptor(client) {
     if (!client || !client.http) return;
     var orig = client.http.request.bind(client.http);
     client.http.request = async function (verb, path, options) {
       var res = await orig(verb, path, options);
-      var isUnauth = res && res.isError && (
-        res.statusCode === 401 ||
-        (res.statusCode === 403) ||
-        (res.message && /unauthori[zs]ed/i.test(res.message))
-      );
-      // Only act if the user is supposed to be logged in and this isn't an
-      // auth endpoint itself (login / refresh / forgot-password etc.)
+      var isHttp401 = res && res.statusCode === 401;
       var isAuthPath = /\/(authenticate|refresh-token|forgot-password|reset-password|register|signup)/i.test(path);
-      if (isUnauth && !isAuthPath && !_unauthorizedPending &&
-          localStorage.getItem('loggedIn') === 'true') {
+      var isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+      var tokenExpired = isLoggedIn && typeof isJwtValid === 'function' && !isJwtValid();
+      if (isHttp401 && !isAuthPath && isLoggedIn && tokenExpired && !_unauthorizedPending) {
         _unauthorizedPending = true;
         if (typeof window.handleUnauthorized === 'function') {
           window.handleUnauthorized().finally(function () { _unauthorizedPending = false; });
