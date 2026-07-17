@@ -24,6 +24,26 @@ window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
     window.aiClient = new Web6Client({ baseUrl: window.web6ApiUrl, fetchImpl: boundFetch });
   }
 
+  // Intercept every SDK response — if any call comes back unauthorized, route
+  // the user back to the Beam In popup instead of showing a raw error.
+  function attachUnauthorizedInterceptor(client) {
+    if (!client || !client.http) return;
+    var orig = client.http.request.bind(client.http);
+    client.http.request = async function (verb, path, options) {
+      var res = await orig(verb, path, options);
+      if (res && res.isError && (res.statusCode === 401 ||
+          (res.message && /unauthori[zs]ed/i.test(res.message)))) {
+        if (typeof window.handleUnauthorized === 'function') {
+          window.handleUnauthorized();
+        }
+      }
+      return res;
+    };
+  }
+  attachUnauthorizedInterceptor(window.oasisClient);
+  attachUnauthorizedInterceptor(window.starClient);
+  attachUnauthorizedInterceptor(window.aiClient);
+
   // If the user is already logged in (page refresh / revisit), inject their
   // stored JWT so the SDK sends authenticated requests immediately.
   try {
