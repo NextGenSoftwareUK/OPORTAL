@@ -3,7 +3,7 @@
 // window.apiUrl = 'https://localhost:5002/';
 window.apiUrl = 'https://api.web4.oasisomniverse.one';
 window.API_BASE = window.apiUrl;
-window.web5ApiUrl = 'https://api.star.oasisweb5.one';
+window.web5ApiUrl = 'https://api.starnet.oasisomniverse.one';
 window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
 
 // ── OASIS SDK clients (@oasisomniverse/web4-api + web5-api) ──────────────────
