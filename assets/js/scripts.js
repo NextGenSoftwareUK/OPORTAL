@@ -724,6 +724,15 @@ function addAuthPopup(login, msg, e) {
     if (login)
     {
       var avatarProfile = msg.result && msg.result.result ? msg.result.result : msg.result;
+      // Avatar.AvatarId is a serialisation wrapper around base.Id — they must always match.
+      // Normalise both so downstream code can rely on either field being correct.
+      var _canonicalId = avatarProfile && (avatarProfile.avatarId || avatarProfile.AvatarId || avatarProfile.id || avatarProfile.Id || '');
+      if (_canonicalId && avatarProfile) {
+        avatarProfile.id       = _canonicalId;
+        avatarProfile.Id       = _canonicalId;
+        avatarProfile.avatarId = _canonicalId;
+        avatarProfile.AvatarId = _canonicalId;
+      }
       localStorage.setItem('avatar', JSON.stringify(avatarProfile));
       localStorage.setItem('loggedIn', true)
       user = avatarProfile;
