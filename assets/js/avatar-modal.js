@@ -288,7 +288,7 @@
       };
       // SDK: @oasisomniverse/web4-api
       var sdkRes = id
-        ? await window.oasisClient.avatar.updateAvatarDetail(Object.assign({}, preserved, payload, { 'id:guid': id }))
+        ? await window.oasisClient.avatar.updateAvatarDetail(Object.assign({}, preserved, payload, { id: id }))
         : email
           ? await window.oasisClient.avatar.updateAvatarDetailByEmail(Object.assign({}, preserved, payload, { email: email }))
           : await window.oasisClient.avatar.updateAvatarDetailByUsername(Object.assign({}, preserved, payload, { username: username }));
