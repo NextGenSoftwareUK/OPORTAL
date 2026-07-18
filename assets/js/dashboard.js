@@ -198,9 +198,10 @@
       }
     });
 
-    // [2] Holons / Data
-    (token
-      ? safe(window.oasisClient.data.loadAllHolons({ holonType: 'All' }))
+    // [2] Holons / Data — use avatarId (not id) as parent, matching nft-modal pattern
+    var holonParentId = p && (p.avatarId || p.AvatarId || p.id || p.Id || '');
+    (holonParentId && token
+      ? safe(window.oasisClient.data.loadHolonsForParent({ Id: holonParentId, holonType: 'All' }))
       : Promise.resolve(null)
     ).then(function (res) {
       set('dash-card-holons', fmtNum(extractList(sdkVal(res)).length) || '0');
