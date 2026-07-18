@@ -307,13 +307,19 @@
         if (payload.lastName  || payload.LastName)  avatarFields.LastName  = payload.LastName  || payload.lastName;
         if (payload.username  && payload.username !== oldUsername) avatarFields.Username = payload.username;
         if (Object.keys(avatarFields).length > 0) {
+          var avatarRes = null;
           try {
             if (email) {
-              await window.oasisClient.avatar.updateByEmail(Object.assign({}, avatarFields, { email: email }));
+              avatarRes = await window.oasisClient.avatar.updateByEmail(Object.assign({}, avatarFields, { email: email }));
             } else if (oldUsername) {
-              await window.oasisClient.avatar.updateByUsername(Object.assign({}, avatarFields, { username: oldUsername }));
+              avatarRes = await window.oasisClient.avatar.updateByUsername(Object.assign({}, avatarFields, { username: oldUsername }));
             }
-          } catch (e) { /* non-fatal — AvatarDetail already saved */ }
+          } catch (e) { /* network error — AvatarDetail already saved, non-fatal */ }
+          if (avatarRes && avatarRes.isError) {
+            showStatus('error', avatarRes.message || 'Could not update username/email — it may already be in use.');
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Changes'; }
+            return;
+          }
         }
 
         saveAvatar(updated);
