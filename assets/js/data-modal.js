@@ -144,6 +144,18 @@
     } catch (e) { return ''; }
   }
 
+  // Detect and reformat raw date strings (MM/DD/YYYY or YYYY-MM-DD) to "18 Jul 2026"
+  function tryReformatDate(s) {
+    var d;
+    // MM/DD/YYYY
+    var m1 = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (m1) { d = new Date(+m1[3], +m1[1] - 1, +m1[2]); }
+    // YYYY-MM-DD or ISO
+    if (!d) { var t = Date.parse(s); if (!isNaN(t)) d = new Date(t); }
+    if (!d || isNaN(d) || d.getFullYear() < 2000) return null;
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
   // Blockchain tx explorer URLs by provider name
   var CHAIN_EXPLORER = {
     SolanaOASIS:          'https://solscan.io/tx/',
@@ -182,6 +194,35 @@
     return base ? base + hash : null;
   }
 
+  // Blockchain address (account) explorer URLs by provider name
+  var CHAIN_ADDRESS_EXPLORER = {
+    SolanaOASIS:          'https://solscan.io/account/',
+    EthereumOASIS:        'https://etherscan.io/address/',
+    PolygonOASIS:         'https://polygonscan.com/address/',
+    ArbitrumOASIS:        'https://arbiscan.io/address/',
+    AvalancheOASIS:       'https://snowscan.xyz/address/',
+    BaseOASIS:            'https://basescan.org/address/',
+    EOSIOOASIS:           'https://bloks.io/account/',
+    TONOASIS:             'https://tonscan.org/address/',
+    StellarOASIS:         'https://stellar.expert/explorer/public/account/',
+    HashgraphOASIS:       'https://hashscan.io/mainnet/account/',
+    CardanoOASIS:         'https://cardanoscan.io/address/',
+    BitcoinOASIS:         'https://mempool.space/address/',
+    NEAROASIS:            'https://explorer.near.org/accounts/',
+    SuiOASIS:             'https://suiscan.xyz/mainnet/account/',
+    AptosOASIS:           'https://explorer.aptoslabs.com/account/',
+    BNBChainOASIS:        'https://bscscan.com/address/',
+    FantomOASIS:          'https://ftmscan.com/address/',
+    OptimismOASIS:        'https://optimistic.etherscan.io/address/',
+    XRPLOASIS:            'https://xrpscan.com/account/'
+  };
+
+  function getAddressExplorerUrl(addr, providerKey) {
+    if (!addr || !providerKey) return null;
+    var base = CHAIN_ADDRESS_EXPLORER[providerKey];
+    return base ? base + addr : null;
+  }
+
   function formatDetailValue(key, value, onChainProvider) {
     if (value == null || value === '' || value === 'null') return escapeHtml(String(value == null ? '' : value));
     var s = String(value);
@@ -192,9 +233,17 @@
     }
     // Transaction hash — key name suggests it's a hash
     if (/hash|txid|transactionid/i.test(key) && s.length >= 30) {
-      var url = getExplorerUrl(s, onChainProvider);
-      if (url) return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(s) + '</a>';
+      var txUrl = getExplorerUrl(s, onChainProvider);
+      if (txUrl) return '<a href="' + escapeHtml(txUrl) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(s) + '</a>';
     }
+    // Wallet address — key contains "address" and value looks like a blockchain address
+    if (/address/i.test(key) && s.length >= 20 && !/^https?:\/\//i.test(s)) {
+      var addrUrl = getAddressExplorerUrl(s, onChainProvider);
+      if (addrUrl) return '<a href="' + escapeHtml(addrUrl) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(s) + '</a>';
+    }
+    // Raw date strings (e.g. 07/18/2026 from API metadata) — reformat to "18 Jul 2026"
+    var reformatted = tryReformatDate(s);
+    if (reformatted) return escapeHtml(reformatted);
     // Avatar ID fields — resolve to username
     if (/avatarid$/i.test(key) && s !== NULL_GUID) {
       return escapeHtml(resolveId(s, key, null));
@@ -251,10 +300,23 @@
     // Determine the on-chain provider for building explorer links
     var onChainProvider = (function () {
       var meta = h.metaData || h.MetaData || h.metadata || {};
-      // NFT metadata may carry OnChainProvider as an object {Value, Name}
+      // Try direct top-level key first (object or string)
       var ocp = meta.OnChainProvider || meta.onChainProvider || meta.onchainprovider;
       if (ocp && typeof ocp === 'object') return ocp.Name || ocp.name || '';
       if (ocp) return String(ocp);
+      // NFT holons embed OnChainProvider inside a JSON string (e.g. NFT.Web3NFT value)
+      var keys = Object.keys(meta);
+      for (var i = 0; i < keys.length; i++) {
+        var v = meta[keys[i]];
+        if (typeof v === 'string' && v.indexOf('OnChainProvider') !== -1) {
+          try {
+            var parsed = JSON.parse(v);
+            var p = parsed.OnChainProvider || parsed.onChainProvider;
+            if (p && typeof p === 'object') return p.Name || p.name || '';
+            if (p) return String(p);
+          } catch (e) {}
+        }
+      }
       return getProviderKey(h);
     }());
 
