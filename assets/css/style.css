@@ -4757,6 +4757,8 @@ select option {
 
 /* Prevent the outer modal__block from adding a second scrollbar */
 .modal__block[data-type="data"] { overflow: hidden; }
+#data-modal-block { overflow: hidden; }
+#data-modal-block .data-modal-card { max-height: 92vh; overflow: hidden; }
 
 .data-modal-card {
   width: 100%;
