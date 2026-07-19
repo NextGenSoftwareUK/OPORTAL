@@ -530,7 +530,8 @@
 
     showStatus('loading', 'Deleting holon…');
     try {
-      var sdkRes = await window.oasisClient.data.deleteHolon({ id: id });
+      // Use route-based DELETE so the ID is in the URL (body-only endpoint ignores payload without [FromBody])
+      var sdkRes = await window.oasisClient.http.request('DELETE', 'api/data/delete-holon/' + encodeURIComponent(id) + '/false');
       if (!sdkRes.isError) {
         showStatus('success', 'Holon deleted.');
         setTimeout(function () { hideStatus(); loadAllHolons(); }, 1500);
