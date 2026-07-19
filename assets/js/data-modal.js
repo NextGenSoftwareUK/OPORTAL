@@ -244,16 +244,21 @@
 
     var dataAttr = 'data-holon-idx="' + escapeHtml(id) + '"';
 
+    // Footer: 3 columns — type badge left | date centre | delete right (always present for alignment)
+    var badgeHtml = typeName
+      ? '<span class="data-holon-badge">' + typeName + '</span>'
+      : '<span></span>';
+    var dateHtml = dateStr
+      ? '<span class="data-holon-date" style="text-align:center">' + escapeHtml(dateStr) + '</span>'
+      : '<span></span>';
+    var deleteHtml = '<div class="data-card-footer-right">' + (showDelete ? deleteBtn : '') + '</div>';
+
     return '<div class="data-holon-card" ' + dataAttr + ' onclick="window._dataOpenCard(this)">' +
       '<div class="data-holon-card-name">' + name + '</div>' +
       (desc ? '<div class="data-holon-card-desc">' + desc + '</div>' : '') +
-      '<div class="data-holon-card-meta">' +
-        (typeName ? '<span class="data-holon-badge">' + typeName + '</span>' : '') +
-        (provName ? '<span class="data-holon-badge data-holon-badge--provider">' + provName + '</span>' : '') +
-        (dateStr ? '<span class="data-holon-date">' + escapeHtml(dateStr) + '</span>' : '') +
-      '</div>' +
+      (provName ? '<div style="margin-top:4px"><span class="data-holon-badge data-holon-badge--provider">' + provName + '</span></div>' : '') +
       '<div class="data-card-footer">' +
-        (showDelete ? deleteBtn : '') +
+        badgeHtml + dateHtml + deleteHtml +
       '</div>' +
     '</div>';
   }
