@@ -199,6 +199,10 @@
       var url = getExplorerUrl(s, onChainProvider);
       if (url) return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(s) + '</a>';
     }
+    // Avatar ID fields — resolve to username
+    if (/avatarid$/i.test(key) && s !== NULL_GUID) {
+      return escapeHtml(resolveId(s, key, null));
+    }
     return escapeHtml(s);
   }
 
