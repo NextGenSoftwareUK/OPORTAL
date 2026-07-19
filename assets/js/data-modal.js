@@ -140,11 +140,7 @@
       var d = new Date(raw);
       if (isNaN(d)) return '';
       if (d.getFullYear() < 2000) return '';
-      // DD/MM/YYYY
-      var dd = String(d.getDate()).padStart(2, '0');
-      var mm = String(d.getMonth() + 1).padStart(2, '0');
-      var yyyy = d.getFullYear();
-      return dd + '/' + mm + '/' + yyyy;
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     } catch (e) { return ''; }
   }
 
