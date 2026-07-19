@@ -139,16 +139,74 @@
     try {
       var d = new Date(raw);
       if (isNaN(d)) return '';
-      if (d.getFullYear() < 2000) return ''; // default/zero C# DateTime
-      return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+      if (d.getFullYear() < 2000) return '';
+      // DD/MM/YYYY
+      var dd = String(d.getDate()).padStart(2, '0');
+      var mm = String(d.getMonth() + 1).padStart(2, '0');
+      var yyyy = d.getFullYear();
+      return dd + '/' + mm + '/' + yyyy;
     } catch (e) { return ''; }
   }
 
-  function detailRow(label, value) {
-    if (value == null || value === '') return '';
+  // Blockchain tx explorer URLs by provider name
+  var CHAIN_EXPLORER = {
+    SolanaOASIS:          'https://solscan.io/tx/',
+    EthereumOASIS:        'https://etherscan.io/tx/',
+    PolygonOASIS:         'https://polygonscan.com/tx/',
+    ArbitrumOASIS:        'https://arbiscan.io/tx/',
+    AvalancheOASIS:       'https://snowtrace.io/tx/',
+    BaseOASIS:            'https://basescan.org/tx/',
+    BNBChainOASIS:        'https://bscscan.com/tx/',
+    OptimismOASIS:        'https://optimistic.etherscan.io/tx/',
+    LineaOASIS:           'https://lineascan.build/tx/',
+    ScrollOASIS:          'https://scrollscan.com/tx/',
+    ZkSyncOASIS:          'https://explorer.zksync.io/tx/',
+    FantomOASIS:          'https://ftmscan.com/tx/',
+    CardanoOASIS:         'https://cardanoscan.io/transaction/',
+    PolkadotOASIS:        'https://polkascan.io/polkadot/tx/',
+    NEAROASIS:            'https://nearblocks.io/txns/',
+    SuiOASIS:             'https://suiscan.xyz/mainnet/tx/',
+    AptosOASIS:           'https://explorer.aptoslabs.com/txn/',
+    StellarOASIS:         'https://stellarchain.io/transactions/',
+    XRPLOASIS:            'https://xrpscan.com/tx/',
+    EOSIOOASIS:           'https://bloks.io/transaction/',
+    TelosOASIS:           'https://explorer.telos.net/transaction/',
+    CosmosBlockChainOASIS:'https://www.mintscan.io/cosmos/txs/',
+    BitcoinOASIS:         'https://mempool.space/tx/',
+    HashgraphOASIS:       'https://hashscan.io/mainnet/transaction/',
+    StarknetOASIS:        'https://starkscan.co/tx/',
+    TONOASIS:             'https://tonscan.org/tx/',
+    TRONOASIS:            'https://tronscan.org/#/transaction/',
+    MonadOASIS:           'https://explorer.monad.xyz/tx/'
+  };
+
+  function getExplorerUrl(hash, providerKey) {
+    if (!hash || !providerKey) return null;
+    var base = CHAIN_EXPLORER[providerKey];
+    return base ? base + hash : null;
+  }
+
+  function formatDetailValue(key, value, onChainProvider) {
+    if (value == null || value === '' || value === 'null') return escapeHtml(String(value == null ? '' : value));
+    var s = String(value);
+    // Clickable URL
+    if (/^https?:\/\//i.test(s)) {
+      var display = s.length > 70 ? s.slice(0, 67) + '…' : s;
+      return '<a href="' + escapeHtml(s) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(display) + '</a>';
+    }
+    // Transaction hash — key name suggests it's a hash
+    if (/hash|txid|transactionid/i.test(key) && s.length >= 30) {
+      var url = getExplorerUrl(s, onChainProvider);
+      if (url) return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(s) + '</a>';
+    }
+    return escapeHtml(s);
+  }
+
+  function detailRow(label, valueHtml) {
+    if (valueHtml == null || valueHtml === '') return '';
     return '<div class="data-detail-row">' +
       '<span class="data-detail-row-label">' + escapeHtml(label) + '</span>' +
-      '<span class="data-detail-row-value">' + escapeHtml(String(value)) + '</span>' +
+      '<span class="data-detail-row-value">' + valueHtml + '</span>' +
     '</div>';
   }
 
@@ -190,21 +248,31 @@
     var modifiedBy = (modifiedByRaw && modifiedByRaw !== NULL_GUID) ? resolveId(modifiedByRaw, 'Modified By', rows) : '';
     var parentLabel = (parentId && parentId !== NULL_GUID) ? resolveId(parentId, 'Parent ID', rows) : '';
 
+    // Determine the on-chain provider for building explorer links
+    var onChainProvider = (function () {
+      var meta = h.metaData || h.MetaData || h.metadata || {};
+      // NFT metadata may carry OnChainProvider as an object {Value, Name}
+      var ocp = meta.OnChainProvider || meta.onChainProvider || meta.onchainprovider;
+      if (ocp && typeof ocp === 'object') return ocp.Name || ocp.name || '';
+      if (ocp) return String(ocp);
+      return getProviderKey(h);
+    }());
+
     var html = '';
-    if (desc) html += detailRow('Description', desc);
-    if (typeName) html += detailRow('Holon Type', typeName);
-    if (provName) html += detailRow('Provider', provName);
-    if (id) html += detailRow('ID', id);
-    if (parentLabel) html += detailRow('Parent ID', parentLabel);
-    if (karma != null) html += detailRow('Karma', karma);
-    if (xp != null) html += detailRow('XP', xp);
-    if (level != null) html += detailRow('Level', level);
-    if (isActive != null) html += detailRow('Active', isActive ? 'Yes' : 'No');
-    if (createdDate) html += detailRow('Created', createdDate);
-    if (createdBy) html += detailRow('Created By', createdBy);
-    if (modifiedDate) html += detailRow('Modified', modifiedDate);
-    if (modifiedBy) html += detailRow('Modified By', modifiedBy);
-    if (deletedDate) html += detailRow('Deleted', deletedDate);
+    if (desc) html += detailRow('Description', escapeHtml(desc));
+    if (typeName) html += detailRow('Holon Type', escapeHtml(typeName));
+    if (provName) html += detailRow('Provider', escapeHtml(provName));
+    if (id) html += detailRow('ID', escapeHtml(id));
+    if (parentLabel) html += detailRow('Parent ID', escapeHtml(parentLabel));
+    if (karma != null) html += detailRow('Karma', escapeHtml(String(karma)));
+    if (xp != null) html += detailRow('XP', escapeHtml(String(xp)));
+    if (level != null) html += detailRow('Level', escapeHtml(String(level)));
+    if (isActive != null) html += detailRow('Active', escapeHtml(isActive ? 'Yes' : 'No'));
+    if (createdDate) html += detailRow('Created', escapeHtml(createdDate));
+    if (createdBy) html += detailRow('Created By', escapeHtml(createdBy));
+    if (modifiedDate) html += detailRow('Modified', escapeHtml(modifiedDate));
+    if (modifiedBy) html += detailRow('Modified By', escapeHtml(modifiedBy));
+    if (deletedDate) html += detailRow('Deleted', escapeHtml(deletedDate));
 
     // MetaData — skip keys that duplicate top-level fields already shown above
     var META_SKIP = /^(id|holonid|parentid|parentholonid|createdbyavatarid|modifiedbyavatarid|isactive|active|createddate|modifieddate|deleteddate|holontype|providertype)$/i;
@@ -213,7 +281,9 @@
       Object.keys(meta).forEach(function (k) {
         if (META_SKIP.test(k)) return;
         var v = meta[k];
-        if (v != null && v !== '') html += detailRow(k, typeof v === 'object' ? JSON.stringify(v) : v);
+        if (v == null || v === '') return;
+        var display = typeof v === 'object' ? JSON.stringify(v) : String(v);
+        html += detailRow(k, formatDetailValue(k, display, onChainProvider));
       });
     }
 

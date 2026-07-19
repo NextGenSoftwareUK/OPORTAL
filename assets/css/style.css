@@ -4904,6 +4904,8 @@ select option {
 }
 .data-detail-row-label { color: var(--color-contrast-medium); font-weight: 600; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.07em; padding-top: 2px; word-break: break-word; }
 .data-detail-row-value { color: var(--color-white); word-break: break-all; min-width: 0; }
+.data-detail-link { color: #6bd0ff; text-decoration: underline; text-underline-offset: 2px; }
+.data-detail-link:hover { color: #a8e8ff; }
 
 .data-holon-card-desc { font-size: 0.78rem; color: var(--color-contrast-medium); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
