@@ -145,13 +145,17 @@
   }
 
   // Detect and reformat raw date strings (MM/DD/YYYY or YYYY-MM-DD) to "18 Jul 2026"
+  // Only matches explicit date patterns — never uses Date.parse on arbitrary strings
   function tryReformatDate(s) {
     var d;
-    // MM/DD/YYYY
+    // MM/DD/YYYY (US format from API metadata)
     var m1 = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-    if (m1) { d = new Date(+m1[3], +m1[1] - 1, +m1[2]); }
-    // YYYY-MM-DD or ISO
-    if (!d) { var t = Date.parse(s); if (!isNaN(t)) d = new Date(t); }
+    if (m1) d = new Date(+m1[3], +m1[1] - 1, +m1[2]);
+    // YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS (ISO)
+    if (!d) {
+      var m2 = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:T.*)?$/);
+      if (m2) d = new Date(+m2[1], +m2[2] - 1, +m2[3]);
+    }
     if (!d || isNaN(d) || d.getFullYear() < 2000) return null;
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
   }
@@ -236,8 +240,8 @@
       var txUrl = getExplorerUrl(s, onChainProvider);
       if (txUrl) return '<a href="' + escapeHtml(txUrl) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(s) + '</a>';
     }
-    // Wallet address — key contains "address" and value looks like a blockchain address
-    if (/address/i.test(key) && s.length >= 20 && !/^https?:\/\//i.test(s)) {
+    // Wallet address / public key — key contains "address", "publickey", or "pubkey"
+    if (/address|publickey|pubkey/i.test(key) && s.length >= 20 && !/^https?:\/\//i.test(s)) {
       var addrUrl = getAddressExplorerUrl(s, onChainProvider);
       if (addrUrl) return '<a href="' + escapeHtml(addrUrl) + '" target="_blank" rel="noopener" class="data-detail-link">' + escapeHtml(s) + '</a>';
     }
