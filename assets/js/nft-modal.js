@@ -41,7 +41,7 @@
   }
 
   function getToken(profile) {
-    return profile && (profile.jwtToken || profile.token || '');
+    return profile && (profile.jwtToken || profile.JwtToken || profile.token || profile.Token || '');
   }
 
   function getAvatarId(profile) {

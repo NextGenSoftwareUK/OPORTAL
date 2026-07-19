@@ -241,21 +241,75 @@
             <label class="data-form-label" for="data-save-provider">Provider</label>
             <select class="data-form-select" id="data-save-provider">
               <option value="">Default</option>
-              <option value="MongoDBOASIS">MongoDB</option>
-              <option value="SQLLiteDBOASIS">SQLite</option>
-              <option value="HoloOASIS">Holochain</option>
-              <option value="IPFSOASIS">IPFS</option>
-              <option value="EthereumOASIS">Ethereum</option>
-              <option value="SolanaOASIS">Solana</option>
-              <option value="PolygonOASIS">Polygon</option>
-              <option value="LocalFileOASIS">Local File</option>
+              <optgroup label="Databases">
+                <option value="MongoDBOASIS">MongoDB</option>
+                <option value="SQLLiteDBOASIS">SQLite</option>
+                <option value="SQLServerDBOASIS">SQL Server</option>
+                <option value="Neo4jOASIS">Neo4j</option>
+                <option value="OracleDBOASIS">Oracle DB</option>
+                <option value="AzureCosmosDBOASIS">Azure CosmosDB</option>
+              </optgroup>
+              <optgroup label="Distributed / Storage">
+                <option value="HoloOASIS">Holochain</option>
+                <option value="IPFSOASIS">IPFS</option>
+                <option value="PinataOASIS">Pinata (IPFS)</option>
+                <option value="LocalFileOASIS">Local File</option>
+                <option value="ThreeFoldOASIS">ThreeFold</option>
+                <option value="UrbitOASIS">Urbit</option>
+                <option value="SOLIDOASIS">SOLID</option>
+                <option value="ActivityPubOASIS">ActivityPub</option>
+                <option value="ScuttlebuttOASIS">Scuttlebutt</option>
+              </optgroup>
+              <optgroup label="Cloud">
+                <option value="GoogleCloudOASIS">Google Cloud</option>
+                <option value="AzureStorageOASIS">Azure Storage</option>
+                <option value="AWSOASIS">AWS</option>
+              </optgroup>
+              <optgroup label="Blockchains — EVM">
+                <option value="EthereumOASIS">Ethereum</option>
+                <option value="PolygonOASIS">Polygon</option>
+                <option value="ArbitrumOASIS">Arbitrum</option>
+                <option value="AvalancheOASIS">Avalanche</option>
+                <option value="BaseOASIS">Base</option>
+                <option value="BNBChainOASIS">BNB Chain</option>
+                <option value="OptimismOASIS">Optimism</option>
+                <option value="LineaOASIS">Linea</option>
+                <option value="ScrollOASIS">Scroll</option>
+                <option value="ZkSyncOASIS">zkSync</option>
+                <option value="FantomOASIS">Fantom</option>
+                <option value="RootstockOASIS">Rootstock</option>
+                <option value="LoomOASIS">Loom</option>
+                <option value="MoralisOASIS">Moralis</option>
+              </optgroup>
+              <optgroup label="Blockchains — Other">
+                <option value="SolanaOASIS">Solana</option>
+                <option value="CardanoOASIS">Cardano</option>
+                <option value="PolkadotOASIS">Polkadot</option>
+                <option value="NEAROASIS">NEAR</option>
+                <option value="SuiOASIS">Sui</option>
+                <option value="AptosOASIS">Aptos</option>
+                <option value="StellarOASIS">Stellar</option>
+                <option value="XRPLOASIS">XRP</option>
+                <option value="EOSIOOASIS">EOSIO</option>
+                <option value="TelosOASIS">Telos</option>
+                <option value="SEEDSOASIS">SEEDS</option>
+                <option value="TONOASIS">TON</option>
+                <option value="TRONOASIS">TRON</option>
+                <option value="CosmosBlockChainOASIS">Cosmos</option>
+                <option value="BitcoinOASIS">Bitcoin</option>
+                <option value="HashgraphOASIS">Hashgraph</option>
+                <option value="ElrondOASIS">Elrond</option>
+                <option value="ChainLinkOASIS">ChainLink</option>
+                <option value="MonadOASIS">Monad</option>
+                <option value="StarknetOASIS">StarkNet</option>
+                <option value="AztecOASIS">Aztec</option>
+                <option value="MidenOASIS">Miden</option>
+                <option value="ZcashOASIS">Zcash</option>
+                <option value="RadixOASIS">Radix</option>
+                <option value="BlockStackOASIS">Blockstack</option>
+                <option value="TelegramOASIS">Telegram</option>
+              </optgroup>
             </select>
-          </div>
-          <div class="data-form-row data-form-row--check">
-            <label class="data-check-label">
-              <input type="checkbox" id="data-save-offchain" />
-              <span>Save off-chain only</span>
-            </label>
           </div>
           <button class="button data-submit-btn" type="submit" id="data-save-btn">Save Holon</button>
         </form>
@@ -285,6 +339,8 @@
               <option value="">Default</option>
               <option value="MongoDBOASIS">MongoDB</option>
               <option value="SQLLiteDBOASIS">SQLite</option>
+              <option value="HoloOASIS">Holochain</option>
+              <option value="LocalFileOASIS">Local File</option>
             </select>
           </div>
           <button class="button data-submit-btn" type="submit" id="data-offchain-btn">Save Off-Chain</button>

@@ -347,13 +347,15 @@
     var token = getToken(profile);
     if (!token) { showStatus('error', 'Please sign in first.'); return; }
 
+    var avatarId = profile && (profile.avatarId || profile.AvatarId || profile.id || profile.Id || '');
+
     if (offchain) {
       showStatus('info', 'Off-chain holon storage is coming soon — this feature is not yet live.');
       return;
     }
 
     var payload = {
-      holon: { name: name, description: desc, holonType: Number(type) },
+      holon: { name: name, description: desc, holonType: Number(type), parentHolonId: avatarId },
       saveChildren: true
     };
     if (provider) payload.onChainProvider = provider;
@@ -609,9 +611,8 @@
         var desc = (getById('data-save-desc') || {}).value.trim();
         var type = (getById('data-save-type') || {}).value || '0';
         var provider = (getById('data-save-provider') || {}).value || '';
-        var offchain = !!(getById('data-save-offchain') || {}).checked;
         if (!name) { showStatus('error', 'Please enter a holon name.'); return; }
-        saveHolon(name, desc, type, provider, offchain);
+        saveHolon(name, desc, type, provider, false);
       });
     }
 
