@@ -244,8 +244,8 @@
     // Raw date strings (e.g. 07/18/2026 from API metadata) — reformat to "18 Jul 2026"
     var reformatted = tryReformatDate(s);
     if (reformatted) return escapeHtml(reformatted);
-    // Avatar ID fields — resolve to username
-    if (/avatarid$/i.test(key) && s !== NULL_GUID) {
+    // Avatar ID fields — resolve to username (matches avatarid at end, or avatar.*id pattern)
+    if (/avatar.*id$/i.test(key) && s !== NULL_GUID) {
       return escapeHtml(resolveId(s, key, null));
     }
     return escapeHtml(s);
@@ -300,14 +300,19 @@
     // Determine the on-chain provider for building explorer links
     var onChainProvider = (function () {
       var meta = h.metaData || h.MetaData || h.metadata || {};
-      // Try direct top-level key first (object or string)
-      var ocp = meta.OnChainProvider || meta.onChainProvider || meta.onchainprovider;
-      if (ocp && typeof ocp === 'object') return ocp.Name || ocp.name || '';
-      if (ocp) return String(ocp);
-      // NFT holons embed OnChainProvider inside a JSON string (e.g. NFT.Web3NFT value)
-      var keys = Object.keys(meta);
-      for (var i = 0; i < keys.length; i++) {
-        var v = meta[keys[i]];
+      var metaKeys = Object.keys(meta);
+      // Scan all metadata keys case-insensitively — handles NFT.ONCHAINPROVIDER prefix
+      for (var i = 0; i < metaKeys.length; i++) {
+        if (/onchainprovider/i.test(metaKeys[i])) {
+          var ocp = meta[metaKeys[i]];
+          if (ocp && typeof ocp === 'object') return ocp.Name || ocp.name || (PROVIDER_TYPE_MAP[ocp.Value || ocp.value] || '');
+          if (typeof ocp === 'number') return PROVIDER_TYPE_MAP[ocp] || '';
+          if (ocp) return String(ocp);
+        }
+      }
+      // Fallback: parse any JSON string value that contains OnChainProvider
+      for (var j = 0; j < metaKeys.length; j++) {
+        var v = meta[metaKeys[j]];
         if (typeof v === 'string' && v.indexOf('OnChainProvider') !== -1) {
           try {
             var parsed = JSON.parse(v);
