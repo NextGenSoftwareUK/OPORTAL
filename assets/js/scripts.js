@@ -658,7 +658,6 @@ function setup() {
 const avatarRaw = localStorage.getItem('avatar');
 if (avatarRaw && avatarRaw !== 'undefined') {
     user = JSON.parse(avatarRaw);
-    console.log("username=", user);
 }
 
   var loginDiv = document.querySelector('[data-display="loggedIn"]')
@@ -676,6 +675,15 @@ if (avatarRaw && avatarRaw !== 'undefined') {
       username.innerHTML = user.username;//username
 
     icon.src='assets/img/loggedin.png'
+
+    // If the stored JWT is already locally expired, trigger refresh/re-login
+    // before firing dashboard API calls (avoids mass 401s on page load).
+    if (typeof isJwtValid === 'function' && !isJwtValid()) {
+      if (typeof window.handleUnauthorized === 'function') {
+        window.handleUnauthorized();
+        return;
+      }
+    }
 
     if (typeof window.showDashboard === 'function') window.showDashboard();
   }
@@ -963,8 +971,9 @@ window.handleUnauthorized = async function () {
   try {
     var refreshed = await refreshJWT();
     if (refreshed) {
-      // Token renewed — caller can retry; no page reload needed
       console.log('[OPORTAL] Token silently renewed after 401.');
+      // Reload dashboard so cards pick up the fresh token
+      if (typeof window.showDashboard === 'function') window.showDashboard();
       return;
     }
   } catch (e) {}

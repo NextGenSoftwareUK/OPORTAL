@@ -29,7 +29,10 @@ window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
   // Only fires when: real 401 status, loggedIn=true, JWT invalid, not an auth
   // path, and debounced so parallel failures only trigger one redirect.
   var _unauthorizedPending = false;
-  function attachUnauthorizedInterceptor(client) {
+  // strictMode=true  → only fire if local JWT check says expired (used for non-primary APIs
+  //                    like starnet whose 401s may mean no permission, not expired session)
+  // strictMode=false → fire on any 401 from an authenticated path (server is authoritative)
+  function attachUnauthorizedInterceptor(client, strictMode) {
     if (!client || !client.http) return;
     var orig = client.http.request.bind(client.http);
     client.http.request = async function (verb, path, options) {
@@ -38,7 +41,8 @@ window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
       var isAuthPath = /\/(authenticate|refresh-token|forgot-password|reset-password|register|signup)/i.test(path);
       var isLoggedIn = localStorage.getItem('loggedIn') === 'true';
       var tokenExpired = isLoggedIn && typeof isJwtValid === 'function' && !isJwtValid();
-      if (isHttp401 && !isAuthPath && isLoggedIn && tokenExpired && !_unauthorizedPending) {
+      var shouldFire = strictMode ? tokenExpired : true; // non-strict: server 401 = needs re-auth
+      if (isHttp401 && !isAuthPath && isLoggedIn && shouldFire && !_unauthorizedPending) {
         _unauthorizedPending = true;
         if (typeof window.handleUnauthorized === 'function') {
           window.handleUnauthorized().finally(function () { _unauthorizedPending = false; });
@@ -47,9 +51,11 @@ window.web6ApiUrl = 'https://api.web6.oasisomniverse.one';
       return res;
     };
   }
-  attachUnauthorizedInterceptor(window.oasisClient);
-  attachUnauthorizedInterceptor(window.starClient);
-  attachUnauthorizedInterceptor(window.aiClient);
+  // Primary API (web4): fire handleUnauthorized on any 401 — server is authoritative
+  attachUnauthorizedInterceptor(window.oasisClient, false);
+  // Secondary APIs: only redirect on locally-confirmed expiry to avoid false positives
+  attachUnauthorizedInterceptor(window.starClient, true);
+  attachUnauthorizedInterceptor(window.aiClient, true);
 
   // If the user is already logged in (page refresh / revisit), inject their
   // stored JWT so the SDK sends authenticated requests immediately.
