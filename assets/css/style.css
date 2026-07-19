@@ -4894,7 +4894,7 @@ select option {
 
 /* Holon detail rows */
 .data-detail-row {
-  display: grid; grid-template-columns: minmax(220px, max-content) 1fr;
+  display: grid; grid-template-columns: minmax(320px, max-content) 1fr;
   gap: 6px 20px; padding: 9px 0;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   font-size: 0.85rem;
