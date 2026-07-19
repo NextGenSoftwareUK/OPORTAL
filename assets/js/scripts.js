@@ -711,10 +711,8 @@ window.addEventListener('avatarUpdated', function (e) {
 function addAuthPopup(login, msg, e) {
 	// Get and remove previous pop ups
 	var prev = document.getElementsByClassName('alert')[0]
-  console.log("prev=", prev);
 
 	if (prev)prev.remove()
-	console.log(msg)
 	var formId;
 	var type;
 	var alert = msg.message || msg.title;
@@ -725,9 +723,6 @@ function addAuthPopup(login, msg, e) {
 	}
 	else {
 		type = 'success'
-    console.log("msg=", msg);
-    console.log("msg.result=", msg.result);
-    console.log("msg.result.result=", msg.result.result);
 
     if (login)
     {
@@ -783,7 +778,6 @@ function addAuthPopup(login, msg, e) {
   var errorId = login ? "login-error" : "signup-error";
   var divError = document.getElementById(errorId);
 
-  console.log("divError=", divError);
 
   if (divError === null) 
   {

@@ -140,7 +140,7 @@
       var d = new Date(raw);
       if (isNaN(d)) return '';
       if (d.getFullYear() < 2000) return ''; // default/zero C# DateTime
-      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
     } catch (e) { return ''; }
   }
 
