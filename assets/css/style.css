@@ -4746,7 +4746,9 @@ select option {
 
 /* ── DATA MODAL ── */
 
-.modal__block.data-modal-block {
+.modal__block.data-modal-block,
+.modal__block.data-modal-block.is-selected {
+  display: flex !important; flex-direction: column;
   width: min(960px, calc(100vw - 24px));
   height: calc(100vh - 48px);
   overflow: hidden;
@@ -4755,7 +4757,6 @@ select option {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   letter-spacing: normal;
-  display: flex; flex-direction: column;
 }
 
 .data-modal-shell { width: 100%; padding: 0; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -4821,17 +4822,14 @@ select option {
 }
 .data-tab.is-active, .data-tab:hover { color: var(--color-white); border-bottom-color: var(--color-2); }
 
-/* Tab panels fill remaining card height and scroll internally */
+/* Tab panels fill remaining card height and scroll internally — no visible scrollbar */
 .data-tab-panel {
   display: block; flex: 1;
   overflow-y: auto; padding-right: 6px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,200,255,.55) rgba(0,200,255,.08);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.data-tab-panel::-webkit-scrollbar { width: 8px; }
-.data-tab-panel::-webkit-scrollbar-track { background: rgba(0,200,255,.06); border-radius: 4px; }
-.data-tab-panel::-webkit-scrollbar-thumb { background: rgba(0,200,255,.5); border-radius: 4px; }
-.data-tab-panel::-webkit-scrollbar-thumb:hover { background: rgba(0,200,255,.8); }
+.data-tab-panel::-webkit-scrollbar { display: none; }
 .data-tab-panel[hidden] { display: none; }
 
 /* Browse bar */
