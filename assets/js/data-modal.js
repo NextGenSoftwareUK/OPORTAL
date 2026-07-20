@@ -757,7 +757,9 @@
         currentProvider = provSel.value;
         _cachedBrowseList = null;
         renderBrowseGrid([]);
-        loadAllHolons();
+        if (currentProvider === 'all' || currentProvider === 'MongoDBOASIS') {
+          loadAllHolons();
+        }
       });
     }
 
