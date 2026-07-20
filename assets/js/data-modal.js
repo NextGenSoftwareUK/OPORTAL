@@ -750,8 +750,13 @@
     if (provSel) {
       provSel.addEventListener('change', function () {
         currentProvider = provSel.value;
-        // Re-filter cached list instead of re-fetching for instant response
         _cachedBrowseList = null;
+        renderBrowseGrid([]); // clear grid immediately
+        if (currentProvider !== 'all' && currentProvider !== 'MongoDBOASIS') {
+          showStatus('warn', 'Holons are currently only stored on MongoDB. Select "All" or "MongoDB" to view your data.');
+          return;
+        }
+        hideStatus();
         loadAllHolons();
       });
     }
