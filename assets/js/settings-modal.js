@@ -192,7 +192,7 @@
     var email = profile && (profile.email || profile.Email);
     if (!email) { alert('No email address found. Please beam in first.'); return; }
 
-    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Sending… <span style="display:inline-block;width:11px;height:11px;border:2px solid rgba(107,208,255,.25);border-top-color:#6bd0ff;border-radius:50%;vertical-align:-1px;margin-left:4px;animation:settings-spin .75s linear infinite"></span><style>@keyframes settings-spin{to{transform:rotate(360deg)}}</style>'; }
 
     try {
       var returnUrl = 'https://oportal.oasisomniverse.one/reset-password.html';
@@ -204,7 +204,7 @@
       var data = await res.json();
       var isError = data?.result?.isError ?? !res.ok;
       if (isError) throw new Error(data?.result?.message || data?.message || 'Request failed.');
-      if (btn) { btn.textContent = 'Email Sent ✓'; btn.style.borderColor = 'rgba(0,229,255,.5)'; btn.style.color = '#00e5ff'; }
+      if (btn) { btn.innerHTML = 'Email Sent ✓'; btn.style.borderColor = 'rgba(0,229,255,.5)'; btn.style.color = '#00e5ff'; }
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = 'Send Password Reset Email'; }
       alert('Could not send reset email: ' + (e.message || 'Unknown error'));
