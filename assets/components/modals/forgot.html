@@ -95,24 +95,25 @@
       margin-top: 18px;
       padding: 14px 16px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.07);
-      background: rgba(255,255,255,.03);
+      border: 1px solid transparent;
+      background: transparent;
       font-size: .84rem;
       line-height: 1.55;
-      display: none;
+      visibility: hidden;
+      min-height: 52px;
     }
-    .forgot-status.visible { display: block; }
+    .forgot-status.visible { visibility: visible; border-color: rgba(255,255,255,.07); background: rgba(255,255,255,.03); }
     .forgot-status__title {
       font-weight: 700;
       margin-bottom: 4px;
       font-size: .88rem;
     }
     .forgot-status__msg { color: #a8bfd8; margin: 0; }
-    .forgot-status--success { border-color: rgba(103,211,154,.32); }
+    .forgot-status.visible.forgot-status--success { border-color: rgba(103,211,154,.32); background: rgba(103,211,154,.04); }
     .forgot-status--success .forgot-status__title { color: #5de6a0; }
-    .forgot-status--error   { border-color: rgba(255,100,100,.28); }
+    .forgot-status.visible.forgot-status--error   { border-color: rgba(255,100,100,.28); background: rgba(255,60,60,.05); }
     .forgot-status--error   .forgot-status__title { color: #ff7070; }
-    .forgot-status--loading { border-color: rgba(107,208,255,.25); }
+    .forgot-status.visible.forgot-status--loading { border-color: rgba(107,208,255,.25); }
     .forgot-status--loading .forgot-status__title { color: #6bd0ff; }
     .forgot-spinner {
       display: inline-block; width: 12px; height: 12px;
@@ -165,10 +166,10 @@
   form.addEventListener('submit', async function () {
     var email = document.getElementById('forgot-email').value.trim();
     var btn = document.getElementById('forgot-submit');
-    if (!email) { setStatus('error', 'Email required', 'Please enter your email address.'); return; }
+    if (!email) { setStatus('error', 'Email required', 'Enter your email address.'); return; }
 
     btn.disabled = true; btn.textContent = 'Sending…';
-    setStatus('loading', 'Sending link', 'Please wait…');
+    setStatus('loading', 'Sending…', 'Please wait.');
 
     try {
       var res = await fetch(window.apiUrl + '/api/avatar/forgot-password', {
@@ -177,14 +178,14 @@
         body: JSON.stringify({ email: email })
       });
       var data = await res.json().catch(function () { return {}; });
-      var msg = data?.result?.message || data?.message || '';
       if (res.ok) {
-        setStatus('success', 'Check your inbox', msg || 'If the account exists, a reset link has been sent.');
+        setStatus('success', 'Check your inbox', 'A reset link has been sent if the account exists.');
       } else {
-        setStatus('error', 'Request failed', msg || 'Something went wrong. Please try again.');
+        var msg = data?.result?.message || data?.message || 'Something went wrong.';
+        setStatus('error', 'Failed', msg);
       }
     } catch (e) {
-      setStatus('error', 'Network error', 'Could not reach the server. Please check your connection.');
+      setStatus('error', 'Network error', 'Could not reach the server.');
     }
 
     btn.disabled = false; btn.textContent = 'Send reset link';
