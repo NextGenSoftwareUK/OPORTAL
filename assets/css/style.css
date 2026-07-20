@@ -33,11 +33,15 @@ nav {
 }
 
 html {
-  box-sizing: border-box
+  box-sizing: border-box;
+  overflow: hidden;
+  height: 100%;
 }
 
 body {
-  background-color: var(--color-bg)
+  background-color: var(--color-bg);
+  overflow: hidden;
+  height: 100%;
 }
 
 header,
