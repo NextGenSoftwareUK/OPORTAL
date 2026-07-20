@@ -867,6 +867,11 @@ async function hydrateLoggedInAvatar(profile) {
       }
 
       const merged = Object.assign({}, avatar, fullAvatar);
+      // Always preserve the original JWT — detail endpoints don't re-issue tokens
+      merged.jwtToken = merged.jwtToken || avatar.jwtToken;
+      merged.JwtToken = merged.JwtToken || avatar.JwtToken;
+      merged.token    = merged.token    || avatar.token;
+      merged.Token    = merged.Token    || avatar.Token;
       console.log("Merged avatar data:", merged);
       localStorage.setItem('avatar', JSON.stringify(merged));
       user = merged;

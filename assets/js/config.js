@@ -73,8 +73,10 @@ window.grpcWeb10Host = 'api.web10.oasisomniverse.one:443';
       return res;
     };
   }
-  // Primary API (web4): fire handleUnauthorized on any 401 — server is authoritative
-  attachUnauthorizedInterceptor(window.oasisClient, false);
+  // Primary API (web4): only fire if JWT is locally confirmed expired — avoids logging
+  // out immediately after a fresh login when a dashboard endpoint returns 401 for
+  // permission reasons unrelated to auth expiry.
+  attachUnauthorizedInterceptor(window.oasisClient, true);
   // Secondary APIs: only redirect on locally-confirmed expiry to avoid false positives
   attachUnauthorizedInterceptor(window.starClient, true);
   attachUnauthorizedInterceptor(window.aiClient, true);
