@@ -80,7 +80,7 @@
     var el = getById('forgot-msg');
     if (!el) return;
     el.className = 'forgot-status visible forgot-status--' + type;
-    el.textContent = text;
+    el.innerHTML = escapeHtml(text) + (type === 'loading' ? '<span class="forgot-spinner"></span>' : '');
   }
 
   function bindForgotPasswordForm() {

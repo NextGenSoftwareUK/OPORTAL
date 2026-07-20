@@ -107,6 +107,15 @@
     .forgot-status--success { color: #5de6a0; }
     .forgot-status--error   { color: #ff7070; }
     .forgot-status--loading { color: #6bd0ff; }
+    .forgot-spinner {
+      display: inline-block; width: 11px; height: 11px;
+      border: 2px solid rgba(107,208,255,.25);
+      border-top-color: #6bd0ff;
+      border-radius: 50%;
+      vertical-align: -1px; margin-left: 6px;
+      animation: fspin .75s linear infinite;
+    }
+    @keyframes fspin { to { transform: rotate(360deg); } }
   </style>
 
   <div class="forgot-card">
