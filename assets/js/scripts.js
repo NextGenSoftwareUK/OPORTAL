@@ -755,6 +755,9 @@ function addAuthPopup(login, msg, e) {
         avatarProfile.avatarId = _canonicalId;
         avatarProfile.AvatarId = _canonicalId;
       }
+      // Check for fresh JWT at wrapper level (msg.result) vs stale stored JWT in avatar profile (msg.result.result)
+      var _wrapperTok = msg.result && (msg.result.jwtToken || msg.result.JwtToken || msg.result.token || msg.result.Token || '');
+      console.log('[AUTH] wrapper-level JWT (msg.result.jwtToken etc)? len=', _wrapperTok ? _wrapperTok.length : 0, '| val=', _wrapperTok ? _wrapperTok.slice(0,40) : 'none');
       console.log('[AUTH] avatarProfile keys:', avatarProfile ? Object.keys(avatarProfile) : 'null');
       var _loginTok = avatarProfile && (avatarProfile.jwtToken || avatarProfile.JwtToken || avatarProfile.token || avatarProfile.Token || '');
       console.log('[AUTH] JWT token found in login response?', !!_loginTok, '| length:', _loginTok ? _loginTok.length : 0);
