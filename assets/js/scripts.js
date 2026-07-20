@@ -657,7 +657,9 @@ function isJwtValid() {
     while (b64.length % 4) b64 += '=';
     var payload = JSON.parse(atob(b64));
     if (!payload.exp) return true; // no expiry claim — assume valid
-    var valid = payload.exp * 1000 > Date.now();
+    // Allow 6-hour clock-skew grace so a misconfigured system clock doesn't break auth
+    var SKEW_MS = 6 * 60 * 60 * 1000;
+    var valid = payload.exp * 1000 + SKEW_MS > Date.now();
     console.log('[JWT] exp=' + payload.exp + ', now=' + Math.floor(Date.now()/1000) + ', valid=' + valid);
     return valid;
   } catch (e) {
