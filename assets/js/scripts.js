@@ -668,8 +668,8 @@ if (avatarRaw && avatarRaw !== 'undefined') {
   if (localStorage.getItem('loggedIn') === "true"){
     var guest_links = document.getElementById('guest-links')
     var username = document.getElementById("username")
-    guest_links.style.display = "none"
-    avatarDiv.classList.add('loggedin')
+    if (guest_links) guest_links.style.display = "none"
+    if (avatarDiv) avatarDiv.classList.add('loggedin')
 
     if (username)
       username.innerHTML = user.username;//username
