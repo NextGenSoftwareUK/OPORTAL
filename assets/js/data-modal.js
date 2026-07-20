@@ -733,6 +733,12 @@
     var closeBtn = getById('data-modal-close-btn');
     if (closeBtn) closeBtn.addEventListener('click', function (e) { e.preventDefault(); closeDataModal(); });
 
+    // Route all wheel events inside the modal to the active tab panel
+    block.addEventListener('wheel', function (e) {
+      var panel = block.querySelector('.data-tab-panel:not([hidden])');
+      if (panel) { panel.scrollTop += e.deltaY; e.preventDefault(); }
+    }, { passive: false });
+
     var backBtn = getById('data-detail-back-btn');
     if (backBtn) backBtn.addEventListener('click', closeHolonDetail);
 
