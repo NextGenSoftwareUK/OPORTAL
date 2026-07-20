@@ -92,17 +92,26 @@
     }
     .forgot-btn-ghost:hover { border-color: rgba(255,255,255,.28); color: #edf6ff; }
     .forgot-status {
-      margin-top: 18px;
-      padding: 14px 16px;
+      margin-top: 0;
+      padding: 0;
       border-radius: 10px;
       border: 1px solid transparent;
       background: transparent;
       font-size: .84rem;
       line-height: 1.55;
-      visibility: hidden;
-      min-height: 52px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height .25s ease, opacity .2s ease, margin-top .25s ease, padding .25s ease;
     }
-    .forgot-status.visible { visibility: visible; border-color: rgba(255,255,255,.07); background: rgba(255,255,255,.03); }
+    .forgot-status.visible {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-color: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+    }
     .forgot-status__title {
       font-weight: 700;
       margin-bottom: 4px;
