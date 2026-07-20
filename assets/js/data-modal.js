@@ -741,7 +741,12 @@
     if (tabBar) {
       tabBar.addEventListener('click', function (e) {
         var tab = e.target.closest('.data-tab');
-        if (tab) switchTab(tab.dataset.tab);
+        if (!tab) return;
+        switchTab(tab.dataset.tab);
+        if (tab.dataset.tab === 'browse') {
+          _cachedBrowseList = null;
+          loadAllHolons();
+        }
       });
     }
 
@@ -751,12 +756,7 @@
       provSel.addEventListener('change', function () {
         currentProvider = provSel.value;
         _cachedBrowseList = null;
-        renderBrowseGrid([]); // clear grid immediately
-        if (currentProvider !== 'all' && currentProvider !== 'MongoDBOASIS') {
-          showStatus('warn', 'Holons are currently only stored on MongoDB. Select "All" or "MongoDB" to view your data.');
-          return;
-        }
-        hideStatus();
+        renderBrowseGrid([]);
         loadAllHolons();
       });
     }
