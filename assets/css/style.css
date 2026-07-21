@@ -4797,12 +4797,16 @@ select option {
 #data-modal-block,
 #data-modal-block .data-modal-shell,
 #data-modal-block .data-modal-card { overflow: hidden; }
-/* !! DO NOT REMOVE !! Hides every scrollbar inside the modal EXCEPT .data-tab-panel.
-   There is a thin dark outer scrollbar that appears next to the cyan inner one —
-   this rule kills it. The :not(.data-tab-panel) ensures the inner holon-list
-   scrollbar (cyan) is preserved. See note 4 in the block comment above. */
-#data-modal-block *:not(.data-tab-panel)::-webkit-scrollbar { display: none !important; }
-#data-modal-block *:not(.data-tab-panel) { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+/* !! DO NOT REMOVE !! Hides every scrollbar inside the modal EXCEPT .data-tab-panel
+   and .data-detail-panel. The :not() exclusions ensure those two scrollable panels
+   keep their cyan scrollbars. See note 4 in the block comment above. */
+#data-modal-block *:not(.data-tab-panel):not(.data-detail-panel)::-webkit-scrollbar { display: none !important; }
+#data-modal-block *:not(.data-tab-panel):not(.data-detail-panel) { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+.data-detail-panel { scrollbar-width: thin; scrollbar-color: rgba(0,200,255,.55) rgba(0,200,255,.08); }
+.data-detail-panel::-webkit-scrollbar { width: 8px; }
+.data-detail-panel::-webkit-scrollbar-track { background: rgba(0,200,255,.06); border-radius: 4px; }
+.data-detail-panel::-webkit-scrollbar-thumb { background: rgba(0,200,255,.5); border-radius: 4px; }
+.data-detail-panel::-webkit-scrollbar-thumb:hover { background: rgba(0,200,255,.8); }
 
 .data-modal-card {
   width: 100%;
