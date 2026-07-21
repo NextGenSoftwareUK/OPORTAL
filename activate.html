@@ -309,7 +309,7 @@
     function showStatus(type, msg, spinning) {
       var el = document.getElementById('status-box');
       el.className = 'status status--' + type;
-      el.innerHTML = (spinning ? SPINNER : '') + '<span>' + msg + '</span>';
+      el.innerHTML = '<span>' + msg + '</span>' + (spinning ? SPINNER : '');
       el.style.display = spinning ? 'flex' : 'block';
     }
 
@@ -322,7 +322,7 @@
       if (pw1 !== pw2) { showStatus('error', 'Passwords do not match.'); return; }
 
       btn.disabled = true;
-      btn.innerHTML = SPINNER + 'Activating…';
+      btn.innerHTML = 'Activating… ' + SPINNER;
 
       try {
         var res = await fetch('https://founders.oasisomniverse.one/api/sendEmail', {
@@ -382,7 +382,7 @@
     async function handleResend() {
       var btn = document.getElementById('resend-btn');
       btn.disabled = true;
-      btn.innerHTML = SPINNER + 'Sending…';
+      btn.innerHTML = 'Sending… ' + SPINNER;
       try {
         var res = await fetch('https://founders.oasisomniverse.one/api/sendEmail', {
           method: 'POST',
