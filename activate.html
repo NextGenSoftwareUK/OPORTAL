@@ -155,9 +155,30 @@
       font-size: .85rem;
       line-height: 1.5;
       display: none;
+      align-items: center;
+      gap: 10px;
     }
-    .status--error { background: rgba(255,60,60,.08); border: 1px solid rgba(255,60,60,.25); color: #ff6b6b; }
-    .status--success { background: rgba(0,229,255,.06); border: 1px solid rgba(0,229,255,.25); color: #00e5ff; }
+    .status--error   { background: rgba(255,60,60,.08);  border: 1px solid rgba(255,60,60,.25);  color: #ff6b6b; }
+    .status--success { background: rgba(0,229,255,.06);  border: 1px solid rgba(0,229,255,.25);  color: #00e5ff; }
+    .status--loading { background: rgba(0,229,255,.04);  border: 1px solid rgba(0,229,255,.18);  color: #a8bfd8; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 15px; height: 15px; flex-shrink: 0;
+      border: 2px solid rgba(0,229,255,.25);
+      border-top-color: #00e5ff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: inline-block;
+    }
+    .btn .spinner {
+      width: 13px; height: 13px;
+      border-width: 2px;
+      border-color: rgba(0,229,255,.25);
+      border-top-color: #00e5ff;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
 
     .resend-wrap { margin-top: 16px; display: none; }
     .btn-resend {
@@ -284,11 +305,12 @@
       input.type = showing ? 'text' : 'password';
     }
 
-    function showStatus(type, msg) {
+    var SPINNER = '<span class="spinner"></span>';
+    function showStatus(type, msg, spinning) {
       var el = document.getElementById('status-box');
       el.className = 'status status--' + type;
-      el.textContent = msg;
-      el.style.display = 'block';
+      el.innerHTML = (spinning ? SPINNER : '') + '<span>' + msg + '</span>';
+      el.style.display = spinning ? 'flex' : 'block';
     }
 
     async function handleSubmit() {
@@ -300,7 +322,7 @@
       if (pw1 !== pw2) { showStatus('error', 'Passwords do not match.'); return; }
 
       btn.disabled = true;
-      btn.textContent = 'Activating…';
+      btn.innerHTML = SPINNER + 'Activating…';
 
       try {
         var res = await fetch('https://founders.oasisomniverse.one/api/sendEmail', {
@@ -341,7 +363,7 @@
           localStorage.setItem('loggedIn', 'true');
         }
 
-        showStatus('success', 'Password set! Beaming you in to the portal…');
+        showStatus('loading', 'Password set! Beaming you in to the portal…', true);
 
         setTimeout(function () {
           window.location.href = 'https://oportal.oasisomniverse.one/';
@@ -353,14 +375,14 @@
         showStatus('error', msg + (isExpired ? ' Use the button below to get a new link.' : ''));
         if (isExpired) document.getElementById('resend-wrap').style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Activate & Set Password';
+        btn.innerHTML = 'Activate &amp; Set Password';
       }
     }
 
     async function handleResend() {
       var btn = document.getElementById('resend-btn');
       btn.disabled = true;
-      btn.textContent = 'Sending…';
+      btn.innerHTML = SPINNER + 'Sending…';
       try {
         var res = await fetch('https://founders.oasisomniverse.one/api/sendEmail', {
           method: 'POST',
@@ -374,7 +396,7 @@
       } catch (e) {
         showStatus('error', e.message || 'Could not resend. Please contact support.');
         btn.disabled = false;
-        btn.textContent = 'Resend activation email';
+        btn.innerHTML = 'Resend activation email';
       }
     }
 
