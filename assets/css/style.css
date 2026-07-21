@@ -4711,8 +4711,14 @@ select option {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 10px;
   margin-bottom: 20px;
-  max-height: 280px; overflow-y: auto;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 6px;
 }
+.karma-weightings-grid::-webkit-scrollbar { width: 6px; }
+.karma-weightings-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 3px; }
+.karma-weightings-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+.karma-weightings-grid::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
 
 .karma-weighting-card {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
