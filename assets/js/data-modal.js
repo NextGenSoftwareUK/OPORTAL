@@ -764,6 +764,10 @@
     // the scrollbar thumb to stay frozen. This intercepts all wheel events on the
     // modal and explicitly scrolls the active tab panel so they stay in sync.
     block.addEventListener('wheel', function (e) {
+      var detail = getById('data-detail-panel');
+      if (detail && detail.style.display !== 'none') {
+        detail.scrollTop += e.deltaY; e.preventDefault(); return;
+      }
       var panel = block.querySelector('.data-tab-panel:not([hidden])');
       if (panel) { panel.scrollTop += e.deltaY; e.preventDefault(); }
     }, { passive: false });
