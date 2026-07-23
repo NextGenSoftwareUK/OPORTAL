@@ -21,7 +21,9 @@
     // TEMP GATE: mint requires an active subscription — re-enable by restoring the line below.
     // window.nftShowMintForm = function () { closeActionPanel(); showActionPanel('nft-form-mint'); };
     window.nftShowMintForm = function () { showStatus('warn', 'NFT minting requires an active subscription. This feature is coming soon — stay tuned!'); };
-    window.nftShowSendForm = function () { closeActionPanel(); showActionPanel('nft-form-send'); };
+    // TEMP GATE: re-enable by restoring the line below.
+    // window.nftShowSendForm = function () { closeActionPanel(); showActionPanel('nft-form-send'); };
+    window.nftShowSendForm = function () { showStatus('warn', 'NFT sending requires an active subscription. This feature is coming soon — stay tuned!'); };
     window.nftShowPlaceForm = function () { populateNftSelect(); closeActionPanel(); showActionPanel('nft-form-place'); };
     window.nftCloseActionPanel = closeActionPanel;
     window.nftSubmitMint = function () { apiMintNft(readAvatar()); };
@@ -793,6 +795,10 @@
   // ── API: Send NFT (detail panel inline form) ─────────────────────────────────
 
   async function apiSendNftFromDetail(profile) {
+    // TEMP GATE: remove this block when subscriptions are live.
+    var detailStatus = getById('nft-detail-send-status');
+    if (detailStatus) { detailStatus.className = 'nft-form-status nft-status nft-status--warn'; detailStatus.textContent = 'NFT sending requires an active subscription. This feature is coming soon — stay tuned!'; detailStatus.hidden = false; }
+    return;
     if (!activeDetailNft) return;
     var fromAddr = ((getById('nft-detail-send-from') || {}).value || '').trim();
     var byAvatar = getById('nft-detail-send-by-avatar-btn') && getById('nft-detail-send-by-avatar-btn').classList.contains('nft-send-toggle-btn--active');
